@@ -1,5 +1,5 @@
 // Place Pins service worker: offline app shell + cached Google Fonts.
-const VERSION = 'v3';
+const VERSION = 'v4';
 const SHELL = `place-pins-shell-${VERSION}`;
 const RUNTIME = `place-pins-runtime-${VERSION}`;
 const ASSETS = [
@@ -10,10 +10,7 @@ const ASSETS = [
   './icons/icon-512.png',
   './icons/maskable-512.png',
   './icons/apple-touch-icon.png',
-  './firebase-config.js',
-  './vendor/firebase-app-compat.js',
-  './vendor/firebase-auth-compat.js',
-  './vendor/firebase-firestore-compat.js'
+  './firebase-config.js'
 ];
 
 self.addEventListener('install', (e) => {
@@ -47,8 +44,9 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Google Fonts: stale-while-revalidate.
-  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+  // Google Fonts and the Firebase SDK: stale-while-revalidate, so the app opens offline.
+  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com' ||
+      (url.hostname === 'www.gstatic.com' && url.pathname.startsWith('/firebasejs/'))) {
     e.respondWith(
       caches.open(RUNTIME).then((c) =>
         c.match(req).then((hit) => {
