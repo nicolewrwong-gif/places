@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Place Pins</title>
+<script>try{var t=localStorage.getItem('place-pins:theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a6a8a" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0b1419" media="(prefers-color-scheme: dark)">
@@ -24,6 +25,7 @@
   --bg:#eef3f5; --panel:#ffffff; --fg:#14232b; --muted:#566872; --line:#d9e3e8; --field:#f0f4f6;
   --accent:#0a6a8a; --accent-ink:#ffffff; --accent-soft:#dcf0f7; --danger:#b3261e; --star:#d99a00;
   --c-eat:#d9551d; --c-stay:#6a4de0; --c-see:#0f8f6f; --c-shop:#c52f8f; --c-other:#5b6f7c;
+  --c-restaurant:#d9551d; --c-cafe:#94622a; --c-bar:#b0245e; --c-pub:#b98300; --c-club:#2f55d4; --c-dessert:#e0607e; --c-games:#0b87a8;
   --shadow:0 1px 2px rgba(10,30,40,.08),0 6px 20px rgba(10,30,40,.10);
   --f-ui:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --f-head:'Space Grotesk','IBM Plex Sans',system-ui,sans-serif;
@@ -36,6 +38,7 @@
     --bg:#0b1419; --panel:#14212a; --fg:#e7eff3; --muted:#9bb0bb; --line:#25363f; --field:#1b2c35;
     --accent:#52c6e8; --accent-ink:#042029; --accent-soft:#143342; --danger:#ff8a80; --star:#f2c14e;
     --c-eat:#ff8a4c; --c-stay:#a690ff; --c-see:#3fd1a8; --c-shop:#ff78c8; --c-other:#9fb2bf;
+    --c-restaurant:#ff8a4c; --c-cafe:#d9a066; --c-bar:#ff6f9f; --c-pub:#f2c14e; --c-club:#7d9bff; --c-dessert:#ffa3b8; --c-games:#4fd0f0;
     --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
     color-scheme:dark;
   }
@@ -46,6 +49,7 @@
   --bg:#0b1419; --panel:#14212a; --fg:#e7eff3; --muted:#9bb0bb; --line:#25363f; --field:#1b2c35;
   --accent:#52c6e8; --accent-ink:#042029; --accent-soft:#143342; --danger:#ff8a80; --star:#f2c14e;
   --c-eat:#ff8a4c; --c-stay:#a690ff; --c-see:#3fd1a8; --c-shop:#ff78c8; --c-other:#9fb2bf;
+  --c-restaurant:#ff8a4c; --c-cafe:#d9a066; --c-bar:#ff6f9f; --c-pub:#f2c14e; --c-club:#7d9bff; --c-dessert:#ffa3b8; --c-games:#4fd0f0;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
   color-scheme:dark;
 }
@@ -170,10 +174,23 @@ ul.places{list-style:none;margin:0;padding:0}
 .authdlg .linkbtn{background:none;border:0;padding:0;margin-top:12px;color:var(--accent);font-size:12.5px;cursor:pointer}
 
 .brand .count{margin-left:auto}
+.themebtn{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);display:grid;place-items:center;padding:0}
+.themebtn:hover{background:var(--field)}
 .addbtn{flex:none;height:30px;padding:0 12px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:13px}
 .addbtn:hover{filter:brightness(1.07)}
 .frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.fbtn{height:30px;padding:0 12px;border-radius:9px;border:1px solid var(--line);background:transparent;font-size:12.5px;font-weight:500;margin-left:auto}
+.fbtn{height:30px;padding:0 12px;border-radius:9px;border:1px solid var(--line);background:transparent;font-size:12.5px;font-weight:500}
+.sortseg{margin-left:auto}
+.crave{position:relative;flex:none}
+.crave>svg{position:absolute;left:11px;top:11px;color:var(--c-eat);pointer-events:none}
+.crave input{width:100%;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:0 36px}
+.crave input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.crave input.set{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+#craveClear{position:absolute;right:6px;top:6px}
+.tagdrop .sug .n{float:right;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.tagdrop .none{padding:10px 12px;color:var(--muted);font-size:13px}
+.item .meta .dist{font-size:12px;color:var(--fg);font-weight:500;white-space:nowrap}
+.vdist{margin:4px 0 0;font-size:13px;color:var(--muted)}
 .fbtn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--fg);font-weight:600}
 .fbtn[aria-expanded="true"]{border-color:var(--accent)}
 .fpanel{flex:0 1 auto;min-height:72px;display:flex;flex-direction:column;gap:10px;background:var(--field);border-radius:12px;padding:10px;max-height:min(46vh,340px);overflow:auto}
@@ -186,6 +203,9 @@ ul.places{list-style:none;margin:0;padding:0}
 .fempty{margin:0;font-size:12.5px;color:var(--muted)}
 .linkbtn{background:none;border:0;padding:0;color:var(--accent);font-size:12.5px;font-weight:500;cursor:pointer;align-self:flex-start}
 .linkbtn.inline{font-size:inherit;text-decoration:underline}
+.itags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.itag{font-size:11px;line-height:18px;padding:0 7px;border-radius:999px;background:var(--accent-soft);color:var(--fg);white-space:nowrap}
+.itag.more{background:transparent;color:var(--muted);padding:0 2px}
 .item .deal{font-size:12px;color:var(--c-eat);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
 .paste{background:var(--accent-soft);border-radius:12px;padding:10px 12px}
 .paste summary{cursor:pointer;font-weight:600;color:var(--fg);list-style:none;display:flex;align-items:center;gap:6px}
@@ -228,6 +248,67 @@ details.days[open] summary::after{transform:rotate(90deg)}
   #listView .fpanel{max-height:none;flex:none}
 }
 
+/* details view */
+.sec{border-bottom:1px solid var(--line);padding:12px 0}
+.sec:first-of-type{padding-top:4px}
+.sec-head{display:flex;align-items:center;gap:8px;min-height:24px}
+.sec-head .lab{font-size:13px;font-weight:600;color:var(--fg)}
+.sec-head .lab::after{content:':'}
+.vtype{font-size:15px}
+.editbtn{margin-left:auto;border:0;background:var(--field);color:var(--accent);font-weight:600;font-size:12.5px;height:28px;padding:0 12px;border-radius:999px;flex:none}
+.editbtn:hover{background:var(--accent-soft)}
+.sec.open .editbtn{background:var(--accent);color:var(--accent-ink)}
+.sec-view{margin-top:6px}
+.sec-edit{display:none;margin-top:8px}
+.sec.open .sec-edit{display:block}
+.sec.open .sec-view{display:none}
+.all-open .editbtn{display:none}
+.namesec .vname{margin:0;font:600 21px/1.2 var(--f-head);letter-spacing:-.01em;min-width:0;overflow-wrap:anywhere}
+.namesec .lab{display:none}
+.namesec.open .vname{display:none}
+.namesec.open .lab{display:inline}
+.sec-edit input[type=text],.sec-edit input[type=url],.sec-edit input[type=tel]{width:100%;border:1px solid transparent;border-radius:9px;background:var(--field);padding:9px 10px}
+.sec-edit input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+#fName{font:600 17px var(--f-head)}
+.linkedit label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
+.linkedit label:first-child{margin-top:0}
+.vtext{margin:0;font-size:14px}
+.vempty{margin:0;font-size:13px;color:var(--muted)}
+.vlinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.vlinks:first-child{margin-top:0}
+.vlink{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:13px;text-decoration:none}
+.vlink.soft{background:var(--accent-soft);color:var(--fg)}
+.vdays{display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 10px;margin:0;font-size:13.5px}
+.vdays dt{color:var(--muted)}
+.vdays.wide{grid-template-columns:80px minmax(0,1fr)}
+.vdays dd{margin:0}
+.vdays .today{color:var(--fg);font-weight:700}
+.vdays.deals dd{color:var(--c-eat);font-weight:500}
+.vdays.deals dd.today{font-weight:700}
+.chip.vtag,.sec-edit .chip.tag{height:28px;background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:500;cursor:default}
+.sec-edit .chip.tag{cursor:pointer;gap:6px;padding-right:8px}
+.sec-edit .chip.tag .x{opacity:.8;font-size:15px;line-height:1}
+.itag{background:var(--accent)!important;color:var(--accent-ink)!important}
+.typeline{display:block;font-size:15px;line-height:1.9}
+.typeitem{display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
+.typeline .sep{color:var(--muted)}
+.sec-edit .chip.tag.rm{height:20px;width:20px;padding:0;justify-content:center;border-radius:50%;background:var(--field);border-color:transparent;color:var(--muted);font-size:13px;margin-left:2px}
+.tagsearch{position:relative}
+.tagdrop{position:absolute;z-index:25;left:0;right:0;top:calc(100% + 4px);margin:0;padding:4px;list-style:none;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);max-height:260px;overflow:auto}
+.tagdrop .sug{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:14px}
+.tagdrop .sug:hover,.tagdrop .sug:active{background:var(--accent-soft)}
+.tagdrop .sug.addnew{color:var(--accent);font-weight:600;border-top:1px solid var(--line);border-radius:0 0 8px 8px}
+.tagdrop .sug.addnew:first-child{border-top:0;border-radius:8px}
+.chip.vtag.type,.chip.tag .dot,.chip.sug .dot{gap:6px}
+.chip .dot{width:8px;height:8px}
+.sec-edit .tags:not(:empty){margin-bottom:8px}
+.sec-edit .sugs:not(:empty){margin-top:8px}
+.chip.sug.addnew{border-style:solid;border-color:var(--accent);color:var(--accent)}
+#sec-rating .stars{margin-top:2px}
+.form{gap:0}
+.form .paste{margin-bottom:6px}
+.actions{margin-top:10px}
+
 /* map */
 .mapbox{position:relative;min-width:0;min-height:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--ocean)}
 #map{display:block;width:100%;height:100%;touch-action:none;cursor:grab;outline-offset:-3px}
@@ -236,6 +317,9 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .ctrl{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:6px}
 .ctrl button{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow);display:grid;place-items:center;color:var(--fg)}
 .ctrl button:hover{background:var(--field)}
+.ctrl button.on{color:#1a73e8}
+.ctrl button.busy svg{animation:locpulse 1s ease-in-out infinite}
+@keyframes locpulse{50%{opacity:.35}}
 .readout,.attrib{position:absolute;bottom:10px;padding:3px 8px;border-radius:6px;background:color-mix(in srgb,var(--panel) 88%,transparent);color:var(--muted);font-size:11px;pointer-events:none}
 .readout{left:10px;font-family:var(--f-mono)}
 .readout:empty{display:none}
@@ -260,6 +344,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.2A7 7 0 0 1 19 9.8C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg>
       <h1>Place Pins</h1>
       <span class="count" id="count"></span>
+      <button type="button" class="themebtn" id="themeBtn" aria-label="Switch light or dark mode" title="Light or dark mode"></button>
       <button type="button" class="addbtn" id="addBtn" aria-label="Add a place">+ Add</button>
     </header>
 
@@ -271,14 +356,19 @@ details.days[open] summary::after{transform:rotate(90deg)}
     </div>
 
     <section id="listView" class="pane">
-      <div class="filters" id="catFilters" role="group" aria-label="Filter by category"></div>
+      <div class="crave">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2v8a2 2 0 0 0 2 2v10M11 2v6M3 2v6a4 4 0 0 0 4 4M17 22V2c2.2 1.3 4 4 4 8v4h-4"/></svg>
+        <input id="crave" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="What are you craving?" role="combobox" aria-controls="craveDrop" aria-expanded="false" aria-label="Filter by food or drink">
+        <button id="craveClear" class="icon-btn" type="button" hidden aria-label="Clear"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+        <ul id="craveDrop" class="tagdrop" role="listbox" hidden></ul>
+      </div>
+      <div class="filters" id="catFilters" role="group" aria-label="Filter by type"></div>
       <div class="frow">
-        <div class="seg" id="statusFilters" role="group" aria-label="Filter by status">
-          <button type="button" data-s="all" aria-pressed="true">All</button>
-          <button type="button" data-s="want" aria-pressed="false">Want to go</button>
-          <button type="button" data-s="been" aria-pressed="false">Been there</button>
-        </div>
         <button type="button" class="fbtn" id="filtBtn" aria-expanded="false" aria-controls="filtPanel">Filters</button>
+        <div class="seg sortseg" id="sortSeg" role="group" aria-label="Sort places">
+          <button type="button" data-sort="new" aria-pressed="true">Newest</button>
+          <button type="button" data-sort="near" aria-pressed="false">Nearest</button>
+        </div>
       </div>
       <div class="fpanel" id="filtPanel" hidden>
         <div class="fsec" id="fsec-deal"><span class="lab">Deals on</span><div class="filters" id="dealFilters" role="group" aria-label="Filter by deal day"></div></div>
@@ -299,79 +389,45 @@ details.days[open] summary::after{transform:rotate(90deg)}
         <span id="edState" class="mono"></span>
       </div>
       <div class="scroll">
-        <div class="form">
+        <div class="form" id="form">
           <div class="note" id="edNote" hidden></div>
           <details class="paste" id="pasteBox">
             <summary>Paste details to fill in</summary>
-            <textarea id="pasteTxt" rows="7" placeholder="Paste or type anything, for example:&#10;Frenchie&#10;Location: 15 Collins St, Melbourne&#10;Website: frenchierestaurant.au&#10;Hours: Mon–Sat 5pm–12am, closed Sun&#10;Cuisine: French&#10;Vibe: date night, lively&#10;Food: cocktails, oysters, crêpes&#10;Deals: Tue $1 oysters"></textarea>
+            <textarea id="pasteTxt" rows="7" placeholder="Paste or type anything, for example:&#10;Frenchie&#10;Location: 15 Collins St, Melbourne&#10;Website: frenchierestaurant.au&#10;Hours: Mon–Sat 5pm–12am, closed Sun&#10;Cuisine: French&#10;Vibe: date night, lively&#10;Food & drinks: cocktails, oysters, crêpes&#10;Deals: Tue $1 oysters"></textarea>
             <div class="pasterow"><button type="button" class="btn primary" id="pasteGo">Fill in</button></div>
             <p class="pastemsg" id="pasteMsg" role="status"></p>
           </details>
-          <div class="field">
-            <label for="fName">Name</label>
-            <input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off">
-          </div>
-          <div class="field">
-            <label for="fAddr">Address</label>
-            <div class="urlrow">
-              <input id="fAddr" type="text" maxlength="200" placeholder="Street address" autocomplete="off">
-              <button type="button" class="btn sm" id="addrFind">Find</button>
-            </div>
-            <div class="where">
-              <button type="button" id="copyCoords" class="mono" title="Copy coordinates"></button>
-              <a id="mapsLink" href="#" target="_blank" rel="noopener noreferrer">Open in Maps &#8599;</a>
-            </div>
-          </div>
-          <div class="field">
-            <span class="lab" id="catLab">Category</span>
-            <div class="cats" id="fCats" role="radiogroup" aria-labelledby="catLab"></div>
-          </div>
-          <div class="field">
-            <span class="lab" id="stLab">Status</span>
-            <div class="seg" id="fStatus" role="radiogroup" aria-labelledby="stLab">
-              <button type="button" role="radio" data-s="want" aria-checked="true">Want to go</button>
-              <button type="button" role="radio" data-s="been" aria-checked="false">Been there</button>
-            </div>
-          </div>
-          <div class="field">
-            <span class="lab" id="rtLab">Rating</span>
+          <section class="sec namesec" data-sec="name" id="sec-name">
+            <div class="sec-head"><h2 class="vname" id="vName"></h2><span class="lab">Name</span><button type="button" class="editbtn" data-sec="name">Edit</button></div>
+            <div class="sec-edit"><input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off" aria-label="Name"></div>
+          </section>
+          <div id="slot-types"></div>
+          <section class="sec" id="sec-rating">
+            <div class="sec-head"><span class="lab" id="rtLab">Rating</span></div>
             <div class="stars" id="fStars" role="group" aria-labelledby="rtLab"></div>
-          </div>
-          <div id="tagFields" class="tagfields"></div>
-          <details class="field days" id="hoursBox">
-            <summary><span class="lab">Opening hours</span><span class="sum" id="hoursSum"></span></summary>
-            <div class="daygrid" id="hoursGrid"></div>
-            <button type="button" class="linkbtn" id="copyHours">Copy Monday to every day</button>
-          </details>
-          <details class="field days" id="dealsBox">
-            <summary><span class="lab">Deals</span><span class="sum" id="dealsSum"></span></summary>
-            <div class="daygrid" id="dealsGrid"></div>
-          </details>
-          <div class="field">
-            <label for="fBook">Booking link</label>
-            <div class="urlrow">
-              <input id="fBook" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off">
-              <a id="fBookOpen" class="linkpill" href="#" target="_blank" rel="noopener noreferrer" hidden>Book &#8599;</a>
+          </section>
+          <section class="sec" data-sec="addr" id="sec-addr">
+            <div class="sec-head"><span class="lab">Address</span><button type="button" class="editbtn" data-sec="addr">Edit</button></div>
+            <div class="sec-view" id="v-addr"></div>
+            <div class="sec-edit">
+              <div class="urlrow">
+                <input id="fAddr" type="text" maxlength="200" placeholder="Street address" autocomplete="off" aria-label="Address">
+                <button type="button" class="btn sm" id="addrFind">Find</button>
+              </div>
+              <div class="where"><button type="button" id="copyCoords" class="mono" title="Copy coordinates"></button><span>Tap the map to move the pin</span></div>
             </div>
-          </div>
-          <div class="field">
-            <label for="fUrl">Website</label>
-            <div class="urlrow">
-              <input id="fUrl" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off">
-              <a id="fUrlOpen" class="linkpill" href="#" target="_blank" rel="noopener noreferrer" hidden>Open &#8599;</a>
+          </section>
+          <section class="sec" data-sec="links" id="sec-links">
+            <div class="sec-head"><span class="lab">Booking, website &amp; phone</span><button type="button" class="editbtn" data-sec="links">Edit</button></div>
+            <div class="sec-view" id="v-links"></div>
+            <div class="sec-edit linkedit">
+              <label for="fBook">Booking link</label><input id="fBook" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off">
+              <label for="fUrl">Website</label><input id="fUrl" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off">
+              <label for="fPhone">Phone</label><input id="fPhone" type="tel" inputmode="tel" maxlength="40" placeholder="Phone number" autocomplete="off">
             </div>
-          </div>
-          <div class="field">
-            <label for="fPhone">Phone</label>
-            <div class="urlrow">
-              <input id="fPhone" type="tel" inputmode="tel" maxlength="40" placeholder="Phone number" autocomplete="off">
-              <a id="fPhoneCall" class="linkpill" href="#" hidden>Call</a>
-            </div>
-          </div>
-          <div class="field">
-            <label for="fNotes">Notes</label>
-            <textarea id="fNotes" rows="4" maxlength="4000" placeholder="What to order, who recommended it, anything else"></textarea>
-          </div>
+          </section>
+          <div id="slot-days"></div>
+          <div id="slot-tags"></div>
           <div class="actions">
             <button type="button" class="btn primary" id="saveBtn">Save place</button>
             <button type="button" class="btn danger" id="delBtn">Delete</button>
@@ -404,6 +460,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
       <button type="button" id="zin" aria-label="Zoom in"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       <button type="button" id="zout" aria-label="Zoom out"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
       <button type="button" id="fit" aria-label="Show all saved places" title="Show all saved places"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/><circle cx="12" cy="12" r="2.2"/></svg></button>
+      <button type="button" id="locBtn" aria-label="Show where I am" title="Show where I am"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></svg></button>
     </div>
     <div class="readout" id="coords" aria-hidden="true"></div>
     <div class="attrib">Natural Earth &middot; GeoNames</div>
@@ -471,18 +528,23 @@ function locLabel(lat,lng){
 }
 
 /* ---------- categories and foods ---------- */
-var CATS=[
-  {id:'eat',label:'Eat & drink'},
-  {id:'stay',label:'Stay'},
-  {id:'see',label:'See & do'},
-  {id:'shop',label:'Shop'},
-  {id:'other',label:'Other'}
+var TYPE_LIST=[
+  ['Restaurant','restaurant'],['Café','cafe'],['Bakery','cafe'],['Dessert','dessert'],
+  ['Bar','bar'],['Pub','pub'],['Club','club'],
+  ['Bowling','games'],['Arcade','games'],['Karaoke','games'],['Mini golf','games'],['Escape room','games'],['Cinema','games'],
+  ['Hotel','stay'],['Airbnb','stay'],
+  ['Museum','see'],['Gallery','see'],['Park','see'],['Beach','see'],['Lookout','see'],['Garden','see'],['Theatre','see'],['Landmark','see'],
+  ['Market','shop'],['Shop','shop']
 ];
-var CAT_IDS=CATS.map(function(c){return c.id});
-function catLabel(id){for(var i=0;i<CATS.length;i++)if(CATS[i].id===id)return CATS[i].label;return 'Other'}
+var COLOR_KEYS=['restaurant','cafe','dessert','bar','pub','club','games','stay','see','shop','other'];
+var FOOD_COLORS=['restaurant','cafe','dessert','bar','pub','club','games'];
+var TYPE_COLOR={};TYPE_LIST.forEach(function(t){TYPE_COLOR[t[0].toLowerCase()]=t[1]});
+function typeColor(t){return TYPE_COLOR[String(t||'').toLowerCase()]||'other'}
+function placeColor(p){return p.types&&p.types.length?typeColor(p.types[0]):'other'}
 
 /* ---------- state ---------- */
-var S={places:new Map(),ready:false,selId:null,fCat:'all',fStatus:'all',fFood:'all',fCuisine:'all',fVibe:'all',fDeal:'all',q:''};
+var S={places:new Map(),ready:false,selId:null,fCat:'all',fStatus:'all',fFood:'all',fCuisine:'all',fVibe:'all',fDeal:'all',q:'',sort:'new',fFoodQ:''};
+var ME=null; // {lat,lng,acc} while location is on
 var E=null; // editor: {kind:'saved'|'draft', id, data}
 var V={w:300,h:300,cu:lng2u(10),cv:mercV(28),z:1.5};
 var C={cat:{}};
@@ -503,16 +565,42 @@ function cleanFood(f,max){
 }
 var DAY_KEYS=['mon','tue','wed','thu','fri','sat','sun'];
 function cleanDays(o){var r={};DAY_KEYS.forEach(function(d){r[d]=o&&o[d]?String(o[d]).slice(0,120):''});return r}
+function typesFromOld(x){
+  var n=String(x.name||'').toLowerCase(),f=(Array.isArray(x.food)?x.food:[]).join(' ').toLowerCase(),c=x.cat;
+  if(c==='eat'){
+    if(/\bbar\b|cocktail/.test(n))return ['Bar'];
+    if(/\bpub\b|brewery|tavern/.test(n))return ['Pub'];
+    if(/caf[eé]|coffee|espresso/.test(n))return ['Café'];
+    if(!(x.cuisine&&x.cuisine.length)&&/cocktail|wine|beer/.test(f)&&!/pizza|burger|steak|pasta|sushi|ramen|dumpling/.test(f))return ['Bar'];
+    if(/coffee|brunch|croissant/.test(f)&&!/cocktail|beer|wine/.test(f))return ['Café'];
+    if(/gelato|ice cream|dessert|crepe|cake/.test(f)&&f.split(' ').length<=4)return ['Dessert'];
+    return ['Restaurant'];
+  }
+  var map={restaurant:'Restaurant',cafe:'Café',bar:'Bar',pub:'Pub',club:'Club',dessert:'Dessert',shop:'Shop'};
+  if(map[c])return [map[c]];
+  if(c==='games'){
+    if(/bowl|strike/.test(n))return ['Bowling'];if(/karaoke/.test(n))return ['Karaoke'];if(/golf|putt|holey/.test(n))return ['Mini golf'];
+    if(/escape/.test(n))return ['Escape room'];if(/cinema|movie/.test(n))return ['Cinema'];return ['Arcade'];
+  }
+  if(c==='stay')return /airbnb|apartment|villa/.test(n)?['Airbnb']:['Hotel'];
+  if(c==='see'){
+    var rules=[['museum','Museum'],['galler','Gallery'],['beach','Beach'],['park','Park'],['garden|botanic','Garden'],['lookout|view','Lookout'],['theat','Theatre']];
+    for(var i=0;i<rules.length;i++)if(new RegExp(rules[i][0]).test(n))return [rules[i][1]];
+    return ['Landmark'];
+  }
+  return [];
+}
 function clean(id,x){
   var lat=Number(x.lat),lng=Number(x.lng);
   if(!isFinite(lat)||!isFinite(lng))return null;
   var r=Math.round(Number(x.rating)||0);
-  return {id:id,name:String(x.name||''),cat:CAT_IDS.indexOf(x.cat)>=0?x.cat:'other',status:x.status==='been'?'been':'want',
+  var types=Array.isArray(x.types)?cleanFood(x.types,6):typesFromOld(x);
+  return {id:id,name:String(x.name||''),types:types,cat:types.length?typeColor(types[0]):'other',status:x.status==='been'?'been':'want',
     rating:Math.max(0,Math.min(5,r)),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),
     notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),phone:String(x.phone||''),hours:cleanDays(x.hours),deals:cleanDays(x.deals),
     lat:lat,lng:wrapLng(lng),loc:String(x.loc||''),ts:Number(x.ts)||0};
 }
-function payload(p){return {name:p.name,cat:p.cat,status:p.status,rating:p.rating,food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],notes:p.notes,url:p.url,
+function payload(p){return {name:p.name,types:p.types||[],cat:placeColor(p),status:p.status,rating:p.rating,food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],notes:p.notes,url:p.url,
   book:p.book||'',phone:p.phone||'',hours:cleanDays(p.hours),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc,ts:p.ts}}
 function loadLocal(){
   var m=new Map();
@@ -769,7 +857,7 @@ function readColors(){
   function g(n){return cs.getPropertyValue(n).trim()}
   C.ocean=g('--ocean');C.land=g('--land');C.coast=g('--coast');C.grid=g('--grid');C.label=g('--label');
   C.city=g('--city');C.halo=g('--halo');C.country=g('--country');C.fg=g('--fg');C.panel=g('--panel');C.accent=g('--accent');
-  CATS.forEach(function(c){C.cat[c.id]=g('--c-'+c.id)});
+  COLOR_KEYS.forEach(function(k){C.cat[k]=g('--c-'+k)});
   invalidate();
 }
 var UI='"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif';
@@ -890,7 +978,7 @@ function draw(){
   /* draw pins */
   var pf2=cf;
   pf.forEach(function(it){
-    var p=it.p,x=it.x,y=it.y,r=it.r,d=p.d,col2=C.cat[d.cat]||C.cat.other;
+    var p=it.p,x=it.x,y=it.y,r=it.r,d=p.d,col2=C.cat[placeColor(d)]||C.cat.other;
     pinHits.push({id:p.id,x:x,y:y,r:r,draft:!!p.draft});
     ctx.save();
     ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=p.sel||p.draft?10:5;ctx.shadowOffsetY=2;
@@ -898,12 +986,7 @@ function draw(){
     ctx.shadowColor='transparent';ctx.lineWidth=p.sel||p.draft?2.5:1.6;ctx.strokeStyle='#ffffff';ctx.stroke();
     var cy3=y-r*1.9;
     ctx.fillStyle='#ffffff';
-    if(d.status==='been'){
-      ctx.beginPath();ctx.lineWidth=2;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#ffffff';
-      ctx.moveTo(x-r*0.4,cy3);ctx.lineTo(x-r*0.1,cy3+r*0.3);ctx.lineTo(x+r*0.42,cy3-r*0.28);ctx.stroke();
-    }else{
-      ctx.beginPath();ctx.arc(x,cy3,r*0.36,0,6.2832);ctx.fill();
-    }
+    ctx.beginPath();ctx.arc(x,cy3,r*0.36,0,6.2832);ctx.fill();
     ctx.restore();
     if(p.draft){
       ctx.save();ctx.setLineDash([3,3]);ctx.lineWidth=1.5;ctx.strokeStyle=col2;
@@ -917,6 +1000,17 @@ function draw(){
       ctx.fillStyle=C.fg;ctx.fillText(nm,x+r+5,y-r*1.9);
     }
   });
+  if(ME){
+    for(var mk=k0-1;mk<=k1+1;mk++){
+      var mx=lng2u(ME.lng)*W+mk*W-ox,my=mercV(ME.lat)*W-oy;
+      if(mx<-60||mx>w+60||my<-60||my>h+60)continue;
+      var mpp=Math.cos(ME.lat*Math.PI/180)*40075016/W,ar=Math.min(120,(ME.acc||0)/mpp);
+      if(ar>9){ctx.beginPath();ctx.arc(mx,my,ar,0,6.2832);ctx.fillStyle='rgba(26,115,232,.14)';ctx.fill();ctx.lineWidth=1;ctx.strokeStyle='rgba(26,115,232,.35)';ctx.stroke()}
+      ctx.save();ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=4;
+      ctx.beginPath();ctx.arc(mx,my,8,0,6.2832);ctx.fillStyle='#ffffff';ctx.fill();ctx.restore();
+      ctx.beginPath();ctx.arc(mx,my,5.6,0,6.2832);ctx.fillStyle='#1a73e8';ctx.fill();
+    }
+  }
 }
 
 /* ---------- map interaction ---------- */
@@ -1009,18 +1103,20 @@ function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clear
 /* ---------- list ---------- */
 var DAYS=['mon','tue','wed','thu','fri','sat','sun'];
 var DAY_SHORT={mon:'Mon',tue:'Tue',wed:'Wed',thu:'Thu',fri:'Fri',sat:'Sat',sun:'Sun'};
+var DAY_LONG={mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'};
 function todayKey(){return DAYS[(new Date().getDay()+6)%7]}
 var TAGS={
-  cuisine:{label:'Cuisine',max:12,eatOnly:true,ph:'Add a cuisine, then press Enter',
+  types:{label:'Type',max:6,eatOnly:false,sugN:40,ph:'Search types, e.g. bar',sug:TYPE_LIST.map(function(t){return t[0]})},
+  cuisine:{label:'Cuisine',max:12,eatOnly:true,sugN:10,ph:'Search cuisines, e.g. thai',
     sug:['French','Italian','Japanese','Chinese','Korean','Thai','Vietnamese','Mexican','Indian','Greek','Middle Eastern','Modern Australian','Spanish','American']},
-  food:{label:'Food & drinks',max:20,eatOnly:true,ph:'Add a dish or drink, then press Enter',
+  food:{label:'Food & drinks',max:20,eatOnly:true,sugN:12,ph:'Search food & drinks, e.g. dumplings',
     sug:['Cocktails','Wine','Beer','Coffee','Dumplings','Burgers','Pizza','Pasta','Seafood','Oysters','Sushi','Ramen','Tacos','Steak','Dessert','Crepes','Brunch','Gelato']},
-  vibe:{label:'Vibe',max:12,eatOnly:false,ph:'Add a vibe, then press Enter',
+  vibe:{label:'Vibe',max:12,eatOnly:false,sugN:14,ph:'Search vibes, e.g. date night',
     sug:['Date night','Casual','Lively','Cosy','Fancy','Late night','Rooftop','Outdoor seating','Great views','Good for groups','Live music','Hidden gem','Cheap eats','Quick bite']}
 };
-var TAG_KEYS=['cuisine','food','vibe'];
+var TAG_KEYS=['types','cuisine','food','vibe'];
 function placeHay(p){
-  return norm([p.name,p.notes,p.loc,catLabel(p.cat),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),
+  return norm([p.name,p.notes,p.loc,p.types.join(' '),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),
     DAYS.map(function(d){return p.deals[d]||''}).join(' '),p.phone].join(' '));
 }
 function hasTag(arr,f){return f==='all'||(arr||[]).some(function(x){return x.toLowerCase()===f})}
@@ -1031,30 +1127,37 @@ function visiblePlaces(){
   var toks=norm(S.q||'').split(/\s+/).filter(Boolean);
   var arr=Array.from(S.places.values()).filter(function(p){
     if(p.id===S.selId)return true;
-    if(S.fCat!=='all'&&p.cat!==S.fCat)return false;
-    if(S.fStatus!=='all'&&p.status!==S.fStatus)return false;
+    if(!hasTag(p.types,S.fCat))return false;
     if(!hasTag(p.cuisine,S.fCuisine)||!hasTag(p.food,S.fFood)||!hasTag(p.vibe,S.fVibe))return false;
+    if(S.fFoodQ){var fq=norm(S.fFoodQ);if(!p.food.some(function(f){return norm(f).indexOf(fq)>=0}))return false}
     if(S.fDeal!=='all'&&!(p.deals[S.fDeal]||'').trim())return false;
     if(toks.length){var h=placeHay(p);if(!toks.every(function(t){return h.indexOf(t)>=0}))return false}
     return true;
   });
-  arr.sort(function(a,b){return b.ts-a.ts});
+  if(S.sort==='near'&&ME)arr.sort(function(a,b){return distM(ME,a)-distM(ME,b)});
+  else arr.sort(function(a,b){return b.ts-a.ts});
   return arr;
 }
 function stars(n){return '★★★★★'.slice(0,n)}
 function itemEl(p){
   var li=el('li'),b=el('button','item'+(p.id===S.selId?' on':''));
   b.type='button';b.dataset.id=p.id;
-  var dot=el('span','dot');dot.style.background='var(--c-'+p.cat+')';
+  var dot=el('span','dot');dot.style.background='var(--c-'+placeColor(p)+')';
   var body=el('div');
   body.appendChild(el('div','name',(p.name||'').trim()||'Untitled place'));
-  var tags=p.cat==='eat'?(p.cuisine.length?p.cuisine.slice(0,2):p.food.slice(0,3)).join(', '):p.vibe.slice(0,2).join(', ');
-  var sub=[catLabel(p.cat),tags,p.loc].filter(Boolean).join(' · ');
+  var tags=hasFood(p.types)?p.cuisine.slice(0,2).join(', '):p.vibe.slice(0,2).join(', ');
+  var sub=[p.types.slice(0,2).join(' / '),tags,p.loc].filter(Boolean).join(' · ');
   body.appendChild(el('div','sub',sub));
+  if(p.food.length){
+    var tr=el('div','itags');
+    p.food.slice(0,4).forEach(function(f){tr.appendChild(el('span','itag',f))});
+    if(p.food.length>4)tr.appendChild(el('span','itag more','+'+(p.food.length-4)));
+    body.appendChild(tr);
+  }
   var dk=S.fDeal!=='all'?S.fDeal:todayKey(),deal=(p.deals[dk]||'').trim();
   if(deal)body.appendChild(el('div','deal',(S.fDeal!=='all'?DAY_SHORT[dk]:'Today')+': '+deal));
   var meta=el('div','meta');
-  meta.appendChild(el('span','pill'+(p.status==='been'?' been':''),p.status==='been'?'Been there':'Want to go'));
+  if(ME)meta.appendChild(el('span','dist',fmtDist(distM(ME,p))));
   if(p.rating>0)meta.appendChild(el('span','stars-s',stars(p.rating)));
   b.appendChild(dot);b.appendChild(body);b.appendChild(meta);li.appendChild(b);return li;
 }
@@ -1067,7 +1170,7 @@ function tagCounts(key){
 }
 function renderPanel(){
   var any=false;
-  TAG_KEYS.forEach(function(key){
+  ['cuisine','food','vibe'].forEach(function(key){
     var fk='f'+key.charAt(0).toUpperCase()+key.slice(1),fc=tagCounts(key),sec=$('fsec-'+key),box=sec.querySelector('.filters');
     if(S[fk]!=='all'&&!fc.some(function(e){return e[0]===S[fk]}))S[fk]='all';
     sec.hidden=!fc.length;box.textContent='';if(fc.length)any=true;
@@ -1090,20 +1193,30 @@ function renderPanel(){
   fb.textContent=n?'Filters · '+n:'Filters';fb.classList.toggle('on',n>0);
   $('filtClear').hidden=!n;
 }
+function paintCrave(){
+  var c=$('crave');
+  if(document.activeElement!==c){
+    if(S.fFood!=='all'){var e=tagCounts('food').filter(function(x){return x[0]===S.fFood})[0];c.value=e?e[1].label:''}
+    else if(!S.fFoodQ)c.value='';
+  }
+  c.classList.toggle('set',S.fFood!=='all');
+  $('craveClear').hidden=!c.value;
+}
 function renderFilters(){
-  renderPanel();
+  renderPanel();paintCrave();
   var all=Array.from(S.places.values()),box=$('catFilters');box.textContent='';
+  var tc=tagCounts('types');
+  if(S.fCat!=='all'&&!tc.some(function(e){return e[0]===S.fCat}))S.fCat='all';
   function chip(id,label,n){
     var b=el('button','chip');b.type='button';b.dataset.c=id;b.setAttribute('aria-pressed',S.fCat===id?'true':'false');
-    if(id!=='all'){var d=el('span','dot');d.style.background='var(--c-'+id+')';b.appendChild(d)}
+    if(id!=='all'){var d=el('span','dot');d.style.background='var(--c-'+typeColor(label)+')';b.appendChild(d)}
     b.appendChild(document.createTextNode(label));
     b.appendChild(el('span','n',String(n)));box.appendChild(b);
   }
   chip('all','All',all.length);
-  CATS.forEach(function(c){chip(c.id,c.label,all.filter(function(p){return p.cat===c.id}).length)});
-  Array.prototype.forEach.call($('statusFilters').children,function(b){b.setAttribute('aria-pressed',b.dataset.s===S.fStatus?'true':'false')});
+  tc.forEach(function(e){chip(e[0],e[1].label,e[1].n)});
 }
-function clearFilters(){S.fCuisine=S.fFood=S.fVibe=S.fDeal='all';S.fCat='all';S.fStatus='all'}
+function clearFilters(){S.fCuisine=S.fFood=S.fVibe=S.fDeal='all';S.fCat='all'}
 function renderList(){
   var ul=$('list');ul.textContent='';
   if(!S.ready){ul.appendChild(el('li','empty','Loading your places'));return}
@@ -1136,7 +1249,7 @@ $('list').addEventListener('click',function(e){
   openPlace(b.dataset.id);
 });
 $('catFilters').addEventListener('click',function(e){
-  var b=e.target.closest('.chip');if(!b)return;S.fCat=b.dataset.c;refilter();
+  var b=e.target.closest('.chip');if(!b)return;S.fCat=b.dataset.c;refilter(true);
 });
 $('filtPanel').addEventListener('click',function(e){
   var b=e.target.closest('.chip');if(!b)return;
@@ -1145,49 +1258,81 @@ $('filtPanel').addEventListener('click',function(e){
 $('filtBtn').addEventListener('click',function(){
   var p=$('filtPanel'),open=p.hidden;p.hidden=!open;$('filtBtn').setAttribute('aria-expanded',open?'true':'false');
 });
-$('filtClear').addEventListener('click',function(){S.fCuisine=S.fFood=S.fVibe=S.fDeal='all';refilter(true)});
-$('statusFilters').addEventListener('click',function(e){
-  var b=e.target.closest('button');if(!b)return;S.fStatus=b.dataset.s;refilter();
+$('filtClear').addEventListener('click',function(){S.fCuisine=S.fFood=S.fVibe=S.fDeal='all';S.fFoodQ='';refilter(true)});
+/* "What are you craving?" */
+function craveDrop(){
+  var c=$('crave'),ul=$('craveDrop'),q=norm(c.value.trim());ul.textContent='';
+  var all=tagCounts('food'),starts=[],contains=[];
+  all.forEach(function(e){var n=norm(e[1].label);if(!q||n.indexOf(q)===0||n.split(/[\s-]+/).some(function(w){return w.indexOf(q)===0}))starts.push(e);else if(n.indexOf(q)>=0)contains.push(e)});
+  var list=starts.concat(contains).slice(0,8);
+  if(!all.length)ul.appendChild(el('li','none','Add food & drinks to your places to search them here'));
+  else if(!list.length)ul.appendChild(el('li','none','None of your places have that yet'));
+  list.forEach(function(e){var li=el('li','sug');li.setAttribute('role','option');li.dataset.v=e[0];li.appendChild(document.createTextNode(e[1].label));li.appendChild(el('span','n',String(e[1].n)));ul.appendChild(li)});
+  ul.hidden=false;c.setAttribute('aria-expanded','true');
+}
+function craveClose(){$('craveDrop').hidden=true;$('crave').setAttribute('aria-expanded','false')}
+$('crave').addEventListener('focus',function(){if(S.fFood!=='all'){this.select()}craveDrop()});
+$('crave').addEventListener('input',function(e){S.fFood='all';S.fFoodQ=e.target.value.trim();refilter();craveDrop()});
+$('crave').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();var f=$('craveDrop').querySelector('.sug');if(f){S.fFood=f.dataset.v;S.fFoodQ=''}craveClose();this.blur();refilter(true)}
+  else if(e.key==='Escape'){craveClose();this.blur()}
 });
+$('craveDrop').addEventListener('pointerdown',function(e){
+  var li=e.target.closest('.sug');if(!li)return;e.preventDefault();
+  S.fFood=li.dataset.v;S.fFoodQ='';craveClose();$('crave').blur();refilter(true);
+});
+$('craveClear').addEventListener('click',function(){S.fFood='all';S.fFoodQ='';$('crave').value='';craveClose();refilter(true)});
+document.addEventListener('pointerdown',function(e){if(!e.target.closest('.crave'))craveClose()});
+$('crave').addEventListener('blur',function(){setTimeout(function(){paintCrave()},0)});
 
-/* ---------- editor ---------- */
+/* ---------- place view + editor ---------- */
 var delArm=0;
+function secEl(key,label,opts){
+  opts=opts||{};
+  var sec=el('section','sec');sec.dataset.sec=key;sec.id='sec-'+key;
+  var head=el('div','sec-head');
+  head.appendChild(el('span','lab',label));
+  if(!opts.noEdit){var eb=el('button','editbtn','Edit');eb.type='button';eb.dataset.sec=key;head.appendChild(eb)}
+  sec.appendChild(head);
+  var v=el('div','sec-view');v.id='v-'+key;sec.appendChild(v);
+  var ed=el('div','sec-edit');ed.id='e-'+key;sec.appendChild(ed);
+  return sec;
+}
 (function buildForm(){
-  var cats=$('fCats');
-  CATS.forEach(function(c){
-    var b=el('button','chip');b.type='button';b.setAttribute('role','radio');b.dataset.c=c.id;
-    var d=el('span','dot');d.style.background='var(--c-'+c.id+')';b.appendChild(d);b.appendChild(document.createTextNode(c.label));
-    cats.appendChild(b);
-  });
+  // star rating (tap any time)
   var st=$('fStars');
   for(var i=1;i<=5;i++){
     var b=el('button',null,'★');b.type='button';b.dataset.n=String(i);b.setAttribute('aria-label',i+(i===1?' star':' stars'));st.appendChild(b);
   }
-  var tf=$('tagFields');
+  // tag sections
   TAG_KEYS.forEach(function(key){
-    var t=TAGS[key],f=el('div','field tagfield');f.id='tf-'+key;f.dataset.key=key;
-    var lab=el('label',null,t.label);lab.htmlFor='t-'+key;f.appendChild(lab);
-    var tags=el('div','tags');tags.id='tags-'+key;f.appendChild(tags);
-    var inp=el('input');inp.type='text';inp.id='t-'+key;inp.maxLength=30;inp.placeholder=t.ph;inp.autocomplete='off';inp.dataset.key=key;f.appendChild(inp);
-    var sg=el('div','tags sugs');sg.id='sug-'+key;f.appendChild(sg);
-    tf.appendChild(f);
+    var t=TAGS[key],sec=secEl(key,t.label),ed=sec.querySelector('.sec-edit');
+    var tags=el('div','tags');tags.id='tags-'+key;ed.appendChild(tags);
+    var wrap=el('div','tagsearch');
+    var inp=el('input');inp.type='text';inp.id='t-'+key;inp.maxLength=30;inp.placeholder=t.ph;inp.autocomplete='off';inp.dataset.key=key;inp.setAttribute('aria-label',t.label);
+    inp.setAttribute('role','combobox');inp.setAttribute('aria-controls','sug-'+key);inp.setAttribute('aria-expanded','false');wrap.appendChild(inp);
+    var sg=el('ul','tagdrop');sg.id='sug-'+key;sg.setAttribute('role','listbox');sg.hidden=true;wrap.appendChild(sg);
+    ed.appendChild(wrap);
+    $(key==='types'?'slot-types':'slot-tags').appendChild(sec);
   });
-  [['hoursGrid','hours','e.g. 5pm–11pm or Closed','Not added'],['dealsGrid','deals','e.g. $1 oysters 5–7pm','No deal']].forEach(function(g){
-    var grid=$(g[0]);
+  // hours + deals
+  [['hours','Opening hours','e.g. 5pm–11pm or Closed','Not added'],['deals','Deals','e.g. $1 oysters 5–7pm','No deal']].forEach(function(g){
+    var sec=secEl(g[0],g[1]),ed=sec.querySelector('.sec-edit'),grid=el('div','daygrid');grid.id=g[0]+'Grid';
     DAYS.forEach(function(d){
-      var lab=el('label','dlab',DAY_SHORT[d]);lab.htmlFor=g[1]+'-'+d;lab.dataset.d=d;
-      var inp=el('input');inp.type='text';inp.id=g[1]+'-'+d;inp.dataset.f=g[1];inp.dataset.d=d;inp.maxLength=120;inp.placeholder=d==='mon'?g[2]:g[3];inp.autocomplete='off';
+      var lab=el('label','dlab',DAY_SHORT[d]);lab.htmlFor=g[0]+'-'+d;lab.dataset.d=d;
+      var inp=el('input');inp.type='text';inp.id=g[0]+'-'+d;inp.dataset.f=g[0];inp.dataset.d=d;inp.maxLength=120;inp.placeholder=d==='mon'?g[2]:g[3];inp.autocomplete='off';
       grid.appendChild(lab);grid.appendChild(inp);
     });
+    ed.appendChild(grid);
+    if(g[0]==='hours'){var cp=el('button','linkbtn','Copy Monday to every day');cp.type='button';cp.id='copyHours';ed.appendChild(cp)}
+    $('slot-days').appendChild(sec);
   });
 })();
+function hasFood(types){return !types.length||types.some(function(t){return FOOD_COLORS.indexOf(typeColor(t))>=0})}
 function looksLikeAddress(s){return /\d/.test(s||'')&&!/^near /i.test(s||'')}
-function fillLocation(){
-  var d=E.data;
-  $('fAddr').value=d.loc||'';
-  $('copyCoords').textContent=fmtCoord(d.lat,d.lng);
+function mapsHref(d){
   var q=(d.name&&d.loc&&looksLikeAddress(d.loc))?d.name+', '+d.loc:(d.lat.toFixed(5)+','+wrapLng(d.lng).toFixed(5));
-  $('mapsLink').href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+  return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
 }
 function normUrl(u){
   u=(u||'').trim();if(!u)return '';
@@ -1195,66 +1340,154 @@ function normUrl(u){
   return /^https?:\/\/[^\s]+$/i.test(u)?u:'';
 }
 function telHref(t){var d=String(t||'').replace(/[^\d+]/g,'');return d.length>=6?'tel:'+d:''}
+function shortHost(u){return String(u).replace(/^https?:\/\//i,'').replace(/^www\./i,'').replace(/\/$/,'')}
+function muted(t){return el('p','vempty',t)}
+function linkBtn(href,label,cls){var a=el('a','vlink'+(cls?' '+cls:''),label);a.href=href;if(!/^tel:/.test(href)){a.target='_blank';a.rel='noopener noreferrer'}return a}
+function paintView(){
+  if(!E)return;var d=E.data,tk=todayKey(),v;
+  $('vName').textContent=(d.name||'').trim()||'Untitled place';
+  // address
+  v=$('v-addr');v.textContent='';
+  v.appendChild(d.loc?el('p','vtext',d.loc):muted('No address yet'));
+  if(ME)v.appendChild(el('p','vdist',fmtDist(distM(ME,d))+' from you'));
+  var row=el('div','vlinks');row.appendChild(linkBtn(mapsHref(d),'Open in Maps ↗','soft'));v.appendChild(row);
+  // links
+  v=$('v-links');v.textContent='';var bk=normUrl(d.book),u=normUrl(d.url),tel=telHref(d.phone);
+  if(bk||u||tel){
+    var lr=el('div','vlinks');
+    if(bk)lr.appendChild(linkBtn(bk,'Book ↗'));
+    if(u)lr.appendChild(linkBtn(u,'Website ↗','soft'));
+    if(tel)lr.appendChild(linkBtn(tel,'Call '+d.phone.trim(),'soft'));
+    v.appendChild(lr);
+  }else v.appendChild(muted('No booking link, website or phone yet'));
+  // hours
+  v=$('v-hours');v.textContent='';
+  if(DAYS.some(function(x){return (d.hours[x]||'').trim()})){
+    var hl=el('dl','vdays'),h0=(d.hours.mon||'').trim();
+    if(h0&&DAYS.every(function(x){return (d.hours[x]||'').trim()===h0})){hl.appendChild(el('dt',null,'Every day'));hl.appendChild(el('dd',null,h0));hl.classList.add('wide')}
+    else DAYS.forEach(function(x){
+      var dt=el('dt',x===tk?'today':null,x===tk?'Today':DAY_SHORT[x]),dd=el('dd',x===tk?'today':null,(d.hours[x]||'').trim()||'—');
+      hl.appendChild(dt);hl.appendChild(dd);
+    });
+    v.appendChild(hl);
+  }else v.appendChild(muted('No opening hours yet'));
+  // deals
+  v=$('v-deals');v.textContent='';
+  var dd2=DAYS.filter(function(x){return (d.deals[x]||'').trim()});
+  if(dd2.length){
+    var dl=el('dl','vdays deals');
+    dd2.forEach(function(x){
+      dl.appendChild(el('dt',x===tk?'today':null,x===tk?'Today':DAY_SHORT[x]));
+      dl.appendChild(el('dd',x===tk?'today':null,d.deals[x].trim()));
+    });
+    v.appendChild(dl);
+  }else v.appendChild(muted('No deals yet'));
+  // tags
+  TAG_KEYS.forEach(function(key){
+    var vv=$('v-'+key);vv.textContent='';
+    $('sec-'+key).hidden=TAGS[key].eatOnly&&!hasFood(d.types);
+    if(!d[key].length){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
+    if(key!=='food'){vv.appendChild(el('p','vtext vtype',d[key].join(' / ')));return}
+    if(key==='food'){var n=d.food.length;vv.appendChild(el('p','vtext',n+(n===1?' item':' items')));return}
+    var box=el('div','tags');
+    d[key].forEach(function(t){
+      var c=el('span','chip vtag',t);box.appendChild(c);
+    });
+    vv.appendChild(box);
+  });
+  // edit button wording: Add when empty
+  var empty={name:false,addr:!d.loc,links:!(bk||u||tel),hours:!$('v-hours').querySelector('dl'),deals:!dd2.length};
+  TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});
+  Array.prototype.forEach.call(document.querySelectorAll('#form .editbtn'),function(b){
+    var sec=b.closest('.sec');b.textContent=sec.classList.contains('open')?'Done':(empty[b.dataset.sec]?'Add':'Edit');
+  });
+}
 function paintForm(){
   var d=E.data;
   $('fName').value=d.name||'';
-  $('fNotes').value=d.notes||'';
   $('fUrl').value=d.url||'';
   $('fBook').value=d.book||'';
   $('fPhone').value=d.phone||'';
-  fillLocation();paintChoices();paintLinks();paintDays();
+  $('fAddr').value=d.loc||'';
+  $('copyCoords').textContent=fmtCoord(d.lat,d.lng);
+  paintChoices();paintDays();paintView();
 }
+function fillLocation(){if(!E)return;$('fAddr').value=E.data.loc||'';$('copyCoords').textContent=fmtCoord(E.data.lat,E.data.lng);paintView()}
 function paintTags(key){
-  var d=E.data,t=TAGS[key],box=$('tags-'+key),sug=$('sug-'+key);
-  $('tf-'+key).hidden=t.eatOnly&&d.cat!=='eat';
-  box.textContent='';sug.textContent='';
-  d[key].forEach(function(f){
-    var b=el('button','chip tag');b.type='button';b.dataset.key=key;b.dataset.f=f;b.setAttribute('aria-label','Remove '+f);
-    b.appendChild(document.createTextNode(f+' ×'));box.appendChild(b);
+  var d=E.data,box=$('tags-'+key);
+  var plain=key!=='food';
+  box.textContent='';box.className=plain?'tags typeline':'tags';
+  d[key].forEach(function(f,i){
+    if(plain){
+      if(i)box.appendChild(el('span','sep',' / '));
+      var w=el('span','typeitem',f),x=el('button','chip tag rm','\u00D7');x.type='button';x.dataset.key=key;x.dataset.f=f;x.setAttribute('aria-label','Remove '+f);w.appendChild(x);box.appendChild(w);
+    }else{
+      var b=el('button','chip tag');b.type='button';b.dataset.key=key;b.dataset.f=f;b.setAttribute('aria-label','Remove '+f);
+      b.appendChild(document.createTextNode(f));b.appendChild(el('span','x','\u00D7'));box.appendChild(b);
+    }
   });
-  var have=d[key].map(function(f){return f.toLowerCase()}),seen={},list=[];
-  tagCounts(key).map(function(e){return e[1].label}).concat(t.sug).forEach(function(f){
-    var k=f.toLowerCase();if(seen[k]||have.indexOf(k)>=0)return;seen[k]=1;list.push(f);
+  paintSug(key);
+}
+// Suggestions only appear while typing, and only ones that match
+function tagPool(key){
+  var t=TAGS[key],extra=[];
+  if(key==='food')extra=VOCAB_FOOD.map(function(v){return v[1]});
+  if(key==='cuisine')extra=VOCAB_CUISINE;
+  if(key==='vibe')extra=VOCAB_VIBE.map(function(v){return v[1]});
+  return tagCounts(key).map(function(e){return e[1].label}).concat(t.sug,extra);
+}
+function paintSug(key){
+  if(!E)return;
+  var sug=$('sug-'+key),inp=$('t-'+key),raw=inp.value.trim(),q=norm(raw);sug.textContent='';
+  function close(){sug.hidden=true;inp.setAttribute('aria-expanded','false')}
+  if(!q){close();return}
+  var have=E.data[key].map(function(f){return f.toLowerCase()}),seen={},starts=[],contains=[],exact=false;
+  tagPool(key).forEach(function(f){
+    var k=f.toLowerCase(),n=norm(f);if(seen[k])return;seen[k]=1;
+    if(n===q)exact=true;
+    if(have.indexOf(k)>=0)return;
+    if(n.indexOf(q)===0||n.split(/[\s-]+/).some(function(w){return w.indexOf(q)===0}))starts.push(f);
+    else if(n.indexOf(q)>=0)contains.push(f);
   });
-  list.slice(0,10).forEach(function(f){
-    var b=el('button','chip sug','+ '+f);b.type='button';b.dataset.key=key;b.dataset.f=f;sug.appendChild(b);
+  starts.sort(function(a,b){return a.length-b.length});
+  starts.concat(contains).slice(0,8).forEach(function(f){
+    var li=el('li','sug',f);li.setAttribute('role','option');li.dataset.key=key;li.dataset.f=f;sug.appendChild(li);
   });
+  if(!exact&&!E.data[key].some(function(f){return norm(f).indexOf(q)===0})){
+    var a=el('li','sug addnew','Add \u201c'+raw+'\u201d');a.setAttribute('role','option');a.dataset.key=key;a.dataset.f=raw;sug.appendChild(a);
+  }
+  if(!sug.children.length){close();return}
+  sug.hidden=false;inp.setAttribute('aria-expanded','true');
 }
 function addTag(key,t){
   t=String(t).replace(/\s+/g,' ').trim().slice(0,30);
   if(!t||!E)return;
+  if(key==='types'){var known=TYPE_LIST.filter(function(x){return x[0].toLowerCase()===t.toLowerCase()})[0];if(known)t=known[0];else t=t.charAt(0).toUpperCase()+t.slice(1)}
   if(E.data[key].length>=TAGS[key].max){toast('That’s the most you can add here');return}
   if(E.data[key].some(function(f){return f.toLowerCase()===t.toLowerCase()}))return;
-  E.data[key].push(t);paintTags(key);touched();
+  E.data[key].push(t);afterTags(key);
 }
 function removeTag(key,t){
-  E.data[key]=E.data[key].filter(function(f){return f!==t});paintTags(key);touched();
+  E.data[key]=E.data[key].filter(function(f){return f!==t});afterTags(key);
+}
+function afterTags(key){
+  if(key==='types'){E.data.cat=placeColor(E.data);TAG_KEYS.forEach(paintTags)}else paintTags(key);
+  paintView();touched();
 }
 function paintChoices(){
   var d=E.data;TAG_KEYS.forEach(paintTags);
-  Array.prototype.forEach.call($('fCats').children,function(b){b.setAttribute('aria-checked',b.dataset.c===d.cat?'true':'false')});
-  Array.prototype.forEach.call($('fStatus').children,function(b){b.setAttribute('aria-checked',b.dataset.s===d.status?'true':'false')});
   Array.prototype.forEach.call($('fStars').children,function(b){b.classList.toggle('on',Number(b.dataset.n)<=d.rating)});
-}
-function paintLinks(){
-  var d=E.data,u=normUrl(d.url),bk=normUrl(d.book),tel=telHref(d.phone);
-  var a=$('fUrlOpen');a.hidden=!u;if(u)a.href=u;
-  var b=$('fBookOpen');b.hidden=!bk;if(bk)b.href=bk;
-  var c=$('fPhoneCall');c.hidden=!tel;if(tel)c.href=tel;
-}
-function daySummary(obj,kind){
-  var tk=todayKey(),set=DAYS.filter(function(d){return (obj[d]||'').trim()});
-  if(!set.length)return kind==='hours'?'Not added':'None';
-  if(kind==='hours'){var t=(obj[tk]||'').trim();return t?'Today: '+t:'Today: not added'}
-  return set.map(function(d){return d===tk?'Today':DAY_SHORT[d]}).join(', ');
 }
 function paintDays(){
   var d=E.data,tk=todayKey();
   ['hours','deals'].forEach(function(f){
     DAYS.forEach(function(day){$(f+'-'+day).value=d[f][day]||''});
-    $(f+'Sum').textContent=daySummary(d[f],f);
   });
   Array.prototype.forEach.call(document.querySelectorAll('.daygrid .dlab'),function(l){l.classList.toggle('today',l.dataset.d===tk)});
+}
+function setAllOpen(on){
+  $('form').classList.toggle('all-open',on);
+  Array.prototype.forEach.call(document.querySelectorAll('#form .sec'),function(s){s.classList.toggle('open',on)});
 }
 function showEditor(){
   $('listView').hidden=true;$('editView').hidden=false;
@@ -1265,8 +1498,10 @@ function showEditor(){
   $('delBtn').classList.remove('arm');delArm=0;
   $('edNote').hidden=true;
   $('pasteMsg').textContent='';
-  setEdState(draft?'Not saved yet':'Saved');
+  setEdState(draft?'Not saved yet':'');
+  setAllOpen(draft);
   paintForm();
+  $('editView').querySelector('.scroll').scrollTop=0;
   $('hint').hidden=true;
   invalidate();
 }
@@ -1286,8 +1521,9 @@ function openPlace(id){
 function blankDays(){var o={};DAYS.forEach(function(d){o[d]=''});return o}
 function startDraft(init){
   S.selId=null;
-  E={kind:'draft',data:{name:init.name||'',cat:init.cat||'see',status:'want',rating:0,food:[],cuisine:[],vibe:[],notes:'',url:'',book:'',phone:'',
+  E={kind:'draft',data:{name:init.name||'',types:(init.types||[]).slice(),cat:'other',rating:0,food:[],cuisine:[],vibe:[],notes:'',url:'',book:'',phone:'',
     hours:blankDays(),deals:blankDays(),lat:init.lat,lng:init.lng,loc:init.loc||'',ts:Date.now()}};
+  E.data.cat=placeColor(E.data);
   $('pasteBox').open=!!init.paste;if(!init.paste)$('pasteTxt').value='';
   showEditor();renderList();
   if(init.paste)setTimeout(function(){$('pasteTxt').focus()},0);
@@ -1298,45 +1534,56 @@ function touched(){
   if(E.kind==='saved'){schedulePersist(E.id);renderList();renderFilters()}
   invalidate();
 }
+$('form').addEventListener('click',function(e){
+  var b=e.target.closest('.editbtn');if(!b)return;
+  var sec=b.closest('.sec'),open=!sec.classList.contains('open');
+  sec.classList.toggle('open',open);
+  if(open){var f=sec.querySelector('.sec-edit input,.sec-edit textarea');if(f&&!coarse)setTimeout(function(){f.focus()},0)}
+  else if(E&&E.kind==='saved'&&timers.has(E.id)){clearTimeout(timers.get(E.id));timers.delete(E.id);persist(E.id)}
+  paintView();
+});
 $('addBtn').addEventListener('click',function(){
   if(E&&E.kind==='draft'){$('pasteBox').open=true;$('pasteTxt').focus();return}
   if(E&&E.kind==='saved'&&timers.has(E.id)){clearTimeout(timers.get(E.id));timers.delete(E.id);persist(E.id)}
   var c=screenToLL(V.w/2,V.h/2),lat=Math.round(c.lat*1e4)/1e4,lng=Math.round(c.lng*1e4)/1e4;
-  startDraft({lat:lat,lng:lng,loc:'',cat:'eat',paste:true});
+  startDraft({lat:lat,lng:lng,loc:'',paste:true});
 });
-$('fName').addEventListener('input',function(e){E.data.name=e.target.value;fillLocation();touched()});
-$('fNotes').addEventListener('input',function(e){E.data.notes=e.target.value;touched()});
-$('fUrl').addEventListener('input',function(e){E.data.url=e.target.value.trim();paintLinks();touched()});
-$('fBook').addEventListener('input',function(e){E.data.book=e.target.value.trim();paintLinks();touched()});
-$('fPhone').addEventListener('input',function(e){E.data.phone=e.target.value;paintLinks();touched()});
+$('fName').addEventListener('input',function(e){E.data.name=e.target.value;paintView();touched()});
+$('fUrl').addEventListener('input',function(e){E.data.url=e.target.value.trim();touched()});
+$('fBook').addEventListener('input',function(e){E.data.book=e.target.value.trim();touched()});
+$('fPhone').addEventListener('input',function(e){E.data.phone=e.target.value;touched()});
 $('fAddr').addEventListener('input',function(e){E.data.loc=e.target.value;touched()});
 $('fAddr').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();findAddress()}});
 $('addrFind').addEventListener('click',findAddress);
-$('fCats').addEventListener('click',function(e){var b=e.target.closest('.chip');if(!b)return;E.data.cat=b.dataset.c;paintChoices();touched()});
-$('tagFields').addEventListener('click',function(e){
-  var b=e.target.closest('.tag');if(b){removeTag(b.dataset.key,b.dataset.f);return}
-  b=e.target.closest('.sug');if(b)addTag(b.dataset.key,b.dataset.f);
+$('form').addEventListener('click',function(e){
+  var b=e.target.closest('.sec-edit .tag');if(b){removeTag(b.dataset.key,b.dataset.f);return}
 });
-$('tagFields').addEventListener('keydown',function(e){
+$('form').addEventListener('pointerdown',function(e){
+  var b=e.target.closest('.tagdrop .sug');if(!b)return;e.preventDefault();
+  var k=b.dataset.key;addTag(k,b.dataset.f);var i=$('t-'+k);i.value='';paintSug(k);i.focus();
+});
+document.addEventListener('pointerdown',function(e){
+  if(e.target.closest('.tagsearch'))return;
+  Array.prototype.forEach.call(document.querySelectorAll('.tagdrop'),function(u){u.hidden=true});
+});
+$('form').addEventListener('input',function(e){var k=e.target.dataset&&e.target.dataset.key;if(k&&e.target.tagName==='INPUT')paintSug(k)});
+$('form').addEventListener('keydown',function(e){
   var k=e.target.dataset&&e.target.dataset.key;if(!k||e.target.tagName!=='INPUT')return;
-  if(e.key==='Enter'||e.key===','){e.preventDefault();addTag(k,e.target.value);e.target.value=''}
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();var first=$('sug-'+k).hidden?null:$('sug-'+k).querySelector('.sug:not(.addnew)'),q=norm(e.target.value.trim());
+    addTag(k,first&&q&&norm(first.dataset.f).indexOf(q)===0?first.dataset.f:e.target.value);e.target.value='';paintSug(k);
+  }
 });
-$('tagFields').addEventListener('focusout',function(e){
-  var k=e.target.dataset&&e.target.dataset.key;if(!k||e.target.tagName!=='INPUT')return;
-  if(e.target.value.trim()){addTag(k,e.target.value);e.target.value=''}
-});
-['hoursGrid','dealsGrid'].forEach(function(g){
-  $(g).addEventListener('input',function(e){
-    var f=e.target.dataset.f,d=e.target.dataset.d;if(!f||!E)return;
-    E.data[f][d]=e.target.value;$(f+'Sum').textContent=daySummary(E.data[f],f);touched();
-  });
+
+$('form').addEventListener('input',function(e){
+  var f=e.target.dataset&&e.target.dataset.f,d=e.target.dataset&&e.target.dataset.d;if(!f||!d||!E)return;
+  E.data[f][d]=e.target.value;touched();
 });
 $('copyHours').addEventListener('click',function(){
   if(!E)return;var v=E.data.hours.mon||'';
   if(!v.trim()){toast('Fill in Monday first');return}
-  DAYS.forEach(function(d){E.data.hours[d]=v});paintDays();touched();
+  DAYS.forEach(function(d){E.data.hours[d]=v});paintDays();paintView();touched();
 });
-$('fStatus').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;E.data.status=b.dataset.s;paintChoices();touched()});
 $('fStars').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;var n=Number(b.dataset.n);
   E.data.rating=E.data.rating===n?0:n;paintChoices();touched();
@@ -1347,15 +1594,15 @@ $('backBtn').addEventListener('click',function(){
 });
 $('saveBtn').addEventListener('click',function(){
   if(!E||E.kind!=='draft')return;
-  var d=E.data;d.name=(d.name||'').trim()||'Untitled place';d.url=d.url.trim();d.ts=Date.now();
+  var d=E.data;d.name=(d.name||'').trim()||'Untitled place';d.url=d.url.trim();d.ts=Date.now();d.cat=placeColor(d);
   var id='p_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   var p=Object.assign({id:id},d);
   S.places.set(id,p);
   E={kind:'saved',id:id,data:p};S.selId=id;
-  setEdState('Saving…');
   persist(id);
   $('saveBtn').hidden=true;$('delBtn').textContent='Delete place';$('edNote').hidden=true;
-  $('fName').value=p.name;$('pasteBox').open=false;
+  $('pasteBox').open=false;setEdState('');
+  setAllOpen(false);paintForm();$('editView').querySelector('.scroll').scrollTop=0;
   renderAll();toast('Saved to your places');
 });
 $('delBtn').addEventListener('click',function(){
@@ -1498,18 +1745,49 @@ var VOCAB_VIBE=[[/date night|romantic/,'Date night'],[/\bcasual\b|laid[- ]back|r
   [/fancy|upscale|fine dining|elegant|classy|luxur/,'Fancy'],[/late[- ]night|open late|till late|until late/,'Late night'],[/rooftop/,'Rooftop'],[/outdoor|courtyard|beer garden|al fresco|alfresco|terrace/,'Outdoor seating'],
   [/\bviews?\b|waterfront|harbour views/,'Great views'],[/groups?\b|share plates|sharing/,'Good for groups'],[/live music|\bdjs?\b/,'Live music'],[/hidden|secret|speakeasy|laneway/,'Hidden gem'],
   [/cheap|affordable|budget|bargain|everything is \$/,'Cheap eats'],[/quick bite|takeaway|take-away|grab and go/,'Quick bite'],[/family|kid[- ]friendly|kids/,'Family friendly'],[/dog[- ]friendly|pet[- ]friendly/,'Dog friendly']];
-var CAT_WORDS={
-  eat:/restaurant|\bcaf[eé]\b|\bbar\b|\bpub\b|bistro|eatery|diner|bakery|brewery|cocktail|winery|dining|kitchen|cuisine|\bmenu\b|food|trattoria|izakaya|brasserie|patisserie|gelateria|dessert|steakhouse|pizzeria|noodle|dumpling/,
-  stay:/hotel|motel|hostel|airbnb|resort|\binn\b|lodge|accommodation|b&b|bed and breakfast|guesthouse|guest house|villa|glamping|campsite/,
-  see:/museum|gallery|\bpark\b|garden|beach|lookout|\btours?\b|theatre|theater|cinema|\bzoo\b|aquarium|\bhike\b|trail|attraction|temple|church|cathedral|monument|exhibition|landmark|waterfall|observatory|stadium/,
-  shop:/\bstore\b|boutique|\bmarket\b|\bmall\b|outlet|bookshop|bookstore|vintage|op shop|homewares|florist|\bshopping\b/
-};
+var TYPE_RULES=[
+  ['Restaurant',/restaurant|bistro|eatery|diner|trattoria|osteria|izakaya|brasserie|steakhouse|pizzeria|taqueria|noodle (?:bar|house)|dumpling house|fine dining|dining room/],
+  ['Café',/\bcaf[eé]s?\b|coffee (?:shop|house|roaster)|roastery|espresso bar/],
+  ['Bakery',/bakery|bakehouse|boulangerie|p[aâ]tisserie|croissanterie|donut shop|doughnut shop/],
+  ['Dessert',/dessert|gelato|gelateria|ice cream|creamery|cr[eê]perie|cake shop|sweets shop/],
+  ['Bar',/(?<!noodle |espresso |dessert |salad |juice |sushi |gelato |snack )\bbars?\b|speakeasy|cocktail lounge|\blounge\b/],
+  ['Pub',/\bpubs?\b|brewery|brewpub|taproom|tavern|beer hall|alehouse/],
+  ['Club',/nightclub|night club|dance club|\bclub\b(?! sandwich)/],
+  ['Bowling',/bowling|ten ?pin/],
+  ['Arcade',/arcade|timezone|pinball/],
+  ['Karaoke',/karaoke/],
+  ['Mini golf',/mini ?golf|putt ?putt|crazy golf|holey moley/],
+  ['Escape room',/escape room/],
+  ['Cinema',/cinema|movie theat/],
+  ['Hotel',/hotel|motel|hostel|resort|\binn\b|lodge|guest ?house|b&b|bed and breakfast/],
+  ['Airbnb',/airbnb|holiday rental|holiday house|villa/],
+  ['Museum',/museum/],
+  ['Gallery',/galler(?:y|ies)/],
+  ['Park',/\bpark\b|national park/],
+  ['Beach',/beach/],
+  ['Lookout',/lookout|viewpoint|observation deck/],
+  ['Garden',/botanic|(?<!beer )gardens?\b/],
+  ['Theatre',/theatre|theater|playhouse|comedy club/],
+  ['Landmark',/landmark|monument|cathedral|temple|church/],
+  ['Market',/\bmarkets?\b/],
+  ['Shop',/(?<!coffee |cake |barber |donut |doughnut |sweets )\bshop\b|\bstore\b|boutique|bookshop|bookstore|vintage|op shop/]
+];
+var TYPE_LOOSE=[['Bar',/cocktail|wine|negroni|martini|spritz/],['Café',/coffee|brunch|breakfast|flat white|latte/],['Pub',/\bbeers?\b|\bpints?\b/],['Dessert',/gelato|crepes?|ice cream|cakes?/]];
+function findTypes(text,limit){
+  var hits=[];
+  TYPE_RULES.forEach(function(t){var m=text.search(t[1]);if(m>=0)hits.push([m,t[0]])});
+  hits.sort(function(a,b){return a[0]-b[0]});
+  var out=[];hits.forEach(function(h){if(out.indexOf(h[1])<0)out.push(h[1])});
+  if(out.indexOf('Club')>=0&&out.indexOf('Theatre')>=0&&/comedy club/.test(text))out.splice(out.indexOf('Club'),1);
+  return out.slice(0,limit||4);
+}
 function labelKey(lab){
   var L=lab.toLowerCase().replace(/\s+/g,' ').trim();
   if(/^(name|place|place name|venue name|restaurant name|title)$/.test(L))return 'name';
   if(/address|location|where|^loc$/.test(L))return 'addr';
   if(/phone|^tel|mobile|contact|call/.test(L))return 'phone';
   if(/book|reserv/.test(L))return 'book';
+  if(/specialt|signature|dessert|sweet|snack|cocktail|wine|beer|coffee|\btea\b|bites|plates|mains|starters|entr[eé]e|sides|favou?rite|recommend|best (?:dish|thing)/.test(L))return 'food';
   if(/deal|special|happy hour|offer|promo|discount/.test(L))return 'deals';
   if(/hour|open|trading|times?$/.test(L))return 'hours';
   if(/web|site|url|link|instagram|insta/.test(L))return 'url';
@@ -1526,7 +1804,7 @@ function labelKey(lab){
 var BOOK_HOST=/book|reserv|opentable|resy|sevenrooms|quandoo|thefork|tablein|nowbookit|obee|tock|bookatable/i;
 function findUrl(s){var m=String(s).match(/(?:https?:\/\/|www\.)[^\s<>"']+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|au|net|org|co|io|app|bar|restaurant|cafe|nz|uk)(?:\/[^\s<>"']*)?/i);return m?m[0].replace(/[),.]+$/,''):''}
 function parseDetails(text){
-  var r={name:'',addr:'',phone:'',url:'',book:'',cat:'',status:'',rating:0,cuisine:[],food:[],vibe:[],hours:{},deals:{},notes:[],scan:[],n:0};
+  var r={name:'',addr:'',phone:'',url:'',book:'',types:[],status:'',rating:0,cuisine:[],food:[],vibe:[],hours:{},deals:{},notes:[],scan:[],n:0};
   function push(arr,v){if(v&&!arr.some(function(x){return x.toLowerCase()===v.toLowerCase()}))arr.push(v)}
   var section=null,lines=[];
   String(text).replace(/\r/g,'').split('\n').forEach(function(l){
@@ -1586,27 +1864,30 @@ function parseDetails(text){
       case 'food':if(val){splitList(val).forEach(function(c){push(r.food,titleCase(c))});r.scan.push(val)}else section='food';break;
       case 'type':if(val){r.scan.push(val);r.typeText=(r.typeText||'')+' '+val}break;
       case 'notes':if(val)r.notes.push(val);else section='notes';r.scan.push(val);break;
-      case 'status':r.status=/been|visited|went|done|yes/i.test(val)?'been':'want';break;
+      case 'status':break;
       case 'rating':var rm=val.match(/(\d+(?:\.\d+)?)\s*(?:\/\s*(\d+))?/);if(rm){var sc=Number(rm[1])/(rm[2]?Number(rm[2]):5)*5;r.rating=Math.max(0,Math.min(5,Math.round(sc)))}break;
       case 'price':if(val){r.notes.push('Price: '+val);r.scan.push(val)}break;
     }
   });
   var scan=(r.name+' \n'+r.scan.join(' \n')).toLowerCase();
   var typeScan=(r.typeText||'').toLowerCase();
-  // category
-  var best='',bestN=0;
-  ['eat','stay','see','shop'].forEach(function(c){
-    var n=((typeScan.match(new RegExp(CAT_WORDS[c].source,'g'))||[]).length)*10+((scan.match(new RegExp(CAT_WORDS[c].source,'g'))||[]).length);
-    if(n>bestN){best=c;bestN=n}
-  });
-  if(!best&&(r.cuisine.length||r.food.length))best='eat';
-  r.cat=best;
   // tags from words in the text
-  VOCAB_FOOD.forEach(function(v){if(v[0].test(scan))push(r.food,v[1])});
+  VOCAB_FOOD.forEach(function(v){if(v[0].test(scan)&&!r.food.some(function(x){var a=x.toLowerCase(),b=v[1].toLowerCase();return a.indexOf(b)>=0||b.indexOf(a)>=0||a.replace(/s$/,'')===b.replace(/s$/,'')}))push(r.food,v[1])});
   VOCAB_CUISINE.forEach(function(c){if(new RegExp('\\b'+c.toLowerCase()+'(?:[- ]inspired)?\\b').test(scan)&&!r.cuisine.some(function(x){return x.toLowerCase().indexOf(c.toLowerCase())>=0}))push(r.cuisine,c)});
   VOCAB_VIBE.forEach(function(v){if(v[0].test(scan))push(r.vibe,v[1])});
+  // type(s)
+  var types=typeScan?findTypes(typeScan,4):[];
+  if(!types.length){var bodyScan=r.scan.join(' \n').toLowerCase();types=findTypes(bodyScan,3);if(!types.length)types=findTypes(scan,3)}
+  if(!types.length){
+    if(r.cuisine.length)types=['Restaurant'];
+    else TYPE_LOOSE.some(function(t){if(t[1].test(scan)){types=[t[0]];return true}});
+  }
+  if(!types.length&&r.food.length)types=['Restaurant'];
+  r.types=types;
   if(DAYS.some(function(d){return /12\s*am|midnight|\b[1-4]\s*am|late/i.test(r.hours[d]||'')}))push(r.vibe,'Late night');
-  if(r.food.length||r.cuisine.length)r.cat=r.cat||'eat';
+  var tryRe=/\b(?:try|get|order|must[- ]try|must[- ]have|known for|famous for|go for|best)\s+(?:the|their|its|a|an|some)?\s*([a-z\u00C0-\u017F][a-z\u00C0-\u017F' -]{2,28}?)(?=\s*(?:[,.;!)]|\band\b|\bor\b|$))/gi,tm;
+  r.notes.concat(r.scan).forEach(function(t){tryRe.lastIndex=0;while((tm=tryRe.exec(t))){var f=tm[1].trim();if(f.split(' ').length<=4)push(r.food,titleCase(f))}});
+  if(!r.types.length&&(r.food.length||r.cuisine.length))r.types=['Restaurant'];
   if(!r.name&&r.url){
     var host=r.url.replace(/^https?:\/\//i,'').replace(/^www\./i,'').split(/[\/.]/)[0]||'';
     var g=host.replace(/-/g,' ').replace(/(restaurant|resto|bar|cafe|kitchen|melbourne|sydney|official|group|dining|eatery|the)/ig,' ').replace(/\s+/g,' ').trim();
@@ -1617,13 +1898,16 @@ function parseDetails(text){
 function applyParsed(r){
   var d=E.data,got=[];
   if(r.name&&!(r.nameGuess&&d.name)){d.name=r.name;got.push(r.nameGuess?'a name from the website (check it)':'name')}
-  if(r.cat){d.cat=r.cat;got.push('category')}
-  if(r.status)d.status=r.status;
+  if(r.types.length){
+    if(E.kind==='draft')d.types=r.types.slice(0,6);
+    else r.types.forEach(function(t){if(d.types.length<6&&d.types.indexOf(t)<0)d.types.push(t)});
+    d.cat=placeColor(d);got.push(d.types.length>1?'types':'type');
+  }
   if(r.rating)d.rating=r.rating;
   if(r.url){d.url=r.url;got.push('website')}
   if(r.book){d.book=r.book;got.push('booking link')}
   if(r.phone){d.phone=r.phone.trim();got.push('phone')}
-  TAG_KEYS.forEach(function(k){
+  ['cuisine','food','vibe'].forEach(function(k){
     var before=d[k].length;
     r[k].forEach(function(t){if(d[k].length<TAGS[k].max&&!d[k].some(function(x){return x.toLowerCase()===t.toLowerCase()}))d[k].push(t.slice(0,30))});
     if(d[k].length>before)got.push(TAGS[k].label.toLowerCase());
@@ -1631,10 +1915,6 @@ function applyParsed(r){
   var h=0,dl=0;
   DAYS.forEach(function(day){if(r.hours[day]){d.hours[day]=r.hours[day].slice(0,120);h++}if(r.deals[day]){d.deals[day]=r.deals[day].slice(0,120);dl++}});
   if(h)got.push('hours');if(dl)got.push('deals');
-  if(r.notes.length){
-    var add=r.notes.filter(function(n){return d.notes.indexOf(n)<0}).join('\n');
-    if(add){d.notes=(d.notes?d.notes.replace(/\s+$/,'')+'\n':'')+add;got.push('notes')}
-  }
   if(r.addr){d.loc=r.addr;got.push('address')}
   return got;
 }
@@ -1679,7 +1959,7 @@ function search(q){
     if(toks.every(function(t){return hay.indexOf(t)>=0}))mine.push(p);
   });
   mine.sort(function(a,b){return b.ts-a.ts});
-  mine.slice(0,3).forEach(function(p){items.push({t:'place',p:p,n:p.name||'Untitled place',s:[catLabel(p.cat),p.loc].filter(Boolean).join(' · ')})});
+  mine.slice(0,3).forEach(function(p){items.push({t:'place',p:p,n:p.name||'Untitled place',s:[p.types.join(' / '),p.loc].filter(Boolean).join(' · ')})});
   var cands=[];
   for(var i=0;i<CITY.length&&cands.length<60;i++){
     var c=CITY[i];
@@ -1703,7 +1983,7 @@ function renderSugg(raw){
       var li=el('li','opt');li.setAttribute('role','option');li.id='sg'+i;li.dataset.i=String(i);
       li.setAttribute('aria-selected',i===sugIdx?'true':'false');
       var d=el('span','dot');
-      if(it.t==='place')d.style.background='var(--c-'+it.p.cat+')';
+      if(it.t==='place')d.style.background='var(--c-'+placeColor(it.p)+')';
       else d.style.background='var(--accent)';
       var t=el('span','t');t.appendChild(el('span','n',it.n));t.appendChild(el('span','s',it.s||''));
       li.appendChild(d);li.appendChild(t);ul.appendChild(li);
@@ -1743,6 +2023,84 @@ $('sugg').addEventListener('mousedown',function(e){
 });
 $('qClear').addEventListener('click',function(){$('q').value='';$('qClear').hidden=true;S.q='';refilter();hideSugg();$('q').focus()});
 document.addEventListener('pointerdown',function(e){if(!e.target.closest('.search'))hideSugg()});
+
+/* ---------- your location ---------- */
+function distM(a,b){
+  var R=6371000,t=Math.PI/180,dLat=(b.lat-a.lat)*t,dLng=(b.lng-a.lng)*t;
+  var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+}
+function fmtDist(m){
+  if(m<1000)return (m<100?Math.max(10,Math.round(m/10)*10):Math.round(m/50)*50)+' m';
+  if(m<10000)return (Math.round(m/100)/10).toFixed(1).replace(/\.0$/,'')+' km';
+  return Math.round(m/1000).toLocaleString()+' km';
+}
+var locWatch=null,locWant=null,locLast=null;
+function startLocation(then){
+  if(!navigator.geolocation){toast('This phone or browser can\u2019t share location');return}
+  locWant=then||null;
+  if(locWatch!==null){if(ME&&locWant){locWant();locWant=null}return}
+  $('locBtn').classList.add('busy');
+  locWatch=navigator.geolocation.watchPosition(function(pos){
+    var first=!ME;
+    ME={lat:pos.coords.latitude,lng:pos.coords.longitude,acc:pos.coords.accuracy};
+    try{localStorage.setItem('place-pins:loc','on')}catch(e){}
+    $('locBtn').classList.remove('busy');$('locBtn').classList.add('on');
+    if(first||!locLast||distM(locLast,ME)>25){locLast={lat:ME.lat,lng:ME.lng};renderList();if(E)paintView()}
+    if(locWant){locWant();locWant=null}
+    invalidate();
+  },function(err){
+    $('locBtn').classList.remove('busy');
+    if(locWatch!==null){navigator.geolocation.clearWatch(locWatch);locWatch=null}
+    if(err&&err.code===1){
+      try{localStorage.removeItem('place-pins:loc')}catch(e){}
+      ME=null;$('locBtn').classList.remove('on');
+      if(S.sort==='near'){S.sort='new';paintSort();renderList()}
+      toast('Location is blocked. Allow it for this app in your phone\u2019s settings.');
+    }else if(locWant)toast('Couldn\u2019t find your location. Try again in a moment.');
+    locWant=null;invalidate();
+  },{enableHighAccuracy:true,maximumAge:20000,timeout:20000});
+}
+$('locBtn').addEventListener('click',function(){
+  startLocation(function(){flyTo(ME.lat,ME.lng,Math.max(V.z,8),700)});
+  if(ME)flyTo(ME.lat,ME.lng,Math.max(V.z,8),700);
+});
+function paintSort(){Array.prototype.forEach.call($('sortSeg').children,function(b){b.setAttribute('aria-pressed',b.dataset.sort===S.sort?'true':'false')})}
+$('sortSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  if(b.dataset.sort==='near'){
+    S.sort='near';paintSort();
+    if(ME)renderList();else{toast('Finding your location\u2026');startLocation(function(){renderList()})}
+    try{localStorage.setItem('place-pins:sort','near')}catch(e){}
+  }else{S.sort='new';paintSort();renderList();try{localStorage.setItem('place-pins:sort','new')}catch(e){}}
+});
+// If location was allowed before, turn it back on quietly
+try{
+  if(localStorage.getItem('place-pins:sort')==='near')S.sort='near';
+  if(localStorage.getItem('place-pins:loc')==='on'){
+    if(navigator.permissions&&navigator.permissions.query){
+      navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')startLocation();else if(S.sort==='near'&&r.state==='denied'){S.sort='new';paintSort()}},function(){startLocation()});
+    }else startLocation();
+  }else if(S.sort==='near')S.sort='new';
+}catch(e){}
+paintSort();
+
+/* ---------- light / dark ---------- */
+var SUN='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg>';
+var MOON='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>';
+function isDark(){var t=document.documentElement.getAttribute('data-theme');if(t)return t==='dark';return !!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)}
+function paintTheme(){
+  var dark=isDark();$('themeBtn').innerHTML=dark?SUN:MOON;$('themeBtn').setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');
+  var m=document.querySelectorAll('meta[name="theme-color"]');Array.prototype.forEach.call(m,function(x){x.setAttribute('content',dark?'#0b1419':'#0a6a8a')});
+}
+$('themeBtn').addEventListener('click',function(){
+  var next=isDark()?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  try{localStorage.setItem('place-pins:theme',next)}catch(e){}
+  paintTheme();
+});
+paintTheme();
+if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener('change',paintTheme);
 
 /* ---------- boot ---------- */
 new ResizeObserver(resize).observe(cv.parentNode);
