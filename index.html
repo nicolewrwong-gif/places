@@ -153,6 +153,21 @@ ul.places{list-style:none;margin:0;padding:0}
 .sync i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
 .sync.ok i{background:var(--c-see)}
 .sync.warn i{background:var(--star)}
+.sync span{flex:1;min-width:0}
+.acct{flex:none;background:none;border:0;padding:2px 0;color:var(--accent);font-weight:600;font-size:11.5px;cursor:pointer}
+.acct:hover{text-decoration:underline}
+.authdlg{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--fg);padding:20px;width:min(360px,calc(100vw - 32px));box-shadow:var(--shadow)}
+.authdlg::backdrop{background:rgba(5,15,20,.45)}
+.authdlg h2{margin:0 0 4px;font:600 18px/1.2 var(--f-head)}
+.authdlg p{margin:0 0 14px;color:var(--muted);font-size:13px}
+.authdlg .field{margin-bottom:10px}
+.authdlg .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.authdlg .field input{width:100%;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--field);padding:0 12px;font-size:16px}
+.authdlg .err{color:var(--danger);font-size:12.5px;min-height:1.2em;margin:4px 0 10px}
+.authdlg .row{display:flex;gap:8px;flex-wrap:wrap}
+.authdlg .row .btn{flex:1}
+.authdlg .x{position:absolute;top:10px;right:12px;background:none;border:0;font-size:22px;line-height:1;color:var(--muted);cursor:pointer}
+.authdlg .linkbtn{background:none;border:0;padding:0;margin-top:12px;color:var(--accent);font-size:12.5px;cursor:pointer}
 
 /* map */
 .mapbox{position:relative;min-width:0;min-height:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--ocean)}
@@ -267,7 +282,22 @@ ul.places{list-style:none;margin:0;padding:0}
       </div>
     </section>
 
-    <footer class="sync" id="sync"><i></i><span id="syncTxt">Loading your places</span></footer>
+    <footer class="sync" id="sync"><i></i><span id="syncTxt">Loading your places</span><button type="button" class="acct" id="acctBtn" hidden>Sign in to sync</button></footer>
+    <dialog class="authdlg" id="authDlg" aria-labelledby="authTitle">
+      <form method="dialog" id="authForm" novalidate>
+        <button type="button" class="x" id="authClose" aria-label="Close">&times;</button>
+        <h2 id="authTitle">Sync your places</h2>
+        <p id="authHelp">Type your password. Use the same one on each device to see the same places everywhere.</p>
+        <input type="text" name="username" autocomplete="username" value="Place Pins" hidden readonly>
+        <div class="field"><label for="authPass">Password</label><input id="authPass" type="password" autocomplete="current-password" minlength="8" required></div>
+        <div class="field" id="authConfirmRow" hidden><label for="authConfirm">Type it again</label><input id="authConfirm" type="password" autocomplete="new-password"></div>
+        <div class="err" id="authErr" role="alert"></div>
+        <div class="row">
+          <button type="submit" class="btn primary" id="authGo">Open my places</button>
+          <button type="button" class="btn" id="authBack" hidden>Try again</button>
+        </div>
+      </form>
+    </dialog>
   </aside>
 
   <main class="mapbox" id="mapbox">
@@ -284,6 +314,10 @@ ul.places{list-style:none;margin:0;padding:0}
   </main>
 </div>
 
+<script src="firebase-config.js"></script>
+<script src="vendor/firebase-app-compat.js"></script>
+<script src="vendor/firebase-auth-compat.js"></script>
+<script src="vendor/firebase-firestore-compat.js"></script>
 <script>
 (function(){
 'use strict';
@@ -359,6 +393,7 @@ var dpr=Math.min(window.devicePixelRatio||1,2);
 /* ---------- storage ---------- */
 var LS_KEY='place-pins:v1';
 var col=null,mode='pending',unsub=null;
+var FB={on:false,user:null,auth:null,fs:null};
 var timers=new Map(),chains=new Map();
 function cleanFood(f){
   var out=[];
@@ -386,8 +421,9 @@ function saveLocal(){
 }
 function setSync(){
   var s=$('sync'),t=$('syncTxt');s.className='sync';
-  if(mode==='db'){s.classList.add('ok');t.textContent='Saved to your account. Only you can see these places.'}
-  else if(mode==='local'){s.classList.add('warn');t.textContent='Saved in this browser only.'}
+  var ab=$('acctBtn');if(ab){ab.hidden=!FB.on;ab.textContent=FB.user?'Sign out':'Sign in to sync'}
+  if(mode==='db'){s.classList.add('ok');t.textContent=FB.user?'Synced across your devices.':'Saved to your account. Only you can see these places.'}
+  else if(mode==='local'){s.classList.add('warn');t.textContent=FB.on?'Saved on this device only.':'Saved in this browser only.'}
   else{t.textContent='Loading your places'}
 }
 function setEdState(t){var e=$('edState');if(e)e.textContent=t}
@@ -452,7 +488,113 @@ async function initStore(){
   }catch(e){try{console.warn(e)}catch(_){}}
   if(!ok){mode='local';loadLocal();S.ready=true;renderAll()}
   setSync();
+  if(!ok)initFirebase();
 }
+
+/* ---------- Firebase sync (GitHub Pages build) ---------- */
+
+function initFirebase(){
+  var cfg=window.FIREBASE_CONFIG;
+  if(!cfg||!cfg.apiKey||!window.firebase)return;
+  try{
+    firebase.initializeApp(cfg);
+    FB.auth=firebase.auth();FB.fs=firebase.firestore();
+    try{FB.fs.enablePersistence({synchronizeTabs:true}).catch(function(){})}catch(e){}
+  }catch(e){try{console.warn('Firebase init failed',e)}catch(_){}return}
+  FB.on=true;setSync();
+  FB.auth.onAuthStateChanged(function(user){
+    FB.user=user||null;
+    if(unsub){try{unsub()}catch(e){}unsub=null}
+    if(user){
+      col=FB.fs.collection('users').doc(user.uid).collection('places');
+      migrateLocal(user.uid).then(function(){
+        if(FB.user!==user)return;
+        mode='db';setSync();
+        unsub=col.onSnapshot(onSnap,function(err){
+          try{console.warn('sync listener ended',err)}catch(e){}
+          if(mode==='db'){mode='local';loadLocal();S.ready=true;setSync();renderAll();toast("Couldn't reach your synced places. Showing this device's places.")}
+        });
+      });
+    }else{
+      col=null;
+      if(mode==='db'){mode='local';loadLocal();renderAll()}
+      setSync();
+    }
+  });
+}
+// The first time a device signs in, copy its locally saved places up to the account.
+function migrateLocal(uid){
+  var flag='place-pins:migrated:'+uid;
+  try{if(localStorage.getItem(flag))return Promise.resolve()}catch(e){return Promise.resolve()}
+  var local=[];
+  try{local=JSON.parse(localStorage.getItem(LS_KEY)||'[]')}catch(e){}
+  if(!local.length){try{localStorage.setItem(flag,'1')}catch(e){}return Promise.resolve()}
+  return col.get().then(function(snap){
+    var have=new Set(snap.docs.map(function(d){return d.id}));
+    var batch=FB.fs.batch(),n=0;
+    local.forEach(function(x){var p=clean(x.id||('p_'+Math.random().toString(36).slice(2)),x);if(p&&!have.has(p.id)){batch.set(col.doc(p.id),payload(p));n++}});
+    return (n?batch.commit():Promise.resolve()).then(function(){
+      try{localStorage.setItem(flag,'1')}catch(e){}
+      if(n)toast('Added '+n+' place'+(n===1?'':'s')+' from this device to your account.');
+    });
+  }).catch(function(e){try{console.warn('migrate failed',e)}catch(_){}});
+}
+function authMsg(e){
+  var c=(e&&e.code)||'';
+  if(c==='auth/too-many-requests')return 'Too many tries. Wait a minute and try again.';
+  if(c==='auth/network-request-failed')return 'No connection. Check your internet and try again.';
+  if(c==='auth/operation-not-allowed'||c==='auth/configuration-not-found')return 'Sign-in isn’t turned on in Firebase yet.';
+  return 'Something went wrong. Please try again.';
+}
+// The password is the key: it maps to a private account id, so no email or username is needed.
+function pwAccount(pw){
+  var data=new TextEncoder().encode('place-pins:'+pw);
+  return crypto.subtle.digest('SHA-256',data).then(function(buf){
+    var hex=Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+    return 'k'+hex.slice(0,40)+'@placepins.app';
+  });
+}
+(function(){
+  var dlg=$('authDlg'),form=$('authForm'),err=$('authErr'),creating=false;
+  function setCreate(on){
+    creating=on;$('authConfirmRow').hidden=!on;$('authBack').hidden=!on;$('authConfirm').value='';
+    $('authGo').textContent=on?'Create':'Open my places';
+    $('authHelp').textContent=on?'No places are saved under that password yet. Type it again to start a new set, or tap Try again if it was a typo.':'Type your password. Use the same one on each device to see the same places everywhere.';
+    $('authPass').readOnly=on;
+  }
+  function open(){err.textContent='';setCreate(false);$('authPass').value='';if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');setTimeout(function(){$('authPass').focus()},50)}
+  function close(){if(dlg.close)dlg.close();else dlg.removeAttribute('open')}
+  function busy(b){$('authGo').disabled=$('authBack').disabled=b}
+  $('acctBtn').addEventListener('click',function(){
+    if(!FB.on)return;
+    if(FB.user){FB.auth.signOut().then(function(){toast('Signed out. Showing places saved on this device.')})}
+    else open();
+  });
+  $('authClose').addEventListener('click',close);
+  $('authBack').addEventListener('click',function(){err.textContent='';setCreate(false);$('authPass').value='';$('authPass').focus()});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();err.textContent='';
+    var pw=$('authPass').value;
+    if(pw.length<8){err.textContent='Use at least 8 characters.';return}
+    if(creating&&$('authConfirm').value!==pw){err.textContent='Those don’t match. Try again.';return}
+    busy(true);
+    pwAccount(pw).then(function(em){
+      if(creating)return FB.auth.createUserWithEmailAndPassword(em,pw).then(function(){return 'new'});
+      return FB.auth.signInWithEmailAndPassword(em,pw).then(function(){return 'in'},function(x){
+        var c=(x&&x.code)||'';
+        if(c==='auth/invalid-credential'||c==='auth/user-not-found'||c==='auth/invalid-login-credentials'||c==='auth/wrong-password'){setCreate(true);$('authConfirm').focus();return null}
+        throw x;
+      });
+    }).then(function(r){
+      if(!r)return;
+      close();$('authPass').value='';setCreate(false);
+      toast(r==='new'?'All set. Use this password on your other devices.':'Signed in. Syncing your places.');
+    },function(x){
+      if(x&&x.code==='auth/email-already-in-use'){setCreate(false);err.textContent='That password is already set up. Tap Open my places.';return}
+      err.textContent=authMsg(x);
+    }).then(function(){busy(false)});
+  });
+})();
 
 /* ---------- canvas / view ---------- */
 var cv=$('map'),ctx=cv.getContext('2d');

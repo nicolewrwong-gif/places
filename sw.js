@@ -1,5 +1,5 @@
 // Place Pins service worker: offline app shell + cached Google Fonts.
-const VERSION = 'v1';
+const VERSION = 'v3';
 const SHELL = `place-pins-shell-${VERSION}`;
 const RUNTIME = `place-pins-runtime-${VERSION}`;
 const ASSETS = [
@@ -9,7 +9,11 @@ const ASSETS = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/maskable-512.png',
-  './icons/apple-touch-icon.png'
+  './icons/apple-touch-icon.png',
+  './firebase-config.js',
+  './vendor/firebase-app-compat.js',
+  './vendor/firebase-auth-compat.js',
+  './vendor/firebase-firestore-compat.js'
 ];
 
 self.addEventListener('install', (e) => {
@@ -52,6 +56,16 @@ self.addEventListener('fetch', (e) => {
           return hit || net;
         })
       )
+    );
+    return;
+  }
+
+  // Config file: network first so changes apply straight away.
+  if (url.origin === self.location.origin && url.pathname.endsWith('/firebase-config.js')) {
+    e.respondWith(
+      fetch(req)
+        .then((res) => { const copy = res.clone(); caches.open(SHELL).then((c) => c.put(req, copy)); return res; })
+        .catch(() => caches.match(req))
     );
     return;
   }
