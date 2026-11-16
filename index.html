@@ -289,6 +289,9 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .sec-edit textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .asof{margin:2px 0 0;font-size:11.5px;color:var(--muted)}
 .placeasof{margin:2px 0 0}
+.surch{font-size:12px;font-weight:600;color:var(--danger);margin-top:2px}
+.topsurch{display:inline-block;margin:6px 0 0;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--danger) 12%,transparent)}
+.namesec.open .topsurch{display:none}
 .namesec.open .placeasof,.all-open .placeasof{display:none}
 .menulink{display:inline-flex;flex-direction:column;align-items:center;gap:1px}
 .menulink .asof{margin:0}
@@ -446,6 +449,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
           <section class="sec namesec" data-sec="name" id="sec-name">
             <div class="sec-head"><h2 class="vname" id="vName"></h2><span class="lab">Name</span><button type="button" class="editbtn" data-sec="name">Edit</button></div>
             <p class="asof placeasof" id="vAsOf"></p>
+            <p class="surch topsurch" id="vSurch" hidden></p>
             <div class="sec-edit"><input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off" aria-label="Name"></div>
           </section>
           <div class="group" id="g-info">
@@ -1251,6 +1255,7 @@ function itemEl(p){
   if(p.food.length){
     body.appendChild(el('div','ifood',p.food.slice(0,5).join(', ')+(p.food.length>5?' +'+(p.food.length-5)+' more':'')));
   }
+  var sc=todaySurcharges(p);if(sc.length)body.appendChild(el('div','surch',sc.join(', ')+' today'));
   var dk=S.fDeal!=='all'?S.fDeal:todayKey(),deal=(p.deals[dk]||'').trim();
   if(deal)body.appendChild(el('div','deal',(S.fDeal!=='all'?DAY_SHORT[dk]:'Today')+': '+deal));
   var meta=el('div','meta');
@@ -1490,7 +1495,49 @@ function fmtDays(obj){
   }
   return lines.join('\n');
 }
+// Deals: keep only the deal; other sentences are notes for Good to know
+var SURCHARGE_RE=/surcharge|service charge|service fee|card fee|card surcharge|extra charge|\bfee\b/i;
+// Surcharges that apply today, e.g. ["15% surcharge"]
+function todaySurcharges(p){
+  var tk=todayKey(),out=[];
+  (p.tips||[]).forEach(function(t){
+    if(!SURCHARGE_RE.test(t))return;
+    var amt=t.match(/\d+(?:\.\d+)?\s?%|\$\s?\d+(?:\.\d\d)?/);if(!amt)return;
+    var kind=(t.match(/service charge|service fee|card surcharge|card fee|surcharge|fee/i)||['surcharge'])[0].toLowerCase();
+    var m=t.match(RE_MID),days=m?parseDaySpec(m[2]):[];
+    if(days.length){if(days.indexOf(tk)<0)return}
+    else if(/public holiday/i.test(t))return;
+    out.push(amt[0].replace(/\s+/g,'')+' '+kind);
+  });
+  return out;
+}
+function fixSurcharges(items){
+  var prev=false;
+  return items.map(function(t){
+    var tt=t.trim();
+    if(SURCHARGE_RE.test(tt)){prev=true;return tt}
+    if(prev&&/^\d+(?:\.\d+)?\s?%/.test(tt)&&!/\boff\b|discount|cheaper/i.test(tt)){return tt.replace(/^(\d+(?:\.\d+)?\s?%)\s*(?:surcharge\s*)?/,'$1 surcharge ').replace(/\s+/g,' ').trim()}
+    prev=false;return tt;
+  });
+}
+var DEAL_RE=/\$\s?\d|\d+\s?%|\bhalf[- ]price|\bfree\b|happy hour|\b2[- ]for[- ]1\b|two for one|bottomless|\bdiscount|\bspecials?\b|\bdeals?\b|\b\d+\s?off\b|\bbogo\b|\bcheap\b|\bfor \$?\d/i;
+function splitDeals(text){
+  var deals=[],notes=[];
+  var sents=[];
+  String(text||'').split(/\n+|\s*[|\u2022\u00B7]\s*/).forEach(function(line){line.split(/(?<=[.!?])\s+/).forEach(function(x){x=x.trim().replace(/[.!]+$/,'');if(x)sents.push(x)})});
+  fixSurcharges(sents).forEach(function(sent){
+    {
+      if(!DEAL_RE.test(sent)||SURCHARGE_RE.test(sent)){notes.push(sent);return}
+      // keep the parts of the sentence that hold the deal or its days
+      var keep=sent.split(/\s*,\s*/).filter(function(part){return DEAL_RE.test(part)||hasDay(part)||/^\d/.test(part)});
+      var d=keep.join(', ').replace(/\s+(?:is|are|for just|for only|only|just)\s+(?=\$|\d)/ig,' ').replace(/\s+/g,' ').trim();
+      if(d)deals.push(d);
+    }
+  });
+  return {deals:deals.join('\n'),notes:notes};
+}
 function parseDaysText(text,isHours){
+  if(!isHours)text=splitDeals(text).deals;
   var o={};DAYS.forEach(function(d){o[d]=''});
   var lines=String(text||'').split(/\n+/).map(function(line){return line.replace(/^\s*(?:open(?:ing)?(?:\s*hours)?|hours|trading hours|deals?|specials?)\s*[:\-]?\s*/i,'').trim()}).filter(Boolean);
   if(lines.length)applyDays(o,lines.join('\n'),isHours);
@@ -1536,7 +1583,8 @@ function linkBtn(href,label,cls){var a=el('a','vlink'+(cls?' '+cls:''),label);a.
 function paintView(){
   if(!E)return;var d=E.data,tk=todayKey(),v;
   $('vName').textContent=(d.name||'').trim()||'Untitled place';
-  var ea=d.editedAt||d.ts;$('vAsOf').textContent=ea?'as of '+asOf(ea):'';
+  var ea=d.editedAt||d.ts;$('vAsOf').textContent=ea>1577836800000?'as of '+asOf(ea):'';
+  var sc=todaySurcharges(d);$('vSurch').hidden=!sc.length||E.kind==='draft';$('vSurch').textContent=sc.length?sc.join(', ')+' today':'';
   // address
   v=$('v-addr');v.textContent='';
   v.appendChild(d.loc?el('p','vtext',d.loc):muted('No address yet'));
@@ -1621,19 +1669,75 @@ var TIP_RULES=[
   ['Corkage fee',/corkage/i],['Cakeage fee',/cakeage/i]
 ];
 function wc(t){return t.trim().split(/\s+/).filter(Boolean).length}
-function tidyTip(t){t=String(t).replace(/\s+/g,' ').replace(/^[\s\-–—*•,.;:]+|[\s,.;:!]+$/g,'');return t?t.charAt(0).toUpperCase()+t.slice(1):''}
+function tidyTip(t){t=String(t).replace(/\s+/g,' ').replace(/^[\s\-–—*•,.;:|]+|[\s,.;:!|]+$/g,'');
+  if(/\d\s*(?:am|pm)\b|midnight|noon|midday|\b\d{1,2}:\d\d\b/i.test(t)){t=normHours(t).replace(/\bavailable\s+(?=daily|every|from|\d)/i,'').replace(/\bfrom\s+(?=\d)/i,'').replace(/\s+/g,' ').trim()}return t?t.charAt(0).toUpperCase()+t.slice(1):''}
+// "A roving dessert trolley brings theatre..." -> "Roving dessert trolley"
+var TIP_FLUFF=/^(?:brings?|adds?|creates?|makes?|delivers?|gives?|lets|turns?|draws?|takes?|keeps?|rolls?|fills?|spills?|wraps?|sets?|showcases?|transports?|elevates?|promises?|invites?)$/i;
+var TIP_HAS=/^(?:has|have|features?|boasts?|offers?|serves?|includes?)$/i;
+var TIP_ADVICE=/^(?:get|ask|try|order|go|book|come|arrive|bring|avoid|sit|grab|check|skip|expect|don'?t|make|call|save|leave|park|head|walk|share|request|note)$/i;
+function shortTip(t){
+  t=String(t).replace(/\s+/g,' ').trim();
+  var words=t.split(' ');
+  var fl0=t.replace(/^(?:a|an|the)\s+/i,'').match(/^((?:\S+\s+){0,2}\S+)\s+(?:is|are)\s+(?:super|very|really|so|extremely|always|incredibly|genuinely|quite)?\s*([a-z-]+)\b\s*(.*)$/i);
+  if(fl0&&!/^(?:a|an|the|not|open|closed|located|on|in|at|available|great|good|excellent|amazing)$/i.test(fl0[2])){
+    var tail0=/^and\b/i.test(fl0[3])?'':fl0[3].replace(/\s*,.*$/,'');
+    return (fl0[2].toLowerCase()+' '+fl0[1].toLowerCase()+(tail0?' '+tail0:'')).trim();
+  }
+  if(words.length<=4)return t;
+  if(TIP_ADVICE.test(words[0])){var c=t.split(/\s*,\s*/);return c[0].split(' ').length>=3?c[0]:t}
+  var body=t.replace(/^(?:there'?s|there is|there are)\s+/i,'').replace(/^(?:a|an|the)\s+/i,'');
+  var fl=body.match(/^((?:\S+\s+){0,2}\S+)\s+(?:is|are)\s+(?:super|very|really|so|extremely|always|incredibly|genuinely|quite)?\s*([a-z-]+)\b\s*(.*)$/i);
+  if(fl&&!/^(?:a|an|the|not|open|closed|located|on|in|at|available|great|good|excellent|amazing)$/i.test(fl[2])){
+    var tail=/^and\b/i.test(fl[3])?'':fl[3].replace(/\s*,.*$/,'');
+    return (fl[2].toLowerCase()+' '+fl[1].toLowerCase()+(tail?' '+tail:'')).trim();
+  }
+  var bw=body.split(' ');
+  for(var i=1;i<bw.length;i++){
+    var w=bw[i].replace(/[^a-z']/ig,'');
+    if(TIP_FLUFF.test(w))return bw.slice(0,i).join(' ');
+    if(TIP_HAS.test(w)){var rest=bw.slice(i+1).join(' ').split(/\s*,\s*/)[0];return bw.slice(0,i).join(' ')+(rest?' with '+rest:'')}
+    if(/^(?:is|are|was|were)$/i.test(w))return t;
+  }
+  var cl=body.split(/\s*,\s*/);if(cl.length>1&&cl[0].split(' ').length>=3)return cl[0];
+  return body;
+}
+function isRealDeal(t){return DEAL_RE.test(t)&&!SURCHARGE_RE.test(t)&&/\$\s?\d|\d+\s?%|half[- ]price|\bfree\b|2[- ]for[- ]1|two for one|bottomless/i.test(t)}
+function tipsToDeals(){
+  if(!E)return [];
+  var d=E.data,moved=[],keep=[];
+  d.tips.forEach(function(t){if(isRealDeal(t))moved.push(t);else keep.push(t)});
+  if(!moved.length)return [];
+  var add=parseDaysText(moved.join('\n'),false);
+  DAYS.forEach(function(x){if(add[x]){var cur=(d.deals[x]||'').trim();d.deals[x]=cur?(cur.indexOf(add[x])>=0?cur:cur+', '+add[x]):add[x]}});
+  d.tips=keep;touched();paintTags('tips');paintDays();paintView();
+  toast('Moved to Deals: '+moved.join(', '));
+  return moved;
+}
+function tipsToVibe(){
+  if(!E)return [];
+  var d=E.data,moved=[],keep=[];
+  d.tips.forEach(function(t){
+    var first=t.split(' ')[0];
+    var hits=VOCAB_VIBE.filter(function(v){return v[0].test(t.toLowerCase())}).map(function(v){return v[1]});
+    if(hits.length&&!TIP_ADVICE.test(first)&&!/[$\d]/.test(t)&&wc(t)<=10&&!TIP_RULES.some(function(r){return r[1].test(t)})){
+      hits.forEach(function(h){if(!d.vibe.some(function(x){return tagKey(x)===tagKey(h)})&&d.vibe.length<TAGS.vibe.max){d.vibe.push(h);moved.push(h)}});
+    }else keep.push(t);
+  });
+  if(keep.length!==d.tips.length){d.tips=keep;touched();paintTags('tips');paintTags('vibe');paintView();if(moved.length)toast('Moved to Vibe: '+moved.join(', '))}
+  return moved;
+}
 function organiseTips(text){
   var out=[],seen={},m=canonMap('tips');
   function add(t){t=tidyTip(t);if(!t)return;var k=tagKey(t);if(!seen[k]&&out.length<TAGS.tips.max){seen[k]=1;out.push(t.slice(0,200))}}
-  String(text||'').split(/\n+|(?<=[.!?])\s+|\s*[;•]\s*/).forEach(function(sentence){
+  fixSurcharges(String(text||'').split(/\n+|(?<=[.!?])\s+|\s*[;•|]\s*/)).forEach(function(sentence){
     sentence=sentence.trim().replace(/[.!?]+$/,'');if(!sentence)return;
-    var parts=sentence.split(/\s*,\s*|\s+(?:and|&)\s+|\s*\/\s*/).map(function(x){return x.trim()}).filter(Boolean);
+    var parts=sentence.split(/\b(?:is|are)\b/i.test(sentence)?/\s*,\s*|\s*\/\s*/:/\s*,\s*|\s+(?:and|&)\s+|\s*\/\s*/).map(function(x){return x.trim()}).filter(Boolean);
     var pieces=parts.length>1&&parts.every(function(x){return wc(x)<=4})?parts:[sentence];
     pieces.forEach(function(pc){
       var hits=TIP_RULES.filter(function(r){return r[1].test(pc)}),hw=hits.reduce(function(n,r){return n+wc(r[0])},0);
       if(hits.length&&wc(pc)<=hw+3&&!/[$\d]/.test(pc))hits.forEach(function(r){add(r[0])});
-      else if(wc(pc)<=4)add(m[tagKey(pc)]||pc);
-      else add(pc);
+      else if(wc(pc)<=4)add(m[tagKey(pc)]||shortTip(pc));
+      else add(shortTip(pc));
     });
   });
   return out;
@@ -1857,7 +1961,7 @@ $('form').addEventListener('keydown',function(e){
 // When you leave the box, show it tidied (e.g. "french/japanese" -> "French / Japanese")
 $('form').addEventListener('focusout',function(e){
   var k=e.target.dataset&&e.target.dataset.key;if(!k||(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA')||!E)return;
-  setTimeout(function(){if(!E||document.activeElement===e.target)return;e.target.value=E.data[k].join(tagSep(k));$('sug-'+k).hidden=true},0);
+  setTimeout(function(){if(!E||document.activeElement===e.target)return;if(k==='tips'){tipsToDeals();tipsToVibe()}e.target.value=E.data[k].join(tagSep(k));$('sug-'+k).hidden=true},0);
 });
 
 $('form').addEventListener('input',function(e){
@@ -1866,7 +1970,20 @@ $('form').addEventListener('input',function(e){
 });
 $('form').addEventListener('focusout',function(e){
   var f=e.target.dataset&&e.target.dataset.days;if(!f||!E)return;
-  setTimeout(function(){if(E&&document.activeElement!==e.target)e.target.value=fmtDays(E.data[f])},0);
+  var target=E,raw=e.target.value;
+  setTimeout(function(){
+    if(E!==target||document.activeElement===e.target)return;
+    if(f==='deals'){
+      var notes=splitDeals(raw).notes;
+      if(notes.length){
+        var before=E.data.tips.length;
+        E.data.tips=organiseTips(E.data.tips.concat(notes).join('\n'));
+        var added=E.data.tips.length-before;
+        if(added>0){touched();paintView();paintTags('tips');toast('Moved '+(added===1?'a note':added+' notes')+' to Good to know');tipsToVibe()}
+      }
+    }
+    e.target.value=fmtDays(E.data[f]);
+  },0);
 });
 $('fStars').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;var n=Number(b.dataset.n);
