@@ -440,6 +440,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
           <div class="group" id="g-info">
             <h3 class="ghead">Info</h3>
             <div id="slot-types"></div>
+            <div id="slot-vibe"></div>
           <section class="sec" data-sec="addr" id="sec-addr">
             <div class="sec-head"><span class="lab">Address</span><button type="button" class="editbtn" data-sec="addr">Edit</button></div>
             <div class="sec-view" id="v-addr"></div>
@@ -455,11 +456,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
           <section class="sec" data-sec="links" id="sec-links">
             <div class="sec-head"><span class="lab">Booking, website &amp; phone</span><button type="button" class="editbtn" data-sec="links">Edit</button></div>
             <div class="sec-view" id="v-links"></div>
-            <div class="sec-edit linkedit">
-              <label for="fBook">Booking link</label><input id="fBook" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off">
-              <label for="fUrl">Website</label><input id="fUrl" type="url" inputmode="url" maxlength="500" placeholder="https://" autocomplete="off">
-              <label for="fPhone">Phone</label><input id="fPhone" type="tel" inputmode="tel" maxlength="40" placeholder="Phone number" autocomplete="off">
-            </div>
+            <div class="sec-edit"><textarea id="linksTxt" rows="3" placeholder="Paste a booking link, website or phone number" aria-label="Booking, website and phone"></textarea></div>
           </section>
           <section class="sec" id="sec-rating">
             <div class="sec-head"><span class="lab" id="rtLab">Rating</span></div>
@@ -473,10 +470,6 @@ details.days[open] summary::after{transform:rotate(90deg)}
           <div class="group single" id="g-deals">
             <h3 class="ghead">Deals</h3>
             <div id="slot-deals"></div>
-          </div>
-          <div class="group single" id="g-vibe">
-            <h3 class="ghead">Vibe</h3>
-            <div id="slot-vibe"></div>
           </div>
           <div class="group single" id="g-tips">
             <h3 class="ghead">Good to know</h3>
@@ -1161,12 +1154,12 @@ var DAY_SHORT={mon:'Mon',tue:'Tue',wed:'Wed',thu:'Thu',fri:'Fri',sat:'Sat',sun:'
 var DAY_LONG={mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'};
 function todayKey(){return DAYS[(new Date().getDay()+6)%7]}
 var TAGS={
-  types:{label:'Type',max:6,eatOnly:false,sugN:40,ph:'Add a type',sug:TYPE_LIST.map(function(t){return t[0]})},
-  cuisine:{label:'Cuisine',max:12,eatOnly:true,sugN:10,ph:'Add a cuisine',
+  types:{label:'Type',max:6,eatOnly:false,sugN:40,ph:'What kind of place is it?',sug:TYPE_LIST.map(function(t){return t[0]})},
+  cuisine:{label:'Cuisine',max:12,eatOnly:true,sugN:10,ph:'What cuisine?',
     sug:['French','Italian','Japanese','Chinese','Korean','Thai','Vietnamese','Mexican','Indian','Greek','Middle Eastern','Modern Australian','Spanish','American']},
-  food:{label:'Dishes & drinks',max:20,eatOnly:true,sugN:12,ph:'Add dishes or drinks',
+  food:{label:'Dishes & drinks',max:20,eatOnly:true,sugN:12,ph:'What to eat and drink',
     sug:['Cocktails','Wine','Beer','Coffee','Dumplings','Burgers','Pizza','Pasta','Seafood','Oysters','Sushi','Ramen','Tacos','Steak','Dessert','Crepes','Brunch','Gelato']},
-  vibe:{label:'Vibe',max:12,eatOnly:false,sugN:14,ph:'Add a vibe',
+  vibe:{label:'Vibe',max:12,eatOnly:false,sugN:14,ph:'What\u2019s it like?',
     sug:['Date night','Casual','Lively','Cosy','Fancy','Late night','Rooftop','Outdoor seating','Great views','Good for groups','Live music','Hidden gem','Cheap eats','Quick bite']},
   tips:{label:'Good to know',max:20,eatOnly:false,sugN:8,ph:'Write anything useful',len:200,
     sug:['BYO','Cash only','Card only','Bookings recommended','Walk-ins only','Queue early','Kid friendly','Dog friendly','Wheelchair accessible','Vegan options','Gluten free options','Vegetarian options','Free wifi','Free parking','Kitchen closes early','Open late','Happy hour','Minimum spend','Set menu only','Cakeage fee']}
@@ -1359,6 +1352,11 @@ function normHours(v){
   if(!/[ap]m\b/i.test(v))v=v.replace(/\b([01]?\d|2[0-3])[:.]([0-5]\d)\b/g,function(_,h,mm){h=+h;return (h%12||12)+(mm!=='00'?':'+mm:'')+(h<12?'am':'pm')});
   v=v.replace(/\s*(?:-|–|—|\bto\b|\btill\b|\buntil\b|\btil\b)\s*(?=\d|late|close)/ig,'–');
   v=v.replace(/\b(late|close)\b/ig,function(w){return w.toLowerCase()});
+  // "5–11pm" -> "5pm–11pm", "11–3pm" -> "11am–3pm"
+  v=v.replace(/(^|[^\d:])(\d{1,2})(:\d\d)?–(\d{1,2})(:\d\d)?([ap]m)/g,function(_,pre,h1,m1,h2,m2,ap){
+    var a=+h1%12,b=+h2%12,same=a<b||(a===b&&(m1||'')<=(m2||''));
+    return pre+h1+(m1||'')+(same?ap:(ap==='pm'?'am':'pm'))+'–'+h2+(m2||'')+ap;
+  });
   v=v.replace(/\s*,\s*/g,', ');
   return v;
 }
@@ -1455,25 +1453,58 @@ function secEl(key,label,opts){
   TAG_KEYS.forEach(function(key){
     var t=TAGS[key],sec=secEl(key,t.label),ed=sec.querySelector('.sec-edit');
     var wrap=el('div','tagsearch');
-    var inp=key==='tips'?el('textarea'):el('input');if(key==='tips')inp.rows=4;else inp.type='text';inp.id='t-'+key;inp.maxLength=1400;inp.placeholder=t.ph;inp.autocomplete='off';inp.dataset.key=key;inp.setAttribute('aria-label',t.label);
+    var inp=el('textarea');inp.rows=key==='tips'?4:2;inp.id='t-'+key;inp.maxLength=1400;inp.placeholder=t.ph;inp.autocomplete='off';inp.dataset.key=key;inp.setAttribute('aria-label',t.label);
     inp.setAttribute('role','combobox');inp.setAttribute('aria-controls','sug-'+key);inp.setAttribute('aria-expanded','false');wrap.appendChild(inp);
     var sg=el('ul','tagdrop');sg.id='sug-'+key;sg.setAttribute('role','listbox');sg.hidden=true;wrap.appendChild(sg);
     ed.appendChild(wrap);
     $({types:'slot-types',cuisine:'slot-food',food:'slot-food',vibe:'slot-vibe',tips:'slot-tips'}[key]).appendChild(sec);
   });
-  // hours + deals
-  [['hours','Opening hours','Not added','Not added'],['deals','Deals','No deal','No deal']].forEach(function(g){
-    var sec=secEl(g[0],g[1]),ed=sec.querySelector('.sec-edit'),grid=el('div','daygrid');grid.id=g[0]+'Grid';
-    DAYS.forEach(function(d){
-      var lab=el('label','dlab',DAY_SHORT[d]);lab.htmlFor=g[0]+'-'+d;lab.dataset.d=d;
-      var inp=el('input');inp.type='text';inp.id=g[0]+'-'+d;inp.dataset.f=g[0];inp.dataset.d=d;inp.maxLength=120;inp.placeholder=d==='mon'?g[2]:g[3];inp.autocomplete='off';
-      grid.appendChild(lab);grid.appendChild(inp);
-    });
-    ed.appendChild(grid);
-    if(g[0]==='hours'){var cp=el('button','linkbtn','Copy Monday to every day');cp.type='button';cp.id='copyHours';ed.appendChild(cp)}
+  // hours + deals: one free text box each
+  [['hours','Opening hours','When is it open?'],['deals','Deals','Any deals on certain days?']].forEach(function(g){
+    var sec=secEl(g[0],g[1]),ed=sec.querySelector('.sec-edit');
+    var ta=el('textarea');ta.id=g[0]+'Txt';ta.rows=3;ta.placeholder=g[2];ta.dataset.days=g[0];ta.setAttribute('aria-label',g[1]);ed.appendChild(ta);
     $(g[0]==='hours'?'slot-hours':'slot-deals').appendChild(sec);
   });
 })();
+// Days: free text <-> per-day values
+function fmtDays(obj){
+  var vals=DAYS.map(function(d){return (obj[d]||'').trim()});
+  if(vals.every(function(v){return v&&v===vals[0]}))return 'Every day '+vals[0];
+  var lines=[],i=0;
+  while(i<7){
+    if(!vals[i]){i++;continue}
+    var j=i;while(j+1<7&&vals[j+1]===vals[i])j++;
+    lines.push((j>i?DAY_SHORT[DAYS[i]]+'–'+DAY_SHORT[DAYS[j]]:DAY_SHORT[DAYS[i]])+' '+vals[i]);
+    i=j+1;
+  }
+  return lines.join('\n');
+}
+function parseDaysText(text,isHours){
+  var o={};DAYS.forEach(function(d){o[d]=''});
+  var lines=String(text||'').split(/\n+/).map(function(line){return line.replace(/^\s*(?:open(?:ing)?(?:\s*hours)?|hours|trading hours|deals?|specials?)\s*[:\-]?\s*/i,'').trim()}).filter(Boolean);
+  if(lines.length)applyDays(o,lines.join('\n'),isHours);
+  if(isHours)DAYS.forEach(function(d){o[d]=normHours(o[d])});
+  else DAYS.forEach(function(d){o[d]=normHours(String(o[d]||'').trim()).replace(/^./,function(c){return c.toUpperCase()})});
+  return o;
+}
+// Links: booking link, website and phone from anything pasted
+function parseLinks(text){
+  var r={book:'',url:'',phone:''};text=String(text||'');
+  text.split(/\n+/).forEach(function(line){
+    var urls=line.match(/(?:https?:\/\/|www\.)[^\s<>"']+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|au|net|org|co|io|app|bar|restaurant|cafe|nz|uk)(?:\/[^\s<>"']*)?/ig)||[];
+    urls.forEach(function(u){
+      u=u.replace(/[),.]+$/,'');
+      var before=line.slice(Math.max(0,line.indexOf(u)-20),line.indexOf(u));
+      if((BOOK_HOST.test(u)||/\b(book|reserv)/i.test(before))&&!r.book)r.book=u;else if(!r.url)r.url=u;
+    });
+    var rest=line;urls.forEach(function(u){rest=rest.replace(u,' ')});
+    var ph=rest.match(/\+?\(?\d[\d\s().-]{6,}\d/);if(ph&&!r.phone)r.phone=ph[0].trim();
+  });
+  return r;
+}
+function fmtLinks(d){
+  return [d.book?'Booking: '+d.book:'',d.url?'Website: '+d.url:'',d.phone?'Phone: '+d.phone:''].filter(Boolean).join('\n');
+}
 function hasFood(types){return !types.length||types.some(function(t){return FOOD_COLORS.indexOf(typeColor(t))>=0})}
 function looksLikeAddress(s){return /\d/.test(s||'')&&!/^near /i.test(s||'')}
 function mapsHref(d){
@@ -1553,9 +1584,7 @@ function paintView(){
 function paintForm(){
   var d=E.data;
   $('fName').value=d.name||'';
-  $('fUrl').value=d.url||'';
-  $('fBook').value=d.book||'';
-  $('fPhone').value=d.phone||'';
+  if(document.activeElement!==$('linksTxt'))$('linksTxt').value=fmtLinks(d);
   $('fAddr').value=d.loc||'';
   $('copyCoords').textContent=fmtCoord(d.lat,d.lng);
   paintChoices();paintDays();paintView();
@@ -1608,8 +1637,31 @@ function tipCounts(){
   S.places.forEach(function(p){tipTags(p).forEach(function(f){var k=f.toLowerCase(),e=m.get(k);if(e)e.n++;else m.set(k,{label:f,n:1})})});
   return Array.from(m.entries()).sort(function(a,b){return b[1].n-a[1].n||a[1].label.localeCompare(b[1].label)});
 }
+function splitKnown(key,piece){
+  // "date night lively" -> ['Date night','Lively'] when every word is part of a known label
+  var labels=knownLabels(key).concat(tagCounts(key).map(function(e){return e[1].label}));
+  var toks=norm(piece).replace(/[^a-z0-9& ]/g,' ').split(/\s+/).filter(Boolean),out=[],i=0;
+  var keyed={};labels.forEach(function(l){keyed[tagKey(l)]=l});
+  while(i<toks.length){
+    var found=null,len=0;
+    for(var n=Math.min(4,toks.length-i);n>=1;n--){var k=toks.slice(i,i+n).map(sing).join(' ');if(keyed[k]){found=keyed[k];len=n;break}}
+    if(!found)return null;out.push(found);i+=len;
+  }
+  return out.length>1?out:null;
+}
 function parseTagText(key,text){
   if(key==='tips')return organiseTips(text);
+  var pieces=[];
+  String(text||'').split(/\s*(?:[\/,;|\n+]|\band\b|\bor\b|(?<=[.!?])\s)\s*/i).forEach(function(part){
+    part=part.trim().replace(/[.!?]+$/,'');if(!part)return;
+    var sp=splitKnown(key,part);if(sp)pieces=pieces.concat(sp);else pieces.push(part);
+  });
+  if(key==='types'){
+    var tp=[];pieces.forEach(function(pc){var f=findTypes(norm(pc),3);if(f.length){tp=tp.concat(f);if(E&&!E.data.cuisine.length){var cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(norm(pc))});if(cz.length){E.data.cuisine=cz}}}else tp.push(pc)});
+    pieces=tp;
+  }
+  if(key==='cuisine')pieces=pieces.map(function(pc){return pc.split(/\s+/).map(function(w){return w.length>2?w.charAt(0).toUpperCase()+w.slice(1):w}).join(' ')});
+  text=pieces.join('/');
   var m=canonMap(key),seen={},out=[];
   String(text||'').split(sepRe(key)).forEach(function(part){
     part=part.trim();if(!part)return;
@@ -1635,7 +1687,7 @@ function lastPart(v,key){var m=String(v).match(/(?:^|[\/,;|\n])\s*([^\/,;|\n]*)$
 // Dropdown helps finish the word you're typing
 function paintSug(key){
   if(!E)return;
-  if(key==='tips'){$('sug-tips').hidden=true;return}
+  $('sug-'+key).hidden=true;return;
   var sug=$('sug-'+key),inp=$('t-'+key),q=norm(lastPart(inp.value,key).trim());sug.textContent='';
   function close(){sug.hidden=true;inp.setAttribute('aria-expanded','false')}
   if(!q||document.activeElement!==inp){close();return}
@@ -1669,11 +1721,8 @@ function paintChoices(){
   Array.prototype.forEach.call($('fStars').children,function(b){b.classList.toggle('on',Number(b.dataset.n)<=d.rating)});
 }
 function paintDays(){
-  var d=E.data,tk=todayKey();
-  ['hours','deals'].forEach(function(f){
-    DAYS.forEach(function(day){$(f+'-'+day).value=d[f][day]||''});
-  });
-  Array.prototype.forEach.call(document.querySelectorAll('.daygrid .dlab'),function(l){l.classList.toggle('today',l.dataset.d===tk)});
+  var d=E.data;
+  ['hours','deals'].forEach(function(f){var t=$(f+'Txt');if(document.activeElement!==t)t.value=fmtDays(d[f])});
 }
 function setAllOpen(on){
   $('form').classList.toggle('all-open',on);
@@ -1740,9 +1789,8 @@ $('addBtn').addEventListener('click',function(){
   startDraft({lat:lat,lng:lng,loc:'',paste:true});
 });
 $('fName').addEventListener('input',function(e){E.data.name=e.target.value;paintView();touched()});
-$('fUrl').addEventListener('input',function(e){E.data.url=e.target.value.trim();touched()});
-$('fBook').addEventListener('input',function(e){E.data.book=e.target.value.trim();touched()});
-$('fPhone').addEventListener('input',function(e){E.data.phone=e.target.value;touched()});
+$('linksTxt').addEventListener('input',function(e){var r=parseLinks(e.target.value);E.data.book=r.book;E.data.url=r.url;E.data.phone=r.phone;touched()});
+$('linksTxt').addEventListener('blur',function(e){if(E)e.target.value=fmtLinks(E.data)});
 $('fAddr').addEventListener('input',function(e){E.data.loc=e.target.value;touched()});
 $('fAddr').addEventListener('keydown',function(e){if(e.key==='Enter'&&$('addrDrop').hidden){e.preventDefault();findAddress()}});
 $('addrFind').addEventListener('click',findAddress);
@@ -1758,8 +1806,7 @@ $('form').addEventListener('keydown',function(e){
   var k=e.target.dataset&&e.target.dataset.key;if(!k||(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA'))return;
   if(e.key==='Enter'){
     var dd=$('sug-'+k),first=dd.hidden?null:dd.querySelector('.sug');
-    if(k==='tips')return;
-    e.preventDefault();if(first)pickSug(k,first.dataset.f);else e.target.blur();
+    return;
   }
 });
 // When you leave the box, show it tidied (e.g. "french/japanese" -> "French / Japanese")
@@ -1769,17 +1816,12 @@ $('form').addEventListener('focusout',function(e){
 });
 
 $('form').addEventListener('input',function(e){
-  var f=e.target.dataset&&e.target.dataset.f,d=e.target.dataset&&e.target.dataset.d;if(!f||!d||!E)return;
-  E.data[f][d]=e.target.value;touched();
+  var f=e.target.dataset&&e.target.dataset.days;if(!f||!E)return;
+  E.data[f]=parseDaysText(e.target.value,f==='hours');touched();
 });
-$('form').addEventListener('change',function(e){
-  if(!E||e.target.dataset.f!=='hours')return;var d=e.target.dataset.d,n=normHours(e.target.value);
-  if(n!==e.target.value){e.target.value=n;E.data.hours[d]=n;touched()}
-});
-$('copyHours').addEventListener('click',function(){
-  if(!E)return;var v=E.data.hours.mon||'';
-  if(!v.trim()){toast('Fill in Monday first');return}
-  DAYS.forEach(function(d){E.data.hours[d]=v});paintDays();paintView();touched();
+$('form').addEventListener('focusout',function(e){
+  var f=e.target.dataset&&e.target.dataset.days;if(!f||!E)return;
+  setTimeout(function(){if(E&&document.activeElement!==e.target)e.target.value=fmtDays(E.data[f])},0);
 });
 $('fStars').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;var n=Number(b.dataset.n);
@@ -2007,7 +2049,7 @@ var DAY_RANGE='(?:'+DAY_ATOM+'(?:\\s*(?:-|–|—|to|through|thru|till|until)\\s
 var DAY_SPEC=DAY_RANGE+'(?:\\s*(?:,|&|and|\\+|\\/)\\s*'+DAY_RANGE+')*';
 var RE_LEAD=new RegExp('^\\s*('+DAY_SPEC+')\\b\\.?\\s*(?:[:,\\-–—]|\\bfrom\\b)?\\s*(.*)$','i');
 var RE_TRAIL=new RegExp('^(.*?)[,\\s]+(?:on\\s+|every\\s+)?('+DAY_SPEC+')\\.?\\s*$','i');
-var RE_SPLIT=new RegExp('\\s*(?:;|\\||\\n)\\s*|,\\s*(?=(?:closed\\s+(?:on\\s+)?)?'+DAY_ATOM+'\\b)','i');
+var RE_SPLIT=new RegExp('\\s*(?:;|\\||\\n)\\s*|,\\s*(?=(?:closed\\s+(?:on\\s+)?)?'+DAY_RANGE+'\\b)','i');
 function dayIdx(w){var k=w.toLowerCase().slice(0,2);return ['mo','tu','we','th','fr','sa','su'].indexOf(k)}
 function parseDaySpec(spec){
   var out=[],s=spec.toLowerCase();
@@ -2032,22 +2074,36 @@ function tidyTimes(v){
   if(/^closed$/i.test(v))v='Closed';
   return v;
 }
+var RE_MID=new RegExp('^(.*?)\\b(?:on\\s+|every\\s+)?('+DAY_SPEC+')\\b(.*)$','i');
+function hasDay(t){var m=String(t).match(RE_MID);return !!(m&&parseDaySpec(m[2]).length)}
 function applyDays(obj,text,isHours){
-  var segs=String(text).split(RE_SPLIT).filter(function(x){return x&&x.trim()}),pending=[],used=false,rest=[];
+  var segs=[],pending=[],used=false,rest=[],setNow={};
+  function put(d,val){if(!isHours&&setNow[d]&&obj[d]&&obj[d].indexOf(val)<0)obj[d]=obj[d]+', '+val;else obj[d]=val;setNow[d]=1}
+  // split into chunks at commas, keeping chunks without a day attached to the one before
+  String(text).split(RE_SPLIT).filter(function(x){return x&&x.trim()}).forEach(function(seg){
+    var cur=null;
+    seg.split(/\s*,\s*/).forEach(function(ch){
+      if(cur!==null&&!hasDay(ch))cur+=', '+ch;
+      else{if(cur!==null)segs.push(cur);cur=ch}
+    });
+    if(cur!==null)segs.push(cur);
+  });
   segs.forEach(function(seg){
     seg=seg.trim();var days=null,val='',m;
     if((m=seg.match(RE_LEAD))&&parseDaySpec(m[1]).length){days=parseDaySpec(m[1]);val=m[2]}
     else if((m=seg.match(RE_TRAIL))&&m[1].trim()&&parseDaySpec(m[2]).length){days=parseDaySpec(m[2]);val=m[1]}
+    else if((m=seg.match(RE_MID))&&parseDaySpec(m[2]).length&&(m[1]+m[3]).trim()){days=parseDaySpec(m[2]);val=(m[1].trim()+' '+m[3].trim()).trim()}
     if(days){
       val=isHours?tidyTimes(val):val.trim().replace(/^[,:\-–—\s]+/,'');
       if(!val){pending=pending.concat(days);return}
-      pending.concat(days).forEach(function(d){obj[d]=val});pending=[];used=true;
+      pending.concat(days).forEach(function(d){put(d,val)});pending=[];used=true;
     }else rest.push(seg);
   });
-  if(rest.length&&!used){
+  if(rest.length){
+    // no day given: it applies to every day not mentioned (e.g. "12-3pm, closed mondays")
     var v=isHours?tidyTimes(rest.join(', ')):rest.join(', ');
-    if(v){DAYS.forEach(function(d){obj[d]=v});used=true}
-  }else if(rest.length)return rest.join(', ');
+    if(v)DAYS.forEach(function(d){if(!setNow[d])put(d,v)});
+  }
   return '';
 }
 function splitList(v){
