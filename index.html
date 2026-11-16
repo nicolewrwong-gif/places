@@ -287,6 +287,11 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .vtips{margin:0;padding-left:18px;font-size:14px;line-height:1.55}
 .sec-edit textarea{width:100%;border:1px solid transparent;border-radius:9px;background:var(--field);padding:9px 10px;line-height:1.45;resize:vertical;font-size:16px}
 .sec-edit textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.asof{margin:2px 0 0;font-size:11.5px;color:var(--muted)}
+.placeasof{margin:2px 0 0}
+.namesec.open .placeasof,.all-open .placeasof{display:none}
+.menulink{display:inline-flex;flex-direction:column;align-items:center;gap:1px}
+.menulink .asof{margin:0}
 .vempty{margin:0;font-size:13px;color:var(--muted)}
 .vlinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .vlinks:first-child{margin-top:0}
@@ -354,6 +359,11 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .toast{position:absolute;left:50%;top:12px;transform:translate(-50%,-8px);max-width:calc(100% - 100px);background:var(--fg);color:var(--panel);padding:8px 14px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
+/* adding a place: full screen */
+.app.adding{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important}
+.app.adding .mapbox,.app.adding .search,.app.adding .crave{display:none!important}
+.app.adding #editView{width:100%;max-width:720px;margin:0 auto}
+.app.adding .where{display:none}
 @media (max-width:820px){
   .app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(190px,42%) minmax(0,1fr)}
   .mapbox{order:-1}
@@ -435,6 +445,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
           </details>
           <section class="sec namesec" data-sec="name" id="sec-name">
             <div class="sec-head"><h2 class="vname" id="vName"></h2><span class="lab">Name</span><button type="button" class="editbtn" data-sec="name">Edit</button></div>
+            <p class="asof placeasof" id="vAsOf"></p>
             <div class="sec-edit"><input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off" aria-label="Name"></div>
           </section>
           <div class="group" id="g-info">
@@ -454,9 +465,9 @@ details.days[open] summary::after{transform:rotate(90deg)}
           </section>
             <div id="slot-hours"></div>
           <section class="sec" data-sec="links" id="sec-links">
-            <div class="sec-head"><span class="lab">Booking, website &amp; phone</span><button type="button" class="editbtn" data-sec="links">Edit</button></div>
+            <div class="sec-head"><span class="lab">Booking, menu, website &amp; phone</span><button type="button" class="editbtn" data-sec="links">Edit</button></div>
             <div class="sec-view" id="v-links"></div>
-            <div class="sec-edit"><textarea id="linksTxt" rows="3" placeholder="Paste a booking link, website or phone number" aria-label="Booking, website and phone"></textarea></div>
+            <div class="sec-edit"><textarea id="linksTxt" rows="3" placeholder="Paste a booking link, menu link, website or phone number" aria-label="Booking, menu, website and phone"></textarea></div>
           </section>
           <section class="sec" id="sec-rating">
             <div class="sec-head"><span class="lab" id="rtLab">Rating</span></div>
@@ -645,11 +656,11 @@ function clean(id,x){
   var types=Array.isArray(x.types)?cleanFood(x.types,6):typesFromOld(x);
   return {id:id,name:String(x.name||''),types:types,cat:types.length?typeColor(types[0]):'other',status:x.status==='been'?'been':'want',
     rating:Math.max(0,Math.min(5,r)),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),tips:cleanTips(x.tips),
-    notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),phone:String(x.phone||''),hours:cleanDays(x.hours),deals:cleanDays(x.deals),
+    notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),hours:cleanDays(x.hours),deals:cleanDays(x.deals),
     lat:lat,lng:wrapLng(lng),loc:String(x.loc||''),ts:Number(x.ts)||0};
 }
 function payload(p){return {name:p.name,types:p.types||[],cat:placeColor(p),status:p.status,rating:p.rating,food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],tips:p.tips||[],notes:p.notes,url:p.url,
-  book:p.book||'',phone:p.phone||'',hours:cleanDays(p.hours),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc,ts:p.ts}}
+  book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',hours:cleanDays(p.hours),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc,ts:p.ts}}
 function loadLocal(){
   var m=new Map();
   try{var arr=JSON.parse(localStorage.getItem(LS_KEY)||'[]');arr.forEach(function(x){var p=clean(x.id||('p_'+Math.random().toString(36).slice(2)),x);if(p)m.set(p.id,p)})}catch(e){}
@@ -1157,7 +1168,7 @@ var TAGS={
   types:{label:'Type',max:6,eatOnly:false,sugN:40,ph:'What kind of place is it?',sug:TYPE_LIST.map(function(t){return t[0]})},
   cuisine:{label:'Cuisine',max:12,eatOnly:true,sugN:10,ph:'What cuisine?',
     sug:['French','Italian','Japanese','Chinese','Korean','Thai','Vietnamese','Mexican','Indian','Greek','Middle Eastern','Modern Australian','Spanish','American']},
-  food:{label:'Dishes & drinks',max:20,eatOnly:true,sugN:12,ph:'What to eat and drink',
+  food:{label:'Dishes & drinks',max:40,eatOnly:true,sugN:12,ph:'What to eat and drink',
     sug:['Cocktails','Wine','Beer','Coffee','Dumplings','Burgers','Pizza','Pasta','Seafood','Oysters','Sushi','Ramen','Tacos','Steak','Dessert','Crepes','Brunch','Gelato']},
   vibe:{label:'Vibe',max:12,eatOnly:false,sugN:14,ph:'What\u2019s it like?',
     sug:['Date night','Casual','Lively','Cosy','Fancy','Late night','Rooftop','Outdoor seating','Great views','Good for groups','Live music','Hidden gem','Cheap eats','Quick bite']},
@@ -1453,7 +1464,7 @@ function secEl(key,label,opts){
   TAG_KEYS.forEach(function(key){
     var t=TAGS[key],sec=secEl(key,t.label),ed=sec.querySelector('.sec-edit');
     var wrap=el('div','tagsearch');
-    var inp=el('textarea');inp.rows=key==='tips'?4:2;inp.id='t-'+key;inp.maxLength=1400;inp.placeholder=t.ph;inp.autocomplete='off';inp.dataset.key=key;inp.setAttribute('aria-label',t.label);
+    var inp=el('textarea');inp.rows=key==='tips'?4:2;inp.id='t-'+key;inp.maxLength=key==='food'?30000:1400;inp.placeholder=t.ph;inp.autocomplete='off';inp.dataset.key=key;inp.setAttribute('aria-label',t.label);
     inp.setAttribute('role','combobox');inp.setAttribute('aria-controls','sug-'+key);inp.setAttribute('aria-expanded','false');wrap.appendChild(inp);
     var sg=el('ul','tagdrop');sg.id='sug-'+key;sg.setAttribute('role','listbox');sg.hidden=true;wrap.appendChild(sg);
     ed.appendChild(wrap);
@@ -1488,14 +1499,16 @@ function parseDaysText(text,isHours){
   return o;
 }
 // Links: booking link, website and phone from anything pasted
+function asOf(ts){var d=new Date(ts);return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear()}
 function parseLinks(text){
-  var r={book:'',url:'',phone:''};text=String(text||'');
+  var r={book:'',url:'',phone:'',menu:''};text=String(text||'');
   text.split(/\n+/).forEach(function(line){
     var urls=line.match(/(?:https?:\/\/|www\.)[^\s<>"']+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|au|net|org|co|io|app|bar|restaurant|cafe|nz|uk)(?:\/[^\s<>"']*)?/ig)||[];
     urls.forEach(function(u){
       u=u.replace(/[),.]+$/,'');
       var before=line.slice(Math.max(0,line.indexOf(u)-20),line.indexOf(u));
-      if((BOOK_HOST.test(u)||/\b(book|reserv)/i.test(before))&&!r.book)r.book=u;else if(!r.url)r.url=u;
+      if((/menu/i.test(u)||/\bmenu/i.test(before))&&!r.menu)r.menu=u;
+      else if((BOOK_HOST.test(u)||/\b(book|reserv)/i.test(before))&&!r.book)r.book=u;else if(!r.url)r.url=u;
     });
     var rest=line;urls.forEach(function(u){rest=rest.replace(u,' ')});
     var ph=rest.match(/\+?\(?\d[\d\s().-]{6,}\d/);if(ph&&!r.phone)r.phone=ph[0].trim();
@@ -1503,7 +1516,7 @@ function parseLinks(text){
   return r;
 }
 function fmtLinks(d){
-  return [d.book?'Booking: '+d.book:'',d.url?'Website: '+d.url:'',d.phone?'Phone: '+d.phone:''].filter(Boolean).join('\n');
+  return [d.book?'Booking: '+d.book:'',d.menu?'Menu: '+d.menu:'',d.url?'Website: '+d.url:'',d.phone?'Phone: '+d.phone:''].filter(Boolean).join('\n');
 }
 function hasFood(types){return !types.length||types.some(function(t){return FOOD_COLORS.indexOf(typeColor(t))>=0})}
 function looksLikeAddress(s){return /\d/.test(s||'')&&!/^near /i.test(s||'')}
@@ -1523,20 +1536,22 @@ function linkBtn(href,label,cls){var a=el('a','vlink'+(cls?' '+cls:''),label);a.
 function paintView(){
   if(!E)return;var d=E.data,tk=todayKey(),v;
   $('vName').textContent=(d.name||'').trim()||'Untitled place';
+  var ea=d.editedAt||d.ts;$('vAsOf').textContent=ea?'as of '+asOf(ea):'';
   // address
   v=$('v-addr');v.textContent='';
   v.appendChild(d.loc?el('p','vtext',d.loc):muted('No address yet'));
   if(ME)v.appendChild(el('p','vdist',fmtDist(distM(ME,d))+' from you'));
   var row=el('div','vlinks');row.appendChild(linkBtn(mapsHref(d),'Open in Maps ↗','soft'));v.appendChild(row);
   // links
-  v=$('v-links');v.textContent='';var bk=normUrl(d.book),u=normUrl(d.url),tel=telHref(d.phone);
-  if(bk||u||tel){
+  v=$('v-links');v.textContent='';var bk=normUrl(d.book),u=normUrl(d.url),tel=telHref(d.phone),mn=normUrl(d.menu);
+  if(bk||u||tel||mn){
     var lr=el('div','vlinks');
-    if(bk)lr.appendChild(linkBtn(bk,'Book ↗'));
+    if(bk)lr.appendChild(linkBtn(bk,'Book \u2197'));
+    if(mn)lr.appendChild(linkBtn(mn,'Menu \u2197','soft'));
     if(u)lr.appendChild(linkBtn(u,'Website ↗','soft'));
     if(tel)lr.appendChild(linkBtn(tel,'Call '+d.phone.trim(),'soft'));
     v.appendChild(lr);
-  }else v.appendChild(muted('No booking link, website or phone yet'));
+  }else v.appendChild(muted('No booking link, menu, website or phone yet'));
   // hours
   v=$('v-hours');v.textContent='';
   if(DAYS.some(function(x){return (d.hours[x]||'').trim()})){
@@ -1575,7 +1590,7 @@ function paintView(){
     vv.appendChild(box);
   });
   // edit button wording: Add when empty
-  var empty={name:false,addr:!d.loc,links:!(bk||u||tel),hours:!$('v-hours').querySelector('dl'),deals:!dd2.length};
+  var empty={name:false,addr:!d.loc,links:!(bk||u||tel||mn),hours:!$('v-hours').querySelector('dl'),deals:!dd2.length};
   TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});
   Array.prototype.forEach.call(document.querySelectorAll('#form .editbtn'),function(b){
     var sec=b.closest('.sec');b.textContent=sec.classList.contains('open')?'Done':(empty[b.dataset.sec]?'Add':'Edit');
@@ -1649,8 +1664,35 @@ function splitKnown(key,piece){
   }
   return out.length>1?out:null;
 }
+function stripAcc(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+function looksLikeMenu(text){
+  var lines=String(text||'').split(/\n/).filter(function(l){return l.trim()});
+  return /^\s*#/m.test(text)||lines.filter(function(l){return /^\s*[-*\u2022].+\s[\u2013\u2014-]\s/.test(l)}).length>=3||lines.length>=8;
+}
+var MENU_SECTIONS=[[/mocktail|non[- ]?alc/,'Mocktails'],[/cocktail/,'Cocktails'],[/beer|cider/,'Beer'],[/champagne|sparkling/,'Champagne'],[/wine/,'Wine'],[/spirit|aperitif|liqueur|whisk|gin\b|rum\b/,'Spirits'],[/coffee/,'Coffee'],[/\btea\b/,'Tea'],[/dessert|sweet/,'Dessert']];
+var MENU_WORDS=[[/oyster|huitre/,'Oysters'],[/scallop|saint-jacques/,'Scallops'],[/trout|tuna|thon|salmon|saumon|fish|poisson|squid|calamari|seiche|clam|palourde|mussel|moule|lobster|homard|prawn|shrimp|crevette|crab|octopus|poulpe/,'Seafood'],
+  [/escargot/,'Escargots'],[/steak|tartare|entrecote|eye round|wagyu|sirloin|ribeye|scotch fillet/,'Steak'],[/duck|canard/,'Duck'],[/lamb|agneau/,'Lamb'],[/chicken|poulet/,'Chicken'],[/pork|porc|belly/,'Pork'],
+  [/saucisson|sausage|prosciutto|jambon|salami|charcuterie/,'Charcuterie'],[/cheese|fromage|brie|stracciatella|burrata|camembert/,'Cheese'],[/\bfries\b|\bfrites\b|chips\b/,'Fries'],[/salad|salade/,'Salad'],
+  [/gnocchi/,'Gnocchi'],[/chocolat/,'Chocolate'],[/soft serve|glace|gelato|ice cream/,'Ice cream'],[/creme brulee/,'Crème brûlée']];
+var DRINK_LABELS=['wine','beer','cocktails','champagne','coffee','matcha','bubble tea'];
+function menuTags(text){
+  var tags=[],seen={},section='';
+  function add(t){var k=t.toLowerCase();if(!seen[k]){seen[k]=1;tags.push(t)}}
+  String(text||'').split(/\n/).forEach(function(line){
+    line=line.trim();if(!line)return;
+    var h=line.match(/^#+\s*(.+)$/)||(!/^[-*\u2022]/.test(line)&&!/[\u2013\u2014]/.test(line)&&line.length<40&&/^[A-Za-z&'()\s-]+$/.test(line)?[0,line]:null);
+    if(h){section=stripAcc(h[1]);MENU_SECTIONS.some(function(r){if(r[0].test(section)){add(r[1]);return true}});return}
+    var drink=/wine|beer|cider|cocktail|mocktail|champagne|sparkling|spirit|aperitif|liqueur|liquid|drink|coffee|\btea\b|soda|juice/.test(section);
+    if(drink)return;
+    var hay=stripAcc(line.replace(/^[-*\u2022]\s*/,''));
+    MENU_WORDS.forEach(function(r){if(r[0].test(hay))add(r[1])});
+    VOCAB_FOOD.forEach(function(v){if(DRINK_LABELS.indexOf(v[1].toLowerCase())<0&&v[0].test(hay))add(v[1])});
+  });
+  return tags;
+}
 function parseTagText(key,text){
   if(key==='tips')return organiseTips(text);
+  if(key==='food'&&looksLikeMenu(text))return parseTagText('food',menuTags(text).join(', '));
   var pieces=[];
   String(text||'').split(/\s*(?:[\/,;|\n+]|\band\b|\bor\b|(?<=[.!?])\s)\s*/i).forEach(function(part){
     part=part.trim().replace(/[.!?]+$/,'');if(!part)return;
@@ -1708,6 +1750,7 @@ function paintSug(key){
 }
 function setTagText(key,text){
   E.data[key]=parseTagText(key,text);
+  if(key==='food')E.data.foodAt=Date.now();
   if(key==='types')E.data.cat=placeColor(E.data);
   paintView();touched();
 }
@@ -1731,6 +1774,7 @@ function setAllOpen(on){
 function showEditor(){
   $('listView').hidden=true;$('editView').hidden=false;
   document.querySelector('.app').classList.add('editing');
+  document.querySelector('.app').classList.toggle('adding',E.kind==='draft');
   var draft=E.kind==='draft';
   $('saveBtn').hidden=!draft;
   $('delBtn').textContent=draft?'Discard':'Delete place';
@@ -1748,7 +1792,7 @@ function showEditor(){
 function closeEditor(silent){
   E=null;S.selId=null;
   $('editView').hidden=true;$('listView').hidden=false;
-  document.querySelector('.app').classList.remove('editing');
+  document.querySelector('.app').classList.remove('editing','adding');
   if(!silent)renderAll();else{renderFilters();renderList();invalidate()}
 }
 function openPlace(id){
@@ -1771,6 +1815,7 @@ function startDraft(init){
 }
 function touched(){
   if(!E)return;
+  E.data.editedAt=Date.now();
   if(E.kind==='saved'){schedulePersist(E.id);renderList();renderFilters()}
   invalidate();
 }
@@ -1789,7 +1834,7 @@ $('addBtn').addEventListener('click',function(){
   startDraft({lat:lat,lng:lng,loc:'',paste:true});
 });
 $('fName').addEventListener('input',function(e){E.data.name=e.target.value;paintView();touched()});
-$('linksTxt').addEventListener('input',function(e){var r=parseLinks(e.target.value);E.data.book=r.book;E.data.url=r.url;E.data.phone=r.phone;touched()});
+$('linksTxt').addEventListener('input',function(e){var r=parseLinks(e.target.value);if(r.menu!==(E.data.menu||''))E.data.menuAt=r.menu?Date.now():0;E.data.book=r.book;E.data.menu=r.menu;E.data.url=r.url;E.data.phone=r.phone;touched()});
 $('linksTxt').addEventListener('blur',function(e){if(E)e.target.value=fmtLinks(E.data)});
 $('fAddr').addEventListener('input',function(e){E.data.loc=e.target.value;touched()});
 $('fAddr').addEventListener('keydown',function(e){if(e.key==='Enter'&&$('addrDrop').hidden){e.preventDefault();findAddress()}});
@@ -1841,7 +1886,9 @@ $('saveBtn').addEventListener('click',function(){
   persist(id);
   $('saveBtn').hidden=true;$('delBtn').textContent='Delete place';$('edNote').hidden=true;
   $('pasteBox').open=false;setEdState('');$('findBox').hidden=true;
+  document.querySelector('.app').classList.remove('adding');
   setAllOpen(false);paintForm();$('editView').querySelector('.scroll').scrollTop=0;
+  setTimeout(function(){if(E)flyTo(E.data.lat,E.data.lng,Math.max(V.z,8))},60);
   renderAll();toast('Saved to your places');
 });
 $('delBtn').addEventListener('click',function(){
