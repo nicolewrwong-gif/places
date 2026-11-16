@@ -2005,22 +2005,14 @@ function applyFound(it,full){
   if(full&&it.name){d.name=it.name;got.push('name')}
   else if(it.name&&!d.name.trim()){d.name=it.name;got.push('name')}
   if(it.addr){d.loc=it.addr;got.push('address')}
-  if(it.type&&!d.types.length){d.types=[it.type];d.cat=placeColor(d);got.push('type')}
   d.lat=Math.round(it.lat*1e5)/1e5;d.lng=Math.round(it.lng*1e5)/1e5;
   paintForm();touched();flyTo(d.lat,d.lng,8);
   return got;
 }
 attachPlaceSearch($('findQ'),$('findDrop'),function(it){
-  var got=(applyFound(it,true)||[]).concat(['map pin']),msg=$('findMsg'),target=E;
+  applyFound(it,true);
   $('findQ').value='';
-  function say(extra){msg.textContent='Filled in '+listWords(got)+'.'+(extra||'')+' Check it below, then tap Save place.'}
-  if(!it.osm){say();return}
-  msg.textContent='Filled in '+listWords(got)+'. Looking up opening hours\u2026';
-  osmLookup(it.osm).then(function(t){
-    if(E!==target)return;
-    var more=applyExtras(t,true);got=got.concat(more);
-    say(more.indexOf('opening hours')<0?' No opening hours listed for it, so add them below.':'');
-  });
+  $('findMsg').textContent='Filled in the name and address.';
 });
 attachPlaceSearch($('fAddr'),$('addrDrop'),function(it){
   applyFound(it,false);toast('Address and pin updated');
