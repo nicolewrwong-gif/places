@@ -338,7 +338,6 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .sec-edit .tags:not(:empty){margin-bottom:8px}
 .sec-edit .sugs:not(:empty){margin-top:8px}
 .chip.sug.addnew{border-style:solid;border-color:var(--accent);color:var(--accent)}
-#sec-rating .stars{margin-top:2px}
 .form{gap:0}
 .form .paste{margin-bottom:6px}
 .actions{margin-top:10px}
@@ -367,6 +366,15 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .app.adding .mapbox,.app.adding .search,.app.adding .crave{display:none!important}
 .app.adding #editView{width:100%;max-width:720px;margin:0 auto}
 .app.adding .where{display:none}
+.broad{display:none;margin-top:10px}
+.app.adding .broad{display:block}
+.broad textarea{width:100%;border:1px solid transparent;border-radius:9px;background:var(--field);padding:10px 12px;line-height:1.5;resize:vertical;font-size:16px;min-height:130px}
+.broad textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.app.adding #g-info .sec .sec-edit{display:none}
+.app.adding #g-info .sec .sec-view{display:block}
+.app.adding #g-info .sec{padding:8px 0}
+.app.adding .sec-edit textarea{min-height:130px}
+.app.adding #sec-addr{border-bottom:0}
 @media (max-width:820px){
   .app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(190px,42%) minmax(0,1fr)}
   .mapbox{order:-1}
@@ -431,15 +439,6 @@ details.days[open] summary::after{transform:rotate(90deg)}
       <div class="scroll">
         <div class="form" id="form">
           <div class="note" id="edNote" hidden></div>
-          <div class="findplace" id="findBox" hidden>
-            <label for="findQ">Find the place</label>
-            <div class="tagsearch">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-              <input id="findQ" type="text" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Search a name or address" role="combobox" aria-controls="findDrop" aria-expanded="false">
-              <ul id="findDrop" class="tagdrop placedrop" role="listbox" hidden></ul>
-            </div>
-            <p class="findmsg" id="findMsg"></p>
-          </div>
           <details class="paste" id="pasteBox" hidden>
             <summary>Paste details to fill in</summary>
             <textarea id="pasteTxt" rows="7"></textarea>
@@ -454,28 +453,28 @@ details.days[open] summary::after{transform:rotate(90deg)}
           </section>
           <div class="group" id="g-info">
             <h3 class="ghead">Info</h3>
+            <div class="broad"><textarea id="infoTxt" rows="5" placeholder="Type anything: what kind of place, cuisine, vibe, opening hours, links, phone" aria-label="Info"></textarea></div>
             <div id="slot-types"></div>
+            <div id="slot-cuisine"></div>
             <div id="slot-vibe"></div>
+            <div id="slot-addr">
           <section class="sec" data-sec="addr" id="sec-addr">
             <div class="sec-head"><span class="lab">Address</span><button type="button" class="editbtn" data-sec="addr">Edit</button></div>
             <div class="sec-view" id="v-addr"></div>
             <div class="sec-edit">
               <div class="urlrow">
-                <span class="tagsearch addrsearch"><input id="fAddr" type="text" maxlength="200" placeholder="Search an address" autocomplete="off" aria-label="Address" role="combobox" aria-controls="addrDrop" aria-expanded="false"><ul id="addrDrop" class="tagdrop placedrop" role="listbox" hidden></ul></span>
+                <span class="tagsearch addrsearch"><input id="fAddr" type="text" maxlength="200" placeholder="Search the place or address" autocomplete="off" aria-label="Address" role="combobox" aria-controls="addrDrop" aria-expanded="false"><ul id="addrDrop" class="tagdrop placedrop" role="listbox" hidden></ul></span>
                 <button type="button" class="btn sm" id="addrFind">Find</button>
               </div>
               <div class="where"><button type="button" id="copyCoords" class="mono" title="Copy coordinates"></button><span>Tap the map to move the pin</span></div>
             </div>
           </section>
+            </div>
             <div id="slot-hours"></div>
           <section class="sec" data-sec="links" id="sec-links">
             <div class="sec-head"><span class="lab">Booking, menu, website &amp; phone</span><button type="button" class="editbtn" data-sec="links">Edit</button></div>
             <div class="sec-view" id="v-links"></div>
             <div class="sec-edit"><textarea id="linksTxt" rows="3" placeholder="Paste a booking link, menu link, website or phone number" aria-label="Booking, menu, website and phone"></textarea></div>
-          </section>
-          <section class="sec" id="sec-rating">
-            <div class="sec-head"><span class="lab" id="rtLab">Rating</span></div>
-            <div class="stars" id="fStars" role="group" aria-labelledby="rtLab"></div>
           </section>
           </div>
           <div class="group" id="g-food">
@@ -1260,7 +1259,6 @@ function itemEl(p){
   if(deal)body.appendChild(el('div','deal',(S.fDeal!=='all'?DAY_SHORT[dk]:'Today')+': '+deal));
   var meta=el('div','meta');
   if(ME)meta.appendChild(el('span','dist',fmtDist(distM(ME,p))));
-  if(p.rating>0)meta.appendChild(el('span','stars-s',stars(p.rating)));
   b.appendChild(dot);b.appendChild(body);b.appendChild(meta);li.appendChild(b);return li;
 }
 function tagCounts(key){
@@ -1460,11 +1458,6 @@ function secEl(key,label,opts){
   return sec;
 }
 (function buildForm(){
-  // star rating (tap any time)
-  var st=$('fStars');
-  for(var i=1;i<=5;i++){
-    var b=el('button',null,'★');b.type='button';b.dataset.n=String(i);b.setAttribute('aria-label',i+(i===1?' star':' stars'));st.appendChild(b);
-  }
   // tag sections
   TAG_KEYS.forEach(function(key){
     var t=TAGS[key],sec=secEl(key,t.label),ed=sec.querySelector('.sec-edit');
@@ -1473,7 +1466,7 @@ function secEl(key,label,opts){
     inp.setAttribute('role','combobox');inp.setAttribute('aria-controls','sug-'+key);inp.setAttribute('aria-expanded','false');wrap.appendChild(inp);
     var sg=el('ul','tagdrop');sg.id='sug-'+key;sg.setAttribute('role','listbox');sg.hidden=true;wrap.appendChild(sg);
     ed.appendChild(wrap);
-    $({types:'slot-types',cuisine:'slot-food',food:'slot-food',vibe:'slot-vibe',tips:'slot-tips'}[key]).appendChild(sec);
+    $({types:'slot-types',cuisine:'slot-cuisine',food:'slot-food',vibe:'slot-vibe',tips:'slot-tips'}[key]).appendChild(sec);
   });
   // hours + deals: one free text box each
   [['hours','Opening hours','When is it open?'],['deals','Deals','Any deals on certain days?']].forEach(function(g){
@@ -1626,7 +1619,7 @@ function paintView(){
   TAG_KEYS.forEach(function(key){
     var vv=$('v-'+key);vv.textContent='';
     $('sec-'+key).hidden=TAGS[key].eatOnly&&!hasFood(d.types);
-    $('g-food').hidden=!hasFood(d.types);
+    $('g-food').hidden=!hasFood(d.types)&&E.kind!=='draft';
     if(!d[key].length){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
     if(key==='tips'){var ul=el('ul','vtips');d.tips.forEach(function(t){ul.appendChild(el('li',null,t))});vv.appendChild(ul);return}
     if(key!=='food'){vv.appendChild(el('p','vtext vtype',d[key].join(' / ')));return}
@@ -1865,7 +1858,6 @@ function pickSug(key,label){
 }
 function paintChoices(){
   var d=E.data;TAG_KEYS.forEach(paintTags);
-  Array.prototype.forEach.call($('fStars').children,function(b){b.classList.toggle('on',Number(b.dataset.n)<=d.rating)});
 }
 function paintDays(){
   var d=E.data;
@@ -1885,7 +1877,8 @@ function showEditor(){
   $('delBtn').classList.remove('arm');delArm=0;
   $('edNote').hidden=true;
   $('pasteMsg').textContent='';
-  $('findBox').hidden=!draft;$('findMsg').textContent='';$('findQ').value='';
+  if(draft)$('form').insertBefore($('sec-addr'),$('sec-name'));else $('slot-addr').appendChild($('sec-addr'));
+  $('infoTxt').value=E.infoTxt||'';
   setEdState(draft?'Not saved yet':'');
   setAllOpen(draft);
   paintForm();
@@ -1914,7 +1907,7 @@ function startDraft(init){
   E.data.cat=placeColor(E.data);
   $('pasteBox').open=false;$('pasteTxt').value='';
   showEditor();renderList();
-  if(init.paste)setTimeout(function(){$('findQ').focus()},0);
+  if(init.paste)setTimeout(function(){$('fAddr').focus()},0);
   else if(!coarse)setTimeout(function(){$('fName').focus()},0);
 }
 function touched(){
@@ -1932,7 +1925,7 @@ $('form').addEventListener('click',function(e){
   paintView();
 });
 $('addBtn').addEventListener('click',function(){
-  if(E&&E.kind==='draft'){$('findQ').focus();return}
+  if(E&&E.kind==='draft'){$('fAddr').focus();return}
   if(E&&E.kind==='saved'&&timers.has(E.id)){clearTimeout(timers.get(E.id));timers.delete(E.id);persist(E.id)}
   var c=screenToLL(V.w/2,V.h/2),lat=Math.round(c.lat*1e4)/1e4,lng=Math.round(c.lng*1e4)/1e4;
   startDraft({lat:lat,lng:lng,loc:'',paste:true});
@@ -1985,10 +1978,6 @@ $('form').addEventListener('focusout',function(e){
     e.target.value=fmtDays(E.data[f]);
   },0);
 });
-$('fStars').addEventListener('click',function(e){
-  var b=e.target.closest('button');if(!b)return;var n=Number(b.dataset.n);
-  E.data.rating=E.data.rating===n?0:n;paintChoices();touched();
-});
 $('backBtn').addEventListener('click',function(){
   if(E&&E.kind==='saved'&&timers.has(E.id)){clearTimeout(timers.get(E.id));timers.delete(E.id);persist(E.id)}
   closeEditor();
@@ -2002,7 +1991,7 @@ $('saveBtn').addEventListener('click',function(){
   E={kind:'saved',id:id,data:p};S.selId=id;
   persist(id);
   $('saveBtn').hidden=true;$('delBtn').textContent='Delete place';$('edNote').hidden=true;
-  $('pasteBox').open=false;setEdState('');$('findBox').hidden=true;
+  $('pasteBox').open=false;setEdState('');$('slot-addr').appendChild($('sec-addr'));
   document.querySelector('.app').classList.remove('adding');
   setAllOpen(false);paintForm();$('editView').querySelector('.scroll').scrollTop=0;
   setTimeout(function(){if(E)flyTo(E.data.lat,E.data.lng,Math.max(V.z,8))},60);
@@ -2167,20 +2156,15 @@ function applyExtras(t,full){
 function applyFound(it,full){
   if(!E||!it)return;var d=E.data,got=[];
   if(full&&it.name){d.name=it.name;got.push('name')}
-  else if(it.name&&!d.name.trim()){d.name=it.name;got.push('name')}
+  else if(it.name&&(!d.name.trim()||d.name===E.autoName)){d.name=it.name;E.autoName=it.name;got.push('name')}
   if(it.addr){d.loc=it.addr;got.push('address')}
   d.lat=Math.round(it.lat*1e5)/1e5;d.lng=Math.round(it.lng*1e5)/1e5;
   paintForm();touched();flyTo(d.lat,d.lng,8);
   return got;
 }
-attachPlaceSearch($('findQ'),$('findDrop'),function(it){
-  applyFound(it,true);
-  $('findQ').value='';
-  $('findMsg').textContent='Filled in the name and address.';
-});
 attachPlaceSearch($('fAddr'),$('addrDrop'),function(it){
-  applyFound(it,false);toast('Address and pin updated');
-},4);
+  var named=applyFound(it,false).indexOf('name')>=0;toast(named?'Name, address and pin filled in':'Address and pin updated');
+},3);
 
 function placeAt(r){
   if(!E)return;
@@ -2318,6 +2302,62 @@ function findTypes(text,limit){
   if(out.indexOf('Club')>=0&&out.indexOf('Theatre')>=0&&/comedy club/.test(text))out.splice(out.indexOf('Club'),1);
   return out.slice(0,limit||4);
 }
+// Adding a place: one Info box -> type, cuisine, vibe, hours, links (and leftovers to Good to know)
+var RE_TIMEISH=/\b\d{1,2}(?::\d\d)?\s*(?:am|pm)\b|\b\d{1,2}:\d\d\b|\bmidnight\b|\bnoon\b|\b(?:open|closed)\b.*\b(?:mon|tue|wed|thu|fri|sat|sun|daily|every|weekday|weekend)|\b(?:mon|tue|wed|thu|fri|sat|sun)\w*\b.*\bclosed\b|\b24\s*(?:hours|hrs|\/7)\b/i;
+var RE_PHONEISH=/(?:^|\s)\+?\d[\d\s().-]{7,}\d(?=\s|$)/;
+function parseInfoText(text){
+  var o={types:[],cuisine:[],vibe:[],hours:[],links:[],left:[]};
+  var chunks=[];
+  String(text||'').split(/\n+|\s*[|;•·]\s*/).forEach(function(l){l.split(/(?<=[.!?])\s+(?=[A-Z])/).forEach(function(x){x=x.replace(/^\s*[-*]\s*/,'').replace(/[.!]+$/,'').trim();if(x)chunks.push(x)})});
+  chunks.forEach(function(c){
+    var urls=c.match(/(?:https?:\/\/|www\.)[^\s<>"']+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|au|net|org|co|io|app|bar|restaurant|cafe|nz|uk)(?:\/[^\s<>"']*)?/ig)||[];
+    var hasTime=RE_TIMEISH.test(c.replace(/(?:https?:\/\/|www\.)\S+/g,''));
+    if(urls.length||(!hasTime&&RE_PHONEISH.test(c))){
+      o.links.push(c);
+      var rest=c;urls.forEach(function(u){rest=rest.replace(u,' ')});rest=rest.replace(RE_PHONEISH,' ');
+      rest=rest.replace(/\b(book(?:ing|ings)?|reserv\w*|menu|website|site|web|phone|ph|tel|call|via|at|online|here|link)\b|[:\-–|,]/ig,' ').trim();
+      if(!rest)return;c=rest;
+    }
+    if(hasTime){o.hours.push(c);return}
+    c.split(/\s*(?:,|\/|\+|&|\band\b)\s*/i).forEach(function(pc){
+      pc=pc.trim();if(!pc)return;var n=norm(pc),hit=false;
+      VOCAB_CUISINE.forEach(function(cz){if(new RegExp('\\b'+cz.toLowerCase()+'(?:[- ]inspired|[- ]style)?\\b').test(n)){o.cuisine.push(cz);hit=true}});
+      var tp=findTypes(n,3);if(tp.length){o.types=o.types.concat(tp);hit=true}
+      VOCAB_VIBE.forEach(function(v){if(v[0].test(n)){o.vibe.push(v[1]);hit=true}});
+      if(hit)return;
+      var w=pc.split(/\s+/);
+      if(w.length<=2&&!/[$\d]/.test(pc)&&!TIP_ADVICE.test(w[0])&&!TIP_RULES.some(function(r){return r[1].test(pc)})&&!/recommend|available|required|essential|\bonly\b|\bcash\b|\bbyo\b|walk[- ]?ins?|parking|\bkids?\b|\bdogs?\b|\bno\b/i.test(pc))o.vibe.push(pc);else o.left.push(pc);
+    });
+  });
+  return o;
+}
+function applyInfoText(text){
+  if(!E)return null;var d=E.data,o=parseInfoText(text);
+  E.infoTxt=text;
+  d.types=parseTagText('types',o.types.join(' / '));d.cat=placeColor(d);
+  d.cuisine=parseTagText('cuisine',o.cuisine.join(' / '));
+  d.vibe=parseTagText('vibe',o.vibe.join(' / '));
+  d.hours=parseDaysText(o.hours.join('\n'),true);
+  var lk=parseLinks(o.links.join('\n'));if(lk.menu!==(d.menu||''))d.menuAt=lk.menu?Date.now():0;
+  d.book=lk.book;d.menu=lk.menu;d.url=lk.url;d.phone=lk.phone;
+  paintChoices();paintView();touched();
+  return o;
+}
+function fmtInfo(d){
+  var hrs=DAYS.some(function(x){return (d.hours[x]||'').trim()})?fmtDays(d.hours):'';
+  return [d.types.join(' / '),d.cuisine.join(' / '),d.vibe.join(' / '),hrs,fmtLinks(d)].filter(Boolean).join('\n');
+}
+$('infoTxt').addEventListener('input',function(e){applyInfoText(e.target.value)});
+$('infoTxt').addEventListener('blur',function(e){
+  if(!E)return;var o=applyInfoText(e.target.value);if(!o)return;
+  if(o.left.length){
+    var before=E.data.tips.length;
+    E.data.tips=organiseTips(E.data.tips.concat(o.left).join('\n'));
+    if(E.data.tips.length>before){paintTags('tips');tipsToDeals();tipsToVibe();toast('Moved to Good to know: '+o.left.join(', '))}
+  }
+  E.infoTxt=e.target.value=fmtInfo(E.data);
+  paintView();touched();
+});
 function labelKey(lab){
   var L=lab.toLowerCase().replace(/\s+/g,' ').trim();
   if(/^(name|place|place name|venue name|restaurant name|title)$/.test(L))return 'name';
