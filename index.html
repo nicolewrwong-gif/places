@@ -476,10 +476,25 @@ details.days[open] summary::after{transform:rotate(90deg)}
           </section>
             </div>
             <div id="slot-hours"></div>
-          <section class="sec" data-sec="links" id="sec-links">
-            <div class="sec-head"><span class="lab">Booking, menu, website &amp; phone</span><button type="button" class="editbtn" data-sec="links">Edit</button></div>
-            <div class="sec-view" id="v-links"></div>
-            <div class="sec-edit"><textarea id="linksTxt" rows="3" placeholder="Paste a booking link, menu link, website or phone number" aria-label="Booking, menu, website and phone"></textarea></div>
+          <section class="sec" data-sec="book" id="sec-book">
+            <div class="sec-head"><span class="lab">Booking</span><button type="button" class="editbtn" data-sec="book">Edit</button></div>
+            <div class="sec-view" id="v-book"></div>
+            <div class="sec-edit"><input id="l-book" type="url" inputmode="url" data-link="book" placeholder="Paste the booking link" autocomplete="off" aria-label="Booking"></div>
+          </section>
+          <section class="sec" data-sec="menu" id="sec-menu">
+            <div class="sec-head"><span class="lab">Menu</span><button type="button" class="editbtn" data-sec="menu">Edit</button></div>
+            <div class="sec-view" id="v-menu"></div>
+            <div class="sec-edit"><input id="l-menu" type="url" inputmode="url" data-link="menu" placeholder="Paste the menu link" autocomplete="off" aria-label="Menu"></div>
+          </section>
+          <section class="sec" data-sec="url" id="sec-url">
+            <div class="sec-head"><span class="lab">Website</span><button type="button" class="editbtn" data-sec="url">Edit</button></div>
+            <div class="sec-view" id="v-url"></div>
+            <div class="sec-edit"><input id="l-url" type="url" inputmode="url" data-link="url" placeholder="Paste the website" autocomplete="off" aria-label="Website"></div>
+          </section>
+          <section class="sec" data-sec="phone" id="sec-phone">
+            <div class="sec-head"><span class="lab">Phone</span><button type="button" class="editbtn" data-sec="phone">Edit</button></div>
+            <div class="sec-view" id="v-phone"></div>
+            <div class="sec-edit"><input id="l-phone" type="tel" inputmode="tel" data-link="phone" placeholder="Phone number" autocomplete="off" aria-label="Phone"></div>
           </section>
           </div>
           <div class="group" id="g-food">
@@ -667,8 +682,8 @@ function clean(id,x){
     notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),hours:cleanDays(x.hours),kitchen:cleanDays(x.kitchen),deals:cleanDays(x.deals),
     lat:lat,lng:wrapLng(lng),loc:String(x.loc||''),ts:Number(x.ts)||0};
 }
-function payload(p){return {name:p.name,types:p.types||[],cat:placeColor(p),status:p.status,rating:p.rating,food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],tips:p.tips||[],notes:p.notes,url:p.url,
-  book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc,ts:p.ts}}
+function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],tips:p.tips||[],notes:p.notes||'',url:p.url||'',
+  book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc||'',ts:p.ts||Date.now()}))}
 function loadLocal(){
   var m=new Map();
   try{var arr=JSON.parse(localStorage.getItem(LS_KEY)||'[]');arr.forEach(function(x){var p=clean(x.id||('p_'+Math.random().toString(36).slice(2)),x);if(p)m.set(p.id,p)})}catch(e){}
@@ -699,14 +714,16 @@ function schedulePersist(id){
   setEdState('Saving…');
   timers.set(id,setTimeout(function(){timers.delete(id);persist(id)},500));
 }
+var PEND_KEY='place-pins:pending';
+function addPending(id){try{var a=JSON.parse(localStorage.getItem(PEND_KEY)||'[]');if(a.indexOf(id)<0){a.push(id);localStorage.setItem(PEND_KEY,JSON.stringify(a))}}catch(e){}}
 function persist(id){
   var p=S.places.get(id);if(!p)return Promise.resolve();
   if(mode==='db'){
     var prev=chains.get(id)||Promise.resolve();
-    var run=prev.then(function(){return col.doc(id).set(payload(p))}).then(function(){if(E&&E.id===id)setEdState('Saved')},dbFailed);
+    var run=prev.then(function(){return col.doc(id).set(payload(p))}).then(function(){if(E&&E.id===id)setEdState('Saved')},function(err){addPending(id);dbFailed(err)});
     chains.set(id,run);return run;
   }
-  saveLocal();setEdState(mode==='local'?'Saved in this browser':'Saved');return Promise.resolve();
+  saveLocal();if(FB.user)addPending(id);setEdState(mode==='local'?'Saved in this browser':'Saved');return Promise.resolve();
 }
 function removePersisted(id){
   clearTimeout(timers.get(id));
@@ -765,7 +782,7 @@ function initFirebase(){
     if(unsub){try{unsub()}catch(e){}unsub=null}
     if(user){
       col=FB.fs.collection('users').doc(user.uid).collection('places');
-      migrateLocal(user.uid).then(function(){
+      migrateLocal(user.uid).then(function(){return rescueLocal(user.uid)}).then(function(){
         if(FB.user!==user)return;
         mode='db';setSync();
         unsub=col.onSnapshot(onSnap,function(err){
@@ -796,6 +813,22 @@ function migrateLocal(uid){
       if(n)toast('Added '+n+' place'+(n===1?'':'s')+' from this device to your account.');
     });
   }).catch(function(e){try{console.warn('migrate failed',e)}catch(_){}});
+}
+// Upload places that were only saved on this device because a sync failed
+function rescueLocal(uid){
+  var pend=[],local=[],flag='place-pins:rescued:'+uid,first=false;
+  try{pend=JSON.parse(localStorage.getItem(PEND_KEY)||'[]');local=JSON.parse(localStorage.getItem(LS_KEY)||'[]');first=!localStorage.getItem(flag)}catch(e){return Promise.resolve()}
+  var recent=Date.now()-7*864e5;
+  var want=local.filter(function(x){return x&&x.id&&(pend.indexOf(x.id)>=0||(first&&Number(x.ts)>recent))});
+  if(!want.length){try{localStorage.setItem(flag,'1');localStorage.removeItem(PEND_KEY)}catch(e){}return Promise.resolve()}
+  return col.get().then(function(snap){
+    var have=new Set(snap.docs.map(function(d){return d.id})),batch=FB.fs.batch(),n=0;
+    want.forEach(function(x){var p=clean(x.id,x);if(p&&(!have.has(p.id)||pend.indexOf(p.id)>=0)){batch.set(col.doc(p.id),payload(p));n++}});
+    return (n?batch.commit():Promise.resolve()).then(function(){
+      try{localStorage.setItem(flag,'1');localStorage.removeItem(PEND_KEY)}catch(e){}
+      if(n)toast('Synced '+n+' place'+(n===1?'':'s')+' that were only on this device.');
+    });
+  }).catch(function(e){try{console.warn('rescue failed',e)}catch(_){}});
 }
 function authMsg(e){
   var c=(e&&e.code)||'';
@@ -1647,15 +1680,11 @@ function paintView(){
   if(ME)v.appendChild(el('p','vdist',fmtDist(distM(ME,d))+' from you'));
   var row=el('div','vlinks');row.appendChild(linkBtn(mapsHref(d),'Open in Maps ↗','soft'));v.appendChild(row);
   // links
-  v=$('v-links');v.textContent='';var bk=normUrl(d.book),u=normUrl(d.url),tel=telHref(d.phone),mn=normUrl(d.menu);
-  if(bk||u||tel||mn){
-    var lr=el('div','vlinks');
-    if(bk)lr.appendChild(linkBtn(bk,'Book \u2197'));
-    if(mn)lr.appendChild(linkBtn(mn,'Menu \u2197','soft'));
-    if(u)lr.appendChild(linkBtn(u,'Website ↗','soft'));
-    if(tel)lr.appendChild(linkBtn(tel,'Call '+d.phone.trim(),'soft'));
-    v.appendChild(lr);
-  }else v.appendChild(muted('No booking link, menu, website or phone yet'));
+  var bk=normUrl(d.book),u=normUrl(d.url),tel=telHref(d.phone),mn=normUrl(d.menu);
+  [['book',bk,'Book \u2197','','No booking link yet'],['menu',mn,'Menu \u2197','soft','No menu link yet'],['url',u,'Website \u2197','soft','No website yet'],['phone',tel,'Call '+String(d.phone||'').trim(),'soft','No phone yet']].forEach(function(L){
+    v=$('v-'+L[0]);v.textContent='';
+    if(L[1]){var lr=el('div','vlinks');lr.appendChild(linkBtn(L[1],L[2],L[3]));v.appendChild(lr)}else v.appendChild(muted(L[4]));
+  });
   // opening + kitchen hours
   [['hours','No opening hours yet'],['kitchen','No kitchen hours yet']].forEach(function(hk){
     var obj=d[hk[0]]||{};v=$('v-'+hk[0]);v.textContent='';
@@ -1698,7 +1727,7 @@ function paintView(){
     vv.appendChild(box);
   });
   // edit button wording: Add when empty
-  var empty={name:false,addr:!d.loc,links:!(bk||u||tel||mn),hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),deals:!dd2.length};
+  var empty={name:false,addr:!d.loc,book:!bk,menu:!mn,url:!u,phone:!tel,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),deals:!dd2.length};
   TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});
   Array.prototype.forEach.call(document.querySelectorAll('#form .editbtn'),function(b){
     var sec=b.closest('.sec');b.textContent=sec.classList.contains('open')?'Done':(empty[b.dataset.sec]?'Add':'Edit');
@@ -1707,7 +1736,7 @@ function paintView(){
 function paintForm(){
   var d=E.data;
   $('fName').value=d.name||'';
-  if(document.activeElement!==$('linksTxt'))$('linksTxt').value=fmtLinks(d);
+  ['book','menu','url','phone'].forEach(function(k){var f=$('l-'+k);if(document.activeElement!==f)f.value=d[k]||''});
   $('fAddr').value=d.loc||'';
   $('copyCoords').textContent=fmtCoord(d.lat,d.lng);
   paintChoices();paintDays();paintView();
@@ -1998,8 +2027,12 @@ $('addBtn').addEventListener('click',function(){
   startDraft({lat:lat,lng:lng,loc:'',paste:true});
 });
 $('fName').addEventListener('input',function(e){E.data.name=e.target.value;paintView();touched()});
-$('linksTxt').addEventListener('input',function(e){var r=parseLinks(e.target.value);if(r.menu!==(E.data.menu||''))E.data.menuAt=r.menu?Date.now():0;E.data.book=r.book;E.data.menu=r.menu;E.data.url=r.url;E.data.phone=r.phone;touched()});
-$('linksTxt').addEventListener('blur',function(e){if(E)e.target.value=fmtLinks(E.data)});
+$('form').addEventListener('input',function(e){
+  var k=e.target.dataset&&e.target.dataset.link;if(!k||!E)return;
+  var v=e.target.value.trim(),val=k==='phone'?v:(findUrl(v)||v);
+  if(k==='menu'&&val!==(E.data.menu||''))E.data.menuAt=val?Date.now():0;
+  E.data[k]=val;paintView();touched();
+});
 $('fAddr').addEventListener('input',function(e){E.data.loc=e.target.value;touched()});
 $('fAddr').addEventListener('keydown',function(e){if(e.key==='Enter'&&$('addrDrop').hidden){e.preventDefault();findAddress()}});
 $('addrFind').addEventListener('click',findAddress);
