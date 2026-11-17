@@ -274,6 +274,9 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .sec.open .sec-edit{display:block}
 .sec.open .sec-view{display:none}
 .all-open .editbtn{display:none}
+#form .sec:not(#sec-name) .editbtn{display:none}
+#form.editall #sec-name .editbtn{display:inline-flex}
+#form.editall .moreinfo{display:none}
 .namesec .vname{margin:0;font:600 21px/1.2 var(--f-head);letter-spacing:-.01em;min-width:0;overflow-wrap:anywhere}
 .namesec .lab{display:none}
 .namesec.open .vname{display:none}
@@ -285,6 +288,14 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .linkedit label:first-child{margin-top:0}
 .vtext{margin:0;font-size:14px}
 .vtips{margin:0;padding-left:18px;font-size:14px;line-height:1.55}
+.vtips b,.headsup b{font-weight:700}
+.headsup{background:color-mix(in srgb,var(--danger) 10%,transparent);color:var(--danger);border-radius:10px;padding:8px 12px;margin:2px 0 8px;font-size:14px;line-height:1.55}
+.vtips.vico{list-style:none;padding:0;margin:0}
+.vico li{display:flex;gap:9px;align-items:flex-start;margin:0 0 5px;font-size:14px;line-height:1.45}
+.vico svg{flex:none;margin-top:2px;color:var(--accent)}
+.vfeat{display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;list-style:none;padding:0;margin:0;font-size:14px;line-height:1.45}
+.vfeat li{position:relative;padding-left:13px}
+.vfeat li::before{content:'';position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--accent)}
 .sec-edit textarea{width:100%;border:1px solid transparent;border-radius:9px;background:var(--field);padding:9px 10px;line-height:1.45;resize:vertical;font-size:16px}
 .sec-edit textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .asof{margin:2px 0 0;font-size:11.5px;color:var(--muted)}
@@ -302,6 +313,34 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .vempty{margin:0;font-size:13px;color:var(--muted)}
 .btag{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;white-space:nowrap;font-size:12px;font-weight:800;color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent);padding:3px 9px;border-radius:999px;line-height:1.3}
 .btag svg{flex:none}
+.price{font-weight:800;letter-spacing:.5px;white-space:nowrap;vertical-align:middle}
+.price .po{color:var(--fg)}.price .pf{color:color-mix(in srgb,var(--muted) 45%,transparent)}
+.item .name .price{font-size:13px;margin-left:6px}
+.vname .price{font-size:15px;margin-left:8px;position:relative;top:-2px}
+.namesec.open .vname .price{display:none}
+.ppick{display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+.pplab{font-size:13px;font-weight:700;margin-right:4px}
+.ppick button{border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:999px;padding:6px 12px;font:inherit;font-weight:800;font-size:13.5px;letter-spacing:.5px;cursor:pointer;min-width:44px}
+.ppick button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ppick.need{border-radius:12px;outline:2px solid var(--danger);outline-offset:4px}
+.ptime{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--muted);margin-left:8px;vertical-align:middle;position:relative;top:-2px;white-space:nowrap}
+.namesec.open .vname .ptime{display:none}
+.dots{display:grid;grid-template-columns:auto 1fr auto;gap:5px 6px;font-size:14px;align-items:end;margin-top:4px}
+.dots i{border-bottom:2px dotted color-mix(in srgb,var(--muted) 40%,transparent);margin-bottom:5px;min-width:12px}
+.dots .dp{white-space:nowrap}.dots .dp.ask{font-style:italic;color:var(--muted)}
+.dotsh{font-size:13px;font-weight:700;margin:12px 0 2px}.dotsh:first-child{margin-top:0}
+.pgrp{border:1px solid var(--line);border-radius:12px;margin-top:8px;overflow:hidden}
+.pghead{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;border:0;background:var(--field);color:var(--fg);padding:10px 12px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;text-align:left}
+.pgfrom{font-weight:600;color:var(--muted);font-size:13px;white-space:nowrap}
+.pgwhen{font-size:12.5px;color:var(--muted);padding:6px 12px 0}
+.pgit{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 12px;border-top:1px solid var(--line);font-size:14px}
+.pgit small{color:var(--muted);font-size:12px}
+.pgp{font-weight:700;white-space:nowrap}.pgp.ask{font-weight:500;font-style:italic;color:var(--muted)}
+.pgit.off{color:color-mix(in srgb,var(--muted) 70%,transparent)}.pgit.off .pgp{font-weight:600}
+.pgtab{width:calc(100% - 24px);margin:4px 12px 8px;border-collapse:collapse;font-size:14px}
+.pgtab th{font-size:12px;color:var(--muted);font-weight:600;text-align:right;padding:4px 0}
+.pgtab td{text-align:right;padding:5px 0;border-top:1px solid var(--line)}
+.pgtab td:first-child,.pgtab th:first-child{text-align:left}.pgtab td.b{font-weight:700}
 .item .name .btag{font-size:10.5px;padding:2px 7px;margin-left:6px;position:relative;top:-1px}
 .vname .btag{margin-left:8px;font-size:12px;position:relative;top:-2px}
 .namesec.open .vname .btag{display:none}
@@ -382,6 +421,10 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .app.adding .where{display:none}
 .broad{display:none;margin-top:10px}
 .app.adding .broad{display:block}
+#form:not(.showempty):not(.all-open) .sec.isempty{display:none}
+#form:not(.showempty):not(.all-open) .group.allempty{display:none}
+.app.adding #g-info .sec.isempty{display:none}
+.moreinfo{display:block;margin:14px 0 0;border:1px dashed var(--line);background:none;color:var(--accent);font:inherit;font-weight:700;font-size:14px;border-radius:12px;padding:10px 14px;width:100%;cursor:pointer}
 .broad textarea{width:100%;border:1px solid transparent;border-radius:9px;background:var(--field);padding:10px 12px;line-height:1.5;resize:vertical;font-size:16px;min-height:130px}
 .broad textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .app.adding #g-info .sec .sec-edit{display:none}
@@ -433,6 +476,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
       <div class="frow">
         <button type="button" class="fbtn" id="filtBtn" aria-expanded="false" aria-controls="filtPanel">Filters</button>
         <button type="button" class="fbtn" id="openBtn" aria-pressed="false">Open now</button>
+        <button type="button" class="fbtn" id="dealTodayBtn" aria-pressed="false">Deals today</button>
         <div class="seg sortseg" id="sortSeg" role="group" aria-label="Sort places">
           <button type="button" data-sort="new" aria-pressed="true">Newest</button>
           <button type="button" data-sort="near" aria-pressed="false">Nearest</button>
@@ -470,7 +514,8 @@ details.days[open] summary::after{transform:rotate(90deg)}
             <div class="sec-head"><h2 class="vname" id="vName"></h2><span class="lab">Name</span><button type="button" class="editbtn" data-sec="name">Edit</button></div>
             <p class="asof placeasof" id="vAsOf"></p>
             <p class="topdeal" id="vDeal" hidden></p><p class="surch topsurch" id="vSurch" hidden></p>
-            <div class="sec-edit"><input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off" aria-label="Name"></div>
+            <div class="sec-edit"><input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off" aria-label="Name">
+              <div class="ppick" id="pricePick" role="radiogroup" aria-label="Price range"><span class="pplab">Price</span><button type="button" data-lv="1" role="radio">$</button><button type="button" data-lv="2" role="radio">$$</button><button type="button" data-lv="3" role="radio">$$$</button><button type="button" data-lv="4" role="radio">$$$$</button></div></div>
           </section>
           <div class="group" id="g-info">
             <h3 class="ghead">Info</h3>
@@ -478,6 +523,12 @@ details.days[open] summary::after{transform:rotate(90deg)}
             <div id="slot-types"></div>
             <div id="slot-cuisine"></div>
             <div id="slot-vibe"></div>
+            <div id="slot-features"></div>
+          <section class="sec" data-sec="time" id="sec-time">
+            <div class="sec-head"><span class="lab">Time needed</span><button type="button" class="editbtn" data-sec="time">Edit</button></div>
+            <div class="sec-view" id="v-time"></div>
+            <div class="sec-edit"><input id="l-time" type="text" placeholder="How long to spend there" autocomplete="off" aria-label="Time needed"></div>
+          </section>
             <div id="slot-addr">
           <section class="sec" data-sec="addr" id="sec-addr">
             <div class="sec-head"><span class="lab">Address</span><button type="button" class="editbtn" data-sec="addr">Edit</button></div>
@@ -517,6 +568,14 @@ details.days[open] summary::after{transform:rotate(90deg)}
             <h3 class="ghead">Food &amp; drinks</h3>
             <div id="slot-food"></div>
           </div>
+          <div class="group single" id="g-pricing">
+            <h3 class="ghead">Pricing</h3>
+          <section class="sec" data-sec="pricing" id="sec-pricing">
+            <div class="sec-head"><span class="lab">Pricing</span><button type="button" class="editbtn" data-sec="pricing">Edit</button></div>
+            <div class="sec-view" id="v-pricing"></div>
+            <div class="sec-edit"><textarea id="t-pricing" rows="5" placeholder="Paste a price list" aria-label="Pricing"></textarea></div>
+          </section>
+          </div>
           <div class="group single" id="g-deals">
             <h3 class="ghead">Deals</h3>
             <div id="slot-deals"></div>
@@ -525,6 +584,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
             <h3 class="ghead">Good to know</h3>
             <div id="slot-tips"></div>
           </div>
+          <button type="button" class="moreinfo" id="moreInfo" hidden>+ Add more info</button>
           <div class="actions">
             <button type="button" class="btn primary" id="saveBtn">Save place</button>
             <button type="button" class="btn danger" id="delBtn">Delete</button>
@@ -628,7 +688,7 @@ function locLabel(lat,lng){
 var TYPE_LIST=[
   ['Restaurant','restaurant'],['Café','cafe'],['Bakery','cafe'],['Dessert','dessert'],
   ['Bar','bar'],['Pub','pub'],['Club','club'],
-  ['Bowling','games'],['Arcade','games'],['Karaoke','games'],['Mini golf','games'],['Escape room','games'],['Cinema','games'],
+  ['Bath house','see'],['DIY','games'],['Ceramic painting','games'],['Pottery','games'],['Bowling','games'],['Arcade','games'],['Karaoke','games'],['Mini golf','games'],['Escape room','games'],['Cinema','games'],
   ['Hotel','stay'],['Airbnb','stay'],
   ['Museum','see'],['Gallery','see'],['Park','see'],['Beach','see'],['Lookout','see'],['Garden','see'],['Theatre','see'],['Landmark','see'],
   ['Market','shop'],['Shop','shop']
@@ -662,7 +722,7 @@ function cleanFood(f,max){
 }
 var DAY_KEYS=['mon','tue','wed','thu','fri','sat','sun'];
 function cleanTips(t){var out=[];if(Array.isArray(t))t.forEach(function(x){x=String(x).replace(/\s+/g,' ').trim().slice(0,80);if(x&&out.length<15&&out.every(function(o){return o.toLowerCase()!==x.toLowerCase()}))out.push(x)});return out}
-function cleanDays(o){var r={};DAY_KEYS.forEach(function(d){r[d]=o&&o[d]?String(o[d]).slice(0,120):''});return r}
+function cleanDays(o){var r={};DAY_KEYS.forEach(function(d){r[d]=o&&o[d]?String(o[d]).slice(0,300):''});return r}
 function typesFromOld(x){
   var n=String(x.name||'').toLowerCase(),f=(Array.isArray(x.food)?x.food:[]).join(' ').toLowerCase(),c=x.cat;
   if(c==='eat'){
@@ -691,7 +751,7 @@ function typesFromOld(x){
 // What you typed in each box, kept as typed
 function cleanRaw(r){var o={};if(r&&typeof r==='object')Object.keys(r).forEach(function(k){if(typeof r[k]==='string'&&/^[a-z]{2,10}$/.test(k))o[k]=r[k].slice(0,30000)});return o}
 // Booking notes (Bookings recommended, Walk-ins only…) show under Booking
-function isBookNote(t){return /\bbook(?:ing|ings|ed)?\b|reserv|walk[- ]?ins?|no bookings/i.test(t)&&String(t).split(/\s+/).length<=8}
+function isBookNote(t){return !SURCHARGE_RE.test(t)&&(/\b(?:book(?:ing|ings|ed)?|reserv\w*)\b.*\b(?:recommend\w*|essential|required|advised|ahead|in advance|only|must|encouraged|needed|suggested)\b|\b(?:recommend\w*|essential|required|advised)\b.*\bbook|walk[- ]?ins?|no bookings|no reservations|book ahead/i.test(t))&&String(t).split(/\s+/).length<=8}
 function bookNotes(d){return (d.tips||[]).filter(isBookNote)}
 // Short tag text: "Book ahead", "Walk-ins only", "No bookings"
 function bookTag(d){
@@ -707,18 +767,38 @@ function bookTagEl(d,cls){var t=bookTag(d);if(!t)return null;var s=el('span','bt
 function rawOf(k){if(!E)return null;if(E.raw)return k in E.raw?E.raw[k]:null;var r=E.data.raw;return r&&typeof r[k]==='string'?r[k]:null}
 function setRaw(k,v){if(!E)return;if(E.raw){E.raw[k]=v;return}if(!E.data.raw)E.data.raw={};E.data.raw[k]=v}
 function addRaw(k,lines,sep){if(!E||E.raw)return;var cur=rawOf(k);if(cur==null)return;var low=cur.toLowerCase();lines=lines.filter(function(l){return low.indexOf(String(l).toLowerCase())<0});if(lines.length)setRaw(k,(cur.trim()?cur.replace(/\s+$/,'')+(sep||'\n'):'')+lines.join(sep||'\n'))}
+// Price lists: [{n:group name, w:when note, it:[[name, price, note]]}]
+// Other hours: [{n:'Spa Dreaming Centre', h:{mon..sun}}]
+function cleanOHours(a){if(!Array.isArray(a))return [];return a.slice(0,6).map(function(g){return g&&typeof g==='object'?{n:String(g.n||'').slice(0,40),h:cleanDays(g.h)}:null}).filter(function(g){return g&&g.n&&DAYS.some(function(x){return g.h[x]})})}
+function parseOHours(t){
+  var out=[],cur=null;
+  String(t||'').split(/\n+/).forEach(function(l){
+    l=l.trim();if(!l)return;var m=l.match(/^([^:\d]{2,40}?)(?:\s+hours)?\s*:\s*(.+)$/i);
+    if(m){cur={n:m[1].trim().replace(/^./,function(c){return c.toUpperCase()}),txt:[m[2]]};out.push(cur)}else if(cur)cur.txt.push(l);
+  });
+  return cleanOHours(out.map(function(g){return {n:g.n,h:parseDaysText(g.txt.join('\n'),true)}}));
+}
+function fmtOHours(a){return (a||[]).map(function(g){return fmtDays(g.h).split('\n').map(function(x,i){return (i?'':g.n+': ')+x}).join('\n')}).join('\n')}
+function cleanPrices(a){
+  if(!Array.isArray(a))return [];
+  return a.slice(0,20).map(function(g){
+    if(!g||typeof g!=='object')return null;
+    var it=(Array.isArray(g.it)?g.it:[]).slice(0,40).map(function(r){return Array.isArray(r)?[String(r[0]||'').slice(0,80),String(r[1]||'').slice(0,60),String(r[2]||'').slice(0,40)]:null}).filter(function(r){return r&&(r[0]||r[1])});
+    return it.length?{n:String(g.n||'').slice(0,60),w:String(g.w||'').slice(0,80),it:it}:null;
+  }).filter(Boolean);
+}
 function clean(id,x){
   var lat=Number(x.lat),lng=Number(x.lng);
   if(!isFinite(lat)||!isFinite(lng))return null;
   var r=Math.round(Number(x.rating)||0);
   var types=Array.isArray(x.types)?cleanFood(x.types,6):typesFromOld(x);
   return {id:id,name:String(x.name||''),types:types,cat:types.length?typeColor(types[0]):'other',status:x.status==='been'?'been':'want',
-    rating:Math.max(0,Math.min(5,r)),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),tips:cleanTips(x.tips),
-    notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),raw:cleanRaw(x.raw),hours:cleanDays(x.hours),kitchen:cleanDays(x.kitchen),deals:cleanDays(x.deals),
+    rating:Math.max(0,Math.min(5,r)),price:Math.max(0,Math.min(4,Math.round(Number(x.price)||0))),prices:cleanPrices(x.prices),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),features:cleanFood(x.features,20),time:String(x.time||'').slice(0,40),tips:cleanTips(x.tips),
+    notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),raw:cleanRaw(x.raw),hours:cleanDays(x.hours),kitchen:cleanDays(x.kitchen),ohours:cleanOHours(x.ohours),deals:cleanDays(x.deals),
     lat:lat,lng:wrapLng(lng),loc:String(x.loc||''),ts:Number(x.ts)||0};
 }
-function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],tips:p.tips||[],notes:p.notes||'',url:p.url||'',
-  book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',raw:cleanRaw(p.raw),hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc||'',ts:p.ts||Date.now()}))}
+function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,price:p.price||0,prices:cleanPrices(p.prices),food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],features:p.features||[],time:p.time||'',tips:p.tips||[],notes:p.notes||'',url:p.url||'',
+  book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',raw:cleanRaw(p.raw),hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),ohours:cleanOHours(p.ohours),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc||'',ts:p.ts||Date.now()}))}
 function loadLocal(){
   var m=new Map();
   try{var arr=JSON.parse(localStorage.getItem(LS_KEY)||'[]');arr.forEach(function(x){var p=clean(x.id||('p_'+Math.random().toString(36).slice(2)),x);if(p)m.set(p.id,p)})}catch(e){}
@@ -1275,13 +1355,14 @@ var TAGS={
     sug:['Cocktails','Wine','Beer','Coffee','Dumplings','Burgers','Pizza','Pasta','Seafood','Oysters','Sushi','Ramen','Tacos','Steak','Dessert','Crepes','Brunch','Gelato']},
   vibe:{label:'Vibe',max:12,eatOnly:false,sugN:14,ph:'What\u2019s it like?',
     sug:['Date night','Casual','Lively','Cosy','Fancy','Late night','Rooftop','Outdoor seating','Great views','Good for groups','Live music','Hidden gem','Cheap eats','Quick bite']},
+  features:{label:'Features',max:20,eatOnly:false,sugN:12,ph:'What do they have?',sug:['Pool','Hot mineral pools','Cold plunges','Saunas','Steam rooms','Spa treatments','Massages','Private bathing','Yoga','Pool tables','Arcade games','Dance floor','Beer garden','Private rooms','Playground']},
   tips:{label:'Good to know',max:20,eatOnly:false,sugN:8,ph:'Write anything useful',len:200,
     sug:['BYO','Cash only','Card only','Bookings recommended','Walk-ins only','Queue early','Kid friendly','Dog friendly','Wheelchair accessible','Vegan options','Gluten free options','Vegetarian options','Free wifi','Free parking','Kitchen closes early','Open late','Happy hour','Minimum spend','Set menu only','Cakeage fee']}
 };
-var TAG_KEYS=['types','cuisine','food','vibe','tips'];
+var TAG_KEYS=['types','cuisine','food','vibe','features','tips'];
 function placeHay(p){
-  return norm([p.name,p.notes,p.loc,p.types.join(' '),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),(p.tips||[]).join(' '),
-    DAYS.map(function(d){return p.deals[d]||''}).join(' '),p.phone].join(' '));
+  return norm([p.name,p.notes,p.loc,(p.features||[]).join(' '),p.types.join(' '),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),(p.tips||[]).join(' '),
+    DAYS.map(function(d){return dealOn(p,d)}).join(' '),(p.prices||[]).map(function(g){return g.n+' '+g.it.map(function(r){return r[0]}).join(' ')}).join(' '),p.phone].join(' '));
 }
 function hasTag(arr,f){return f==='all'||(arr||[]).some(function(x){return x.toLowerCase()===f})}
 /* Food grouping: "Fish dumplings" counts under "Dumplings", "Iced matcha" under "Matcha" */
@@ -1333,8 +1414,9 @@ function visiblePlaces(){
     if(!hasTag(p.types,S.fCat))return false;
     if(!hasTag(p.cuisine,S.fCuisine)||!hasFoodGroup(p,S.fFood)||!hasTag(p.vibe,S.fVibe)||!hasTag(tipTags(p),S.fTips))return false;
     if(S.fFoodQ){var fq=norm(S.fFoodQ);if(!p.food.some(function(f){return norm(f).indexOf(fq)>=0}))return false}
-    if(S.fDeal!=='all'&&!(p.deals[S.fDeal]||'').trim())return false;
+    if(S.fDeal!=='all'&&!dealOn(p,S.fDeal))return false;
     if(S.fOpen&&!isOpenNow(p))return false;
+    if(S.fDealToday&&!dealOn(p,todayKey()))return false;
     if(toks.length){var h=placeHay(p);if(!toks.every(function(t){return h.indexOf(t)>=0}))return false}
     return true;
   });
@@ -1368,15 +1450,15 @@ function itemEl(p){
   b.type='button';b.dataset.id=p.id;
   var dot=el('span','dot');dot.style.background='var(--c-'+placeColor(p)+')';
   var body=el('div');
-  var nmEl=el('div','name',(p.name||'').trim()||'Untitled place'),cbt=bookTagEl(p);if(cbt)nmEl.appendChild(cbt);body.appendChild(nmEl);
+  var nmEl=el('div','name',(p.name||'').trim()||'Untitled place'),cbt=bookTagEl(p);if(p.price)nmEl.appendChild(priceEl(p.price));if(cbt)nmEl.appendChild(cbt);body.appendChild(nmEl);
   var tags=hasFood(p.types)?p.cuisine.slice(0,2).join(', '):p.vibe.slice(0,2).join(', ');
-  var sub=[p.types.slice(0,2).join(' / '),tags,p.loc].filter(Boolean).join(' · ');
+  var sub=[p.types.slice(0,2).join(' / '),tags,p.loc,p.time?p.time.replace(/hours?/,'hrs').replace(/minutes?/,'mins'):''].filter(Boolean).join(' · ');
   body.appendChild(el('div','sub',sub));
   if(p.food.length){
     var cf=cardFood(p.food);body.appendChild(el('div','ifood',cf.slice(0,5).join(', ')+(cf.length>5?' +'+(cf.length-5)+' more':'')));
   }
   var sc=todaySurcharges(p);if(sc.length)body.appendChild(el('div','surch',sc.join(', ')+' today'));
-  var dk=S.fDeal!=='all'?S.fDeal:todayKey(),deal=(p.deals[dk]||'').trim();
+  var dk=S.fDeal!=='all'?S.fDeal:todayKey(),deal=dealOn(p,dk);
   if(deal)body.appendChild(el('div','deal',(S.fDeal!=='all'?DAY_SHORT[dk]:'Today')+': '+deal));
   var meta=el('div','meta');
   if(ME)meta.appendChild(el('span','dist',fmtDist(distM(ME,p))));
@@ -1402,7 +1484,7 @@ function renderPanel(){
   });
   var db=$('dealFilters');db.textContent='';var tk=todayKey(),dealAny=false;
   DAYS.forEach(function(d){
-    var n=0;S.places.forEach(function(p){if((p.deals[d]||'').trim())n++});
+    var n=0;S.places.forEach(function(p){if(dealOn(p,d))n++});
     if(n)dealAny=true;
     var b=el('button','chip'+(d===tk?' today':''));b.type='button';b.dataset.k='fDeal';b.dataset.v=d;
     b.setAttribute('aria-pressed',S.fDeal===d?'true':'false');
@@ -1533,6 +1615,7 @@ $('filtPanel').addEventListener('click',function(e){
 $('filtBtn').addEventListener('click',function(){
   var p=$('filtPanel'),open=p.hidden;p.hidden=!open;$('filtBtn').setAttribute('aria-expanded',open?'true':'false');
 });
+[['dealTodayBtn','fDealToday']].forEach(function(f){$(f[0]).addEventListener('click',function(){S[f[1]]=!S[f[1]];this.setAttribute('aria-pressed',S[f[1]]?'true':'false');this.classList.toggle('on',S[f[1]]);renderList();invalidate()})});
 $('openBtn').addEventListener('click',function(){S.fOpen=!S.fOpen;this.setAttribute('aria-pressed',S.fOpen?'true':'false');this.classList.toggle('on',S.fOpen);renderList();invalidate()});
 $('filtClear').addEventListener('click',function(){S.fCuisine=S.fFood=S.fVibe=S.fTips=S.fDeal='all';S.fFoodQ='';refilter(true)});
 /* "What are you craving?" */
@@ -1588,10 +1671,11 @@ function secEl(key,label,opts){
     inp.setAttribute('role','combobox');inp.setAttribute('aria-controls','sug-'+key);inp.setAttribute('aria-expanded','false');wrap.appendChild(inp);
     var sg=el('ul','tagdrop');sg.id='sug-'+key;sg.setAttribute('role','listbox');sg.hidden=true;wrap.appendChild(sg);
     ed.appendChild(wrap);
-    $({types:'slot-types',cuisine:'slot-cuisine',food:'slot-food',vibe:'slot-vibe',tips:'slot-tips'}[key]).appendChild(sec);
+    $({types:'slot-types',cuisine:'slot-cuisine',food:'slot-food',vibe:'slot-vibe',features:'slot-features',tips:'slot-tips'}[key]).appendChild(sec);
   });
   // hours + deals: one free text box each
   [['hours','Opening hours','When is it open?'],['kitchen','Kitchen hours','When is the kitchen open?'],['deals','Deals','Any deals on certain days?']].forEach(function(g){
+    if(g[0]==='deals'){var os=secEl('ohours','Other hours'),oe=os.querySelector('.sec-edit'),ot=el('textarea');ot.id='ohoursTxt';ot.rows=3;ot.placeholder='Other hours, one per line: Spa: Mon–Fri 8am–11pm';ot.setAttribute('aria-label','Other hours');oe.appendChild(ot);$('slot-hours').appendChild(os)}
     var sec=secEl(g[0],g[1]),ed=sec.querySelector('.sec-edit');
     var ta=el('textarea');ta.id=g[0]+'Txt';ta.rows=3;ta.placeholder=g[2];ta.dataset.days=g[0];ta.setAttribute('aria-label',g[1]);ed.appendChild(ta);
     $(g[0]==='deals'?'slot-deals':'slot-hours').appendChild(sec);
@@ -1617,6 +1701,7 @@ function todaySurcharges(p){
   var tk=todayKey(),out=[];
   (p.tips||[]).forEach(function(t){
     if(!SURCHARGE_RE.test(t))return;
+    if(/same[- ]day|card|credit|eftpos|amex|groups?|online|cancell|split|cakeage|corkage|late|no[- ]show|bookings? made/i.test(t))return;
     var amt=t.match(/\d+(?:\.\d+)?\s?%|\$\s?\d+(?:\.\d\d)?/);if(!amt)return;
     var kind=(t.match(/service charge|service fee|card surcharge|card fee|surcharge|fee/i)||['surcharge'])[0].toLowerCase();
     var m=t.match(RE_MID),days=m?parseDaySpec(m[2]):[];
@@ -1644,15 +1729,35 @@ function tidyDeal(d){
   var rest=m[3].replace(/^[\s,]*(?:each|per\s+(?:dish|plate|item))?\b/i,'').trim();
   return 'All dishes'+(drinks?' and drinks ':' ')+m[2].replace(/\s/g,'')+(rest?' '+rest:'');
 }
+// Limited-time deals: "until 27 Nov 2026", "from 04/11/26 to 27/11/26" -> "(until 27 Nov 2026)" so they hide after
+var MONS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function dmy(d,m,y){var mi=isNaN(m)?MONS.indexOf(String(m).slice(0,3).toLowerCase()):Number(m)-1;if(mi<0)return null;y=y?Number(y):0;if(y&&y<100)y+=2000;if(!y){var now=new Date();y=now.getFullYear();if(new Date(y,mi,Number(d))<new Date(now.getFullYear(),now.getMonth()-6,1))y++}return {d:Number(d),m:mi,y:y}}
+function fmtD(x){return x.d+' '+MONS[x.m].charAt(0).toUpperCase()+MONS[x.m].slice(1)+' '+x.y}
+function dealDates(t){
+  var M='(\\d{1,2})(?:st|nd|rd|th)?\\s+([A-Za-z]{3,9})(?:\\s+(\\d{4}))?',N='(\\d{1,2})[\\/.](\\d{1,2})[\\/.](\\d{2,4})',W='(?:(?:mon|tues|wednes|thurs|fri|satur|sun)day\\s+)?',m,a,b;
+  var reRange=new RegExp('(?:valid\\s+)?(?:from\\s+)?'+W+'(?:'+M+'|'+N+')\\s*(?:to|until|till|-|–)\\s*'+W+'(?:'+M+'|'+N+')','i');
+  if((m=t.match(reRange))){a=m[1]?dmy(m[1],m[2],m[3]||m[10]||m[13]):dmy(m[4],m[5],m[6]);b=m[7]?dmy(m[7],m[8],m[9]):dmy(m[10],m[11],m[12]);if(a&&b&&!m[3]&&m[1])a.y=b.y;if(a&&b)return t.replace(m[0],' (starts '+fmtD(a)+', ends '+fmtD(b)+')')}
+  var reUntil=new RegExp('(?:valid\\s+)?(?:until|till|to|ends?|ending|through|thru)\\s+'+W+'(?:'+M+'|'+N+')','i');
+  if((m=t.match(reUntil))){b=m[1]?dmy(m[1],m[2],m[3]):dmy(m[4],m[5],m[6]);if(b)return t.replace(m[0],' (ends '+fmtD(b)+')')}
+  return t;
+}
+function dealLive(part,now){
+  now=now||new Date();var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var u=part.match(/ends (\d{1,2}) ([A-Z][a-z]{2}) (\d{4})/),f=part.match(/starts (\d{1,2}) ([A-Z][a-z]{2}) (\d{4})/);
+  if(u){var e=dmy(u[1],u[2],u[3]);if(new Date(e.y,e.m,e.d)<today)return false}
+  if(f){var st=dmy(f[1],f[2],f[3]);if(new Date(st.y,st.m,st.d)>today)return false}
+  return true;
+}
 function splitDeals(text){
   var deals=[],notes=[];
   var sents=[];
   String(text||'').split(/\n+|\s*[|\u2022\u00B7]\s*/).forEach(function(line){line.split(/(?<=[.!?])\s+/).forEach(function(x){x=x.trim().replace(/[.!]+$/,'');if(x)sents.push(x)})});
   fixSurcharges(sents).forEach(function(sent){
     {
+      sent=dealDates(sent).replace(/\s+/g,' ').trim();
       if(!DEAL_RE.test(sent)||SURCHARGE_RE.test(sent)){notes.push(sent);return}
       // keep the parts of the sentence that hold the deal or its days
-      var keep=sent.split(/\s*,\s*/).filter(function(part){return DEAL_RE.test(part)||hasDay(part)||/^\d/.test(part)});
+      var keep=sent.split(/\s*,\s*(?![^()]*\))/).filter(function(part){return DEAL_RE.test(part)||hasDay(part)||/^\d/.test(part)||/\((?:starts|ends) /.test(part)||/\bcode\b/i.test(part)});
       var d=keep.join(', ').replace(/\s+(?:is|are|for just|for only|only|just)\s+(?=\$|\d)/ig,' ').replace(/\s+/g,' ').trim();
       if(d)deals.push(tidyDeal(d));
     }
@@ -1701,13 +1806,56 @@ function normUrl(u){
 }
 function telHref(t){var d=String(t||'').replace(/[^\d+]/g,'');return d.length>=6?'tel:'+d:''}
 function shortHost(u){return String(u).replace(/^https?:\/\//i,'').replace(/^www\./i,'').replace(/\/$/,'')}
+// Good to know: a small line icon picked from each note's topic
+var TIP_ICONS=[
+  [/surcharge|\bfees?\b|\$|discount|concession|price/i,'<circle cx="12" cy="12" r="9"/><path d="M14.5 9.2c-.5-.8-1.5-1.2-2.5-1.2-1.4 0-2.5.8-2.5 2s1.1 1.7 2.5 2 2.5.8 2.5 2-1.1 2-2.5 2c-1 0-2-.4-2.5-1.2M12 6.5v11"/>'],
+  [/park/i,'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M10 16V8h3a2.5 2.5 0 010 5h-3"/>'],
+  [/\bfrom\b.*\b(?:km|minutes?|mins?|hours?)\b|\b(?:km|minutes?|mins?)\b.*\bfrom\b|walk from|station|tram|train|bus/i,'<path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'],
+  [/\bbring\b|\bwear\b|byo/i,'<path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8a3 3 0 016 0"/>'],
+  [/hire|locker|towel/i,'<rect x="4" y="7" width="16" height="12" rx="2"/><path d="M9 7V5h6v2"/>'],
+  [/\d+\s*\+|adults only|kids?|child|famil|\bage\b/i,'<circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0113 0"/>'],
+  [/food|drinks?|meals?|menu|coffee|kitchen|vegan|vegetarian|gluten/i,'<path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M16 3c-2 1-3 3.5-3 6.5V13h3v8"/>'],
+  [/cash|card|eftpos/i,'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>'],
+  [/dog|pet/i,'<circle cx="7" cy="9" r="1.6"/><circle cx="17" cy="9" r="1.6"/><circle cx="10" cy="5.5" r="1.6"/><circle cx="14" cy="5.5" r="1.6"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 2.5-4 2.5S8 19 8 17z"/>'],
+  [/wheelchair|accessib|step[- ]free/i,'<circle cx="12" cy="4.5" r="1.8"/><path d="M12 7v6h5l2 5M12 9h4M8.5 11.5A5 5 0 1015 18"/>'],
+  [/\d\s*(?:am|pm)|quiet|busy|wait|queue|early|late|check-in|last |first |fill up|time limit|weekday|weekend|night|morning|afternoon/i,'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'],
+  [/wifi|charg/i,'<path d="M5 10a10 10 0 0114 0M8 13a6 6 0 018 0"/><circle cx="12" cy="17" r="1.2"/>']
+];
+function tipIcon(t){var m=TIP_ICONS.filter(function(x){return x[0].test(t)})[0];var path=m?m[1]:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.8" r="1"/>';return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+path+'</svg>'}
+// Good to know: rules and extra costs go in a heads-up box
+function isHeadsUp(t){return /surcharge|\bfees?\b|service charge|\b\d+\s*\+|adults only|over \d+s? only|no (?:kids|children|under|dogs|pets)|cash only|card only|cashless|minimum spend|dress code|strictly|not allowed|must be|id required|bring id/i.test(t)}
+// "On-site parking" -> Parking: On-site ; "10% surcharge on public holidays" -> Surcharge: 10% on public holidays
+function leadSplit(t){
+  t=String(t).trim();var m;
+  if((m=t.match(/^([A-Z][^:]{1,40}?[^\d\s]):\s+(.+)$/)))return [m[1],m[2]];
+  if((m=t.match(/^(\d+(?:\.\d+)?\s?%|\$\s?\d+(?:\.\d\d)?)\s+(surcharges?|service charge|card fee|fee)\s*(.*)$/i)))return [m[2].charAt(0).toUpperCase()+m[2].slice(1).toLowerCase(),(m[1]+' '+m[3]).trim()];
+  if((m=t.match(/^(.*\S)\s+(surcharges?)\s+(?:apply|applies)$/i)))return ['Surcharges',m[1].charAt(0).toUpperCase()+m[1].slice(1)];
+  if((m=t.match(/^(?:about|around|approx\.?)\s+(\d+\s*(?:minutes?|mins?|hours?|hrs?|km)\s+from\s+.+)$/i)))return ['Distance','About '+m[1]];
+  if((m=t.match(/^(.+?)\s+(?:are|is)\s+(quietest|busiest|best)$/i)))return [m[2].charAt(0).toUpperCase()+m[2].slice(1).toLowerCase(),m[1]];
+  if((m=t.match(/^(.+?)\s+(?:fills? up|gets? busy|get packed|are busy|is busy)\b.*$/i)))return ['Busy',m[1]];
+  if((m=t.match(/^(free|on-site|onsite|street|paid|limited|no|undercover|secure)\s+parking$/i)))return ['Parking',m[1].charAt(0).toUpperCase()+m[1].slice(1)];
+  if((m=t.match(/^bring\s+(.+)$/i)))return ['Bring',m[1].charAt(0).toUpperCase()+m[1].slice(1)];
+  if((m=t.match(/^(.+?)\s+(?:for hire|available to hire|can be hired)$/i)))return ['For hire',m[1]];
+  if((m=t.match(/^good for\s+(.+)$/i)))return ['Good for',m[1].charAt(0).toUpperCase()+m[1].slice(1)];
+  if((m=t.match(/^(.+?)\s+discounts?$/i)))return ['Discounts',m[1]];
+  if((m=t.match(/^special offers? for\s+(.+)$/i)))return ['Special offer',m[1].charAt(0).toUpperCase()+m[1].slice(1)];
+  if((m=t.match(/^((?:\S+\s+){0,3}?\S+)\s+((?:mon|tue|wed|thu|fri|sat|sun|daily|every|weekdays?|weekends?)\b.*|\d{1,2}(?::\d\d)?\s*(?:am|pm).*)$/i))&&!/\b(?:are|is|on|at|the)$/i.test(m[1]))return [m[1],m[2]];
+  if(t.split(/\s+/).length<=3)return [t,''];
+  return ['',t];
+}
+function leadEl(tag,t){var e=el(tag),ls=leadSplit(t);if(ls[0]){e.appendChild(el('b',null,ls[0]+(ls[1]?':':'')));if(ls[1])e.appendChild(document.createTextNode(' '+ls[1]))}else e.appendChild(document.createTextNode(ls[1]));return e}
 function muted(t){return el('p','vempty',t)}
 function linkBtn(href,label,cls){var a=el('a','vlink'+(cls?' '+cls:''),label);a.href=href;if(!/^tel:/.test(href)){a.target='_blank';a.rel='noopener noreferrer'}return a}
+function paintPick(){if(!E)return;Array.prototype.forEach.call($('pricePick').querySelectorAll('button'),function(b){var on=Number(b.dataset.lv)===E.data.price;b.classList.toggle('on',on);b.setAttribute('aria-checked',on?'true':'false')})}
+$('pricePick').addEventListener('click',function(e){var b=e.target.closest('button');if(!b||!E)return;var lv=Number(b.dataset.lv);E.data.price=E.data.price===lv?0:lv;E.pricePicked=true;$('pricePick').classList.remove('need');paintPick();paintView();touched()});
 function paintView(){
   if(!E)return;var d=E.data,tk=todayKey(),v;
-  $('vName').textContent=(d.name||'').trim()||'Untitled place';var nbt=bookTagEl(d);if(nbt)$('vName').appendChild(nbt);
+  paintPick();
+  $('vName').textContent=(d.name||'').trim()||'Untitled place';if(d.price)$('vName').appendChild(priceEl(d.price));if(d.time){var tsp=el('span','ptime');tsp.setAttribute('aria-label','Time needed '+d.time);tsp.appendChild(document.createTextNode(shortTime(d.time)));$('vName').appendChild(tsp)}
+  v=$('v-pricing');v.textContent='';paintPricing(v,d);
+  v=$('v-time');v.textContent='';if(d.time)v.appendChild(el('p','vtext',d.time));else v.appendChild(muted('Not set'));var nbt=bookTagEl(d);if(nbt)$('vName').appendChild(nbt);
   var ea=d.editedAt||d.ts;$('vAsOf').textContent=ea>1577836800000?'as of '+asOf(ea):'';
-  var td=((d.deals||{})[tk]||'').trim();$('vDeal').hidden=!td||E.kind==='draft';$('vDeal').textContent=td?'Today: '+td:'';
+  var td=dealOn(d,tk);$('vDeal').hidden=!td||E.kind==='draft';$('vDeal').textContent=td?'Today: '+td:'';
   var sc=todaySurcharges(d);$('vSurch').hidden=!sc.length||E.kind==='draft';$('vSurch').textContent=sc.length?sc.join(', ')+' today':'';
   // address
   v=$('v-addr');v.textContent='';
@@ -1737,14 +1885,21 @@ function paintView(){
       v.appendChild(hl);
     }else v.appendChild(muted(hk[1]));
   });
+  // other hours
+  v=$('v-ohours');v.textContent='';
+  if((d.ohours||[]).length){(d.ohours||[]).forEach(function(g){v.appendChild(el('div','dotsh',g.n));var hl=el('dl','vdays'),h0=(g.h.mon||'').trim();
+      if(h0&&DAYS.every(function(x){return (g.h[x]||'').trim()===h0})){hl.appendChild(el('dt',null,'Every day'));hl.appendChild(el('dd',null,h0));hl.classList.add('wide')}
+      else DAYS.forEach(function(x){hl.appendChild(el('dt',x===tk?'today':null,x===tk?'Today':DAY_SHORT[x]));hl.appendChild(el('dd',x===tk?'today':null,(g.h[x]||'').trim()||'—'))});
+      v.appendChild(hl)})}
+  else v.appendChild(muted('No other hours yet'));
   // deals
   v=$('v-deals');v.textContent='';
-  var dd2=DAYS.filter(function(x){return (d.deals[x]||'').trim()});
+  var dd2=DAYS.filter(function(x){return regularDealOn(d,x)});
   if(dd2.length){
     var dl=el('dl','vdays deals');
     dd2.forEach(function(x){
       dl.appendChild(el('dt',x===tk?'today':null,x===tk?'Today':DAY_SHORT[x]));
-      dl.appendChild(el('dd',x===tk?'today':null,d.deals[x].trim()));
+      dl.appendChild(el('dd',x===tk?'today':null,regularDealOn(d,x)));
     });
     v.appendChild(dl);
   }else v.appendChild(muted('No deals yet'));
@@ -1753,8 +1908,9 @@ function paintView(){
     var vv=$('v-'+key);vv.textContent='';
     $('sec-'+key).hidden=TAGS[key].eatOnly&&!hasFood(d.types);
     $('g-food').hidden=!hasFood(d.types)&&E.kind!=='draft';
-    if(!d[key].length){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
-    if(key==='tips'){var rest=d.tips.filter(function(t){return !isBookNote(t)});if(!rest.length){vv.appendChild(muted('None added'));return}var ul=el('ul','vtips');rest.forEach(function(t){ul.appendChild(el('li',null,t))});vv.appendChild(ul);return}
+    if(!d[key].length&&!(key==='tips'&&(everydayDeals(d).length||offerNotes(d).length||(!hasFood(d.types)&&d.food.length)))){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
+    if(key==='tips'){var rest=d.tips.filter(function(t){return !isBookNote(t)}).concat(everydayDeals(d).map(dealShort)).concat(offerNotes(d));if(!hasFood(d.types)&&d.food.length)rest=rest.concat(['Food & drinks: '+d.food.join(', ')]);if(!rest.length){vv.appendChild(muted('None added'));return}var hu=rest.filter(isHeadsUp),nu=rest.filter(function(t){return !isHeadsUp(t)});if(hu.length){var hb=el('div','headsup');hu.forEach(function(t){hb.appendChild(leadEl('div',t))});vv.appendChild(hb)}if(nu.length){var ul=el('ul','vtips');nu.forEach(function(t){ul.appendChild(leadEl('li',t))});vv.appendChild(ul)}return}
+    if(key==='features'){var fu=el('ul','vfeat');d.features.forEach(function(t){fu.appendChild(el('li',null,t))});vv.appendChild(fu);return}
     if(key!=='food'){vv.appendChild(el('p','vtext vtype',d[key].join(' / ')));return}
     if(key==='food'&&E.raw){vv.appendChild(el('p','foodlist',d.food.join(', ')));return}
     if(key==='food'){var n=d.food.length,fb=el('button','foodmore',n+(n===1?' item':' items')+(E.foodOpen?' ▴':' ▾'));fb.type='button';fb.setAttribute('aria-expanded',E.foodOpen?'true':'false');
@@ -1767,16 +1923,24 @@ function paintView(){
     vv.appendChild(box);
   });
   // edit button wording: Add when empty
-  var empty={name:false,addr:!d.loc,book:!bk&&!bookNotes(d).length,menu:!mn,url:!u,phone:!tel,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),deals:!dd2.length};
+  var empty={name:false,addr:!d.loc,book:!bk&&!bookNotes(d).length,time:!d.time,pricing:!(d.prices||[]).length,menu:!mn,url:!u,phone:!tel,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),ohours:!(d.ohours||[]).length,deals:!dd2.length};
   TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});
+  if(!hasFood(d.types)&&d.food.length)empty.tips=false;
+  if(everydayDeals(d).length||offerNotes(d).length)empty.tips=false;
+  Array.prototype.forEach.call(document.querySelectorAll('#form .sec'),function(sec){var k=sec.dataset.sec;if(k)sec.classList.toggle('isempty',!!empty[k]&&(!sec.classList.contains('open')||E.kind==='draft'))});
+  Array.prototype.forEach.call(document.querySelectorAll('#form .group'),function(g){var all=g.querySelectorAll('.sec'),em=g.querySelectorAll('.sec.isempty');g.classList.toggle('allempty',all.length>0&&all.length===em.length)});
+  var anyEmpty=document.querySelectorAll('#form .sec.isempty').length>0;$('moreInfo').hidden=E.kind==='draft'||!anyEmpty;$('moreInfo').textContent=$('form').classList.contains('showempty')?'Hide empty sections':'+ Add more info';
   Array.prototype.forEach.call(document.querySelectorAll('#form .editbtn'),function(b){
-    var sec=b.closest('.sec');b.textContent=sec.classList.contains('open')?'Done':(empty[b.dataset.sec]?'Add':'Edit');
+    var sec=b.closest('.sec');b.textContent=sec.id==='sec-name'?($('form').classList.contains('editall')?'Done':'Edit'):sec.classList.contains('open')?'Done':(empty[b.dataset.sec]?'Add':'Edit');
   });
 }
 function paintForm(){
   var d=E.data;
   $('fName').value=d.name||'';
   ['book','menu','url','phone'].forEach(function(k){var f=$('l-'+k);if(document.activeElement!==f)f.value=d[k]||''});
+  if(document.activeElement!==$('l-time'))$('l-time').value=d.time||'';
+  if(document.activeElement!==$('ohoursTxt')){var ro=rawOf('ohours');$('ohoursTxt').value=ro!=null?ro:fmtOHours(d.ohours)}
+  if(document.activeElement!==$('t-pricing')){var rq=rawOf('pricing');$('t-pricing').value=rq!=null?rq:fmtPrices(d,true)}
   $('fAddr').value=d.loc||'';
   $('copyCoords').textContent=fmtCoord(d.lat,d.lng);
   paintChoices();paintDays();paintView();
@@ -1802,28 +1966,29 @@ function tidyTip(t){t=String(t).replace(/\s+/g,' ').replace(/^[\s\-–—*•,.;
   if(/\d\s*(?:am|pm)\b|midnight|noon|midday|\b\d{1,2}:\d\d\b/i.test(t)){t=normHours(t).replace(/\bavailable\s+(?=daily|every|from|\d)/i,'').replace(/\bfrom\s+(?=\d)/i,'').replace(/\s+/g,' ').trim()}return t?t.charAt(0).toUpperCase()+t.slice(1):''}
 // "A roving dessert trolley brings theatre..." -> "Roving dessert trolley"
 var TIP_FLUFF=/^(?:brings?|adds?|creates?|makes?|delivers?|gives?|lets|turns?|draws?|takes?|keeps?|rolls?|fills?|spills?|wraps?|sets?|showcases?|transports?|elevates?|promises?|invites?)$/i;
-var TIP_HAS=/^(?:has|have|features?|boasts?|offers?|serves?|includes?)$/i;
+var TIP_HAS=/^(?:has|have|features|boasts?|offers|serves|includes)$/i;
 var TIP_ADVICE=/^(?:get|ask|try|order|go|book|come|arrive|bring|avoid|sit|grab|check|skip|expect|don'?t|make|call|save|leave|park|head|walk|share|request|note)$/i;
 function shortTip(t){
   t=String(t).replace(/\s+/g,' ').trim();
   var words=t.split(' ');
   var fl0=t.replace(/^(?:a|an|the)\s+/i,'').match(/^((?:\S+\s+){0,2}\S+)\s+(?:is|are)\s+(?:super|very|really|so|extremely|always|incredibly|genuinely|quite)?\s*([a-z-]+)\b\s*(.*)$/i);
-  if(fl0&&!/^(?:a|an|the|not|open|closed|located|on|in|at|available|great|good|excellent|amazing)$/i.test(fl0[2])){
+  if(fl0&&!/^(?:a|an|the|not|open|closed|located|on|in|at|available|great|good|excellent|amazing|indicative|subject|inclusive|included|non-refundable|refundable|limited|required|essential|recommended|approximate|payable|due|valid|quietest|busiest|best|quieter|busier)$/i.test(fl0[2])){
     var tail0=/^and\b/i.test(fl0[3])?'':fl0[3].replace(/\s*,.*$/,'');
     return (fl0[2].toLowerCase()+' '+fl0[1].toLowerCase()+(tail0?' '+tail0:'')).trim();
   }
   if(words.length<=4)return t;
+  if(/^bring$/i.test(words[0]))return t;
   if(TIP_ADVICE.test(words[0])){var c=t.split(/\s*,\s*/);return c[0].split(' ').length>=3?c[0]:t}
   var body=t.replace(/^(?:there'?s|there is|there are)\s+/i,'').replace(/^(?:a|an|the)\s+/i,'');
   var fl=body.match(/^((?:\S+\s+){0,2}\S+)\s+(?:is|are)\s+(?:super|very|really|so|extremely|always|incredibly|genuinely|quite)?\s*([a-z-]+)\b\s*(.*)$/i);
-  if(fl&&!/^(?:a|an|the|not|open|closed|located|on|in|at|available|great|good|excellent|amazing)$/i.test(fl[2])){
+  if(fl&&!/^(?:a|an|the|not|open|closed|located|on|in|at|available|great|good|excellent|amazing|indicative|subject|inclusive|included|non-refundable|refundable|limited|required|essential|recommended|approximate|payable|due|valid|quietest|busiest|best|quieter|busier)$/i.test(fl[2])){
     var tail=/^and\b/i.test(fl[3])?'':fl[3].replace(/\s*,.*$/,'');
     return (fl[2].toLowerCase()+' '+fl[1].toLowerCase()+(tail?' '+tail:'')).trim();
   }
   var bw=body.split(' ');
   for(var i=1;i<bw.length;i++){
     var w=bw[i].replace(/[^a-z']/ig,'');
-    if(TIP_FLUFF.test(w))return bw.slice(0,i).join(' ');
+    if(TIP_FLUFF.test(w)&&!/^(?:up|out|quickly|fast)$/i.test(bw[i+1]||''))return bw.slice(0,i).join(' ');
     if(TIP_HAS.test(w)){var rest=bw.slice(i+1).join(' ').split(/\s*,\s*/)[0];return bw.slice(0,i).join(' ')+(rest?' with '+rest:'')}
     if(/^(?:is|are|was|were)$/i.test(w))return t;
   }
@@ -1848,7 +2013,7 @@ function tipsToVibe(){
   d.tips.forEach(function(t){
     var first=t.split(' ')[0];
     var hits=VOCAB_VIBE.filter(function(v){return v[0].test(t.toLowerCase())}).map(function(v){return v[1]});
-    if(hits.length&&!TIP_ADVICE.test(first)&&!/[$\d]/.test(t)&&wc(t)<=10&&!TIP_RULES.some(function(r){return r[1].test(t)})){
+    if(hits.length&&!TIP_ADVICE.test(first)&&!/^(?:keep|no|don'?t|do not|please|always|never)$/i.test(first)&&!/[$\d]/.test(t)&&wc(t)<=6&&!TIP_RULES.some(function(r){return r[1].test(t)})){
       hits.forEach(function(h){if(!d.vibe.some(function(x){return tagKey(x)===tagKey(h)})&&d.vibe.length<TAGS.vibe.max){d.vibe.push(h);moved.push(h)}});
     }else keep.push(t);
   });
@@ -1861,8 +2026,11 @@ function organiseTips(text){
   function add(t){t=tidyTip(t);if(!t)return;var k=tagKey(t);if(!seen[k]&&out.length<TAGS.tips.max){seen[k]=1;out.push(t.slice(0,200))}}
   fixSurcharges(String(text||'').split(/\n+|(?<=[.!?])\s+|\s*[;•|]\s*/)).forEach(function(sentence){
     sentence=sentence.trim().replace(/[.!?]+$/,'');if(!sentence)return;
-    var parts=sentence.split(/\b(?:is|are)\b/i.test(sentence)?/\s*,\s*|\s*\/\s*/:/\s*,\s*|\s+(?:and|&)\s+|\s*\/\s*/).map(function(x){return x.trim()}).filter(Boolean);
-    var pieces=parts.length>1&&parts.every(function(x){return wc(x)<=4})?parts:[sentence];
+    var parts=sentence.split(/\b(?:is|are)\b/i.test(sentence)||/discount|surcharge|concession|offer|\bfees?\b/i.test(sentence)?/\s*,\s*|\s*\/\s*/:/\s*,\s*|\s+(?:and|&)\s+|\s*\/\s*/).map(function(x){return x.trim()}).filter(Boolean);
+    var named=parts.filter(function(x){return /^[A-Z\u00C0-\u024F]/.test(x)&&!TIP_RULES.some(function(r){return r[1].test(x)})}).length>=3;
+    if(/^[A-Z][^:]{1,40}:\s+\S/.test(sentence)){add(sentence);return}
+    var keepWhole=TIP_ADVICE.test(sentence.split(/\s+/)[0])||/for hire|\d|^bring\b/i.test(sentence);
+    var pieces=!named&&!keepWhole&&parts.length>1&&parts.every(function(x){return wc(x)<=4})?parts:[sentence];
     pieces.forEach(function(pc){
       var hits=TIP_RULES.filter(function(r){return r[1].test(pc)}),hw=hits.reduce(function(n,r){return n+wc(r[0])},0);
       if(hits.length&&wc(pc)<=hw+3&&!/[$\d]/.test(pc))hits.forEach(function(r){add(r[0])});
@@ -2014,6 +2182,7 @@ function showEditor(){
   $('delBtn').classList.remove('arm');delArm=0;
   $('edNote').hidden=true;
   $('pasteMsg').textContent='';
+  $('form').classList.remove('showempty','editall');setAllOpen(draft);
   if(draft)$('form').insertBefore($('sec-addr'),$('sec-name'));else $('slot-addr').appendChild($('sec-addr'));
   $('infoTxt').value=E.raw?E.raw.info:'';
   setEdState(draft?'Not saved yet':'');
@@ -2039,9 +2208,9 @@ function openPlace(id){
 function blankDays(){var o={};DAYS.forEach(function(d){o[d]=''});return o}
 function startDraft(init){
   S.selId=null;
-  E={kind:'draft',data:{name:init.name||'',types:(init.types||[]).slice(),cat:'other',rating:0,food:[],cuisine:[],vibe:[],tips:[],notes:'',url:'',book:'',phone:'',
-    hours:blankDays(),kitchen:blankDays(),deals:blankDays(),lat:init.lat,lng:init.lng,loc:init.loc||'',ts:Date.now()}};
-  E.data.cat=placeColor(E.data);E.raw={info:'',food:'',deals:'',tips:''};
+  E={kind:'draft',data:{name:init.name||'',types:(init.types||[]).slice(),cat:'other',rating:0,price:0,prices:[],food:[],cuisine:[],vibe:[],features:[],time:'',tips:[],notes:'',url:'',book:'',phone:'',
+    hours:blankDays(),kitchen:blankDays(),ohours:[],deals:blankDays(),lat:init.lat,lng:init.lng,loc:init.loc||'',ts:Date.now()}};
+  E.initLoc=E.data.loc;E.data.cat=placeColor(E.data);E.raw={info:'',food:'',deals:'',tips:'',pricing:''};
   $('pasteBox').open=false;$('pasteTxt').value='';
   showEditor();renderList();
   if(init.paste)setTimeout(function(){$('fAddr').focus()},0);
@@ -2055,6 +2224,13 @@ function touched(){
 }
 $('form').addEventListener('click',function(e){
   var b=e.target.closest('.editbtn');if(!b)return;
+  if(E&&E.kind==='saved'&&b.closest('#sec-name')){
+    // one Edit button: open every section at once
+    var on=!$('form').classList.contains('editall');$('form').classList.toggle('editall',on);setAllOpen(on);
+    if(on){if(!coarse)setTimeout(function(){$('fName').focus()},0)}
+    else if(timers.has(E.id)){clearTimeout(timers.get(E.id));timers.delete(E.id);persist(E.id)}
+    paintView();return;
+  }
   var sec=b.closest('.sec'),open=!sec.classList.contains('open');
   sec.classList.toggle('open',open);
   if(open){var f=sec.querySelector('.sec-edit input,.sec-edit textarea');if(f&&!coarse)setTimeout(function(){f.focus()},0)}
@@ -2068,6 +2244,16 @@ $('addBtn').addEventListener('click',function(){
   startDraft({lat:lat,lng:lng,loc:'',paste:true});
 });
 $('fName').addEventListener('input',function(e){E.data.name=e.target.value;paintView();touched()});
+$('moreInfo').addEventListener('click',function(){$('form').classList.toggle('showempty');paintView()});
+$('ohoursTxt').addEventListener('input',function(e){if(!E)return;setRaw('ohours',e.target.value);E.data.ohours=parseOHours(e.target.value);paintView();touched()});
+$('l-time').addEventListener('input',function(e){if(!E)return;var t=parseTime(e.target.value);E.data.time=t||e.target.value.trim();paintView();touched()});
+$('t-pricing').addEventListener('input',function(e){
+  if(!E)return;
+  if(E.raw){E.raw.pricing=e.target.value;recomputeDraft();return}
+  setRaw('pricing',e.target.value);E.data.prices=pricingFromText(e.target.value);
+  E.data.price=E.data.price||levelFromPrices(E.data.prices);
+  paintView();touched();
+});
 $('form').addEventListener('input',function(e){
   var k=e.target.dataset&&e.target.dataset.link;if(!k||!E)return;
   var v=e.target.value.trim(),val=k==='phone'?v:(findUrl(v)||v);
@@ -2127,12 +2313,13 @@ $('backBtn').addEventListener('click',function(){
 });
 $('saveBtn').addEventListener('click',function(){
   if(!E||E.kind!=='draft')return;
+  if(!E.data.price){$('pricePick').classList.add('need');$('pricePick').scrollIntoView({block:'center',behavior:'smooth'});toast('Pick a price range ($ to $$$$) first');return}
   var d=E.data;d.name=(d.name||'').trim()||'Untitled place';d.url=d.url.trim();d.ts=Date.now();d.cat=placeColor(d);
   var id='p_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   var p=Object.assign({id:id},d),rw=Object.assign({},E.raw),ex=E.extra||{tips:[],deals:[]};
   // notes moved in from other boxes are added under what you typed, so editing later keeps them
   function plus(t,lines){lines=(lines||[]).filter(function(l){return String(t).toLowerCase().indexOf(String(l).toLowerCase())<0});return lines.length?(String(t).trim()?String(t).replace(/\s+$/,'')+'\n':'')+lines.join('\n'):t}
-  rw.tips=plus(rw.tips,ex.tips);rw.deals=plus(rw.deals,ex.deals);
+  rw.tips=plus(rw.tips,ex.tips);rw.deals=plus(rw.deals,ex.deals);if(ex.food&&ex.food.length)rw.food=plus(rw.food||'',[ex.food.join(', ')]);if(ex.prices&&ex.prices.length)rw.pricing=plus(rw.pricing||'',[fmtPrices({prices:ex.prices},true)]);
   p.raw=cleanRaw(rw);
   S.places.set(id,p);
   E={kind:'saved',id:id,data:p};S.selId=id;
@@ -2409,9 +2596,9 @@ var VOCAB_FOOD=[[/cocktails?/,'Cocktails'],[/\bwine\b|wine bar/,'Wine'],[/champa
   [/hot ?pot/,'Hot pot'],[/tapas/,'Tapas'],[/vegan/,'Vegan'],[/vegetarian/,'Vegetarian'],[/\bmatcha\b/,'Matcha'],[/waffles?/,'Waffles'],[/pancakes?/,'Pancakes']];
 var VOCAB_CUISINE=['French','Italian','Japanese','Chinese','Korean','Thai','Vietnamese','Mexican','Indian','Greek','Spanish','Lebanese','Middle Eastern','Turkish','Malaysian','Indonesian',
   'Filipino','American','Modern Australian','Mediterranean','Cantonese','Sichuan','Taiwanese','Peruvian','Brazilian','Ethiopian','German','British','Sri Lankan','Nepalese','Fusion'];
-var VOCAB_VIBE=[[/friendly staff|staff (?:are|is) (?:super |really |very |so )?friendly|friendly service|warm service/,'Friendly staff'],[/date night|romantic/,'Date night'],[/\bcasual\b|laid[- ]back|relaxed/,'Casual'],[/lively|buzzy|energetic|high[- ]energy|vibrant/,'Lively'],[/\bcos[yi]\b|cozy|intimate/,'Cosy'],
+var VOCAB_VIBE=[[/friendly staff|staff (?:are|is) (?:super |really |very |so )?friendly|friendly service|warm service/,'Friendly staff'],[/date night|romantic|(?<![-\w])dates?(?![-\w])(?! (?:specific|range|of))|date spot/,'Date night'],[/low[- ]key/,'Low-key'],[/wellness|relaxation/,'Wellness'],[/hot springs?|(?<!geo)thermal/,'Hot springs'],[/all ages/,'All ages'],[/\bcasual\b|laid[- ]back|relaxed/,'Casual'],[/lively|buzzy|energetic|high[- ]energy|vibrant/,'Lively'],[/\bcos[yi]\b|cozy|intimate/,'Cosy'],
   [/fancy|upscale|fine dining|elegant|classy|luxur/,'Fancy'],[/late[- ]night|open late|till late|until late/,'Late night'],[/rooftop/,'Rooftop'],[/outdoor|courtyard|beer garden|al fresco|alfresco|terrace/,'Outdoor seating'],
-  [/\bviews?\b|waterfront|harbour views/,'Great views'],[/groups?\b|share plates|sharing/,'Good for groups'],[/live music|\bdjs?\b/,'Live music'],[/hidden|secret|speakeasy|laneway/,'Hidden gem'],
+  [/\bviews?\b|waterfront|harbour views|panoramic/,'Great views'],[/groups?\b|share plates|sharing/,'Good for groups'],[/live music|\bdjs?\b/,'Live music'],[/hidden|secret|speakeasy|laneway/,'Hidden gem'],
   [/cheap|affordable|budget|bargain|everything is \$/,'Cheap eats'],[/quick bite|takeaway|take-away|grab and go/,'Quick bite'],[/family|kid[- ]friendly|kids/,'Family friendly'],[/dog[- ]friendly|pet[- ]friendly/,'Dog friendly']];
 var TYPE_RULES=[
   ['Restaurant',/restaurant|bistro|eatery|diner|trattoria|osteria|izakaya|brasserie|steakhouse|pizzeria|taqueria|noodle (?:bar|house)|dumpling house|fine dining|dining room/],
@@ -2421,6 +2608,10 @@ var TYPE_RULES=[
   ['Bar',/(?<!noodle |espresso |dessert |salad |juice |sushi |gelato |snack )\bbars?\b|speakeasy|cocktail lounge|\blounge\b/],
   ['Pub',/\bpubs?\b|brewery|brewpub|taproom|tavern|beer hall|alehouse/],
   ['Club',/nightclub|night club|dance club|\bclub\b(?! sandwich)/],
+  ['Bath house',/bath ?house|bathhouse|hot springs?|day[- ]spa|geothermal bathing|onsen|thermal (?:baths?|pools?)/],
+  ['DIY',/\bdiy\b|ceramic|pottery|paint (?:your|ur) own|painting (?:studio|class|session|workshop)|candle[- ]making|terrarium|workshop|art class|craft (?:studio|class|workshop)|make your own|build[- ]your[- ]own|jewell?ery making|perfume making/],
+  ['Ceramic painting',/ceramic painting|pottery painting|paint (?:your|ur) own (?:pottery|ceramics?)|ceramics? (?:painting )?(?:studio|cafe|café)/],
+  ['Pottery',/pottery (?:wheel|class|studio|workshop)|wheel throwing|hand[- ]?building/],
   ['Bowling',/bowling|ten ?pin/],
   ['Arcade',/arcade|timezone|pinball/],
   ['Karaoke',/karaoke/],
@@ -2452,12 +2643,299 @@ function findTypes(text,limit){
 // Adding a place: one Info box -> type, cuisine, vibe, hours, links (and leftovers to Good to know)
 var RE_TIMEISH=/\b\d{1,2}(?::\d\d)?\s*(?:am|pm)\b|\b\d{1,2}:\d\d\b|\bmidnight\b|\bnoon\b|\b(?:open|closed)\b.*\b(?:mon|tue|wed|thu|fri|sat|sun|daily|every|weekday|weekend)|\b(?:mon|tue|wed|thu|fri|sat|sun)\w*\b.*\bclosed\b|\b24\s*(?:hours|hrs|\/7)\b/i;
 var RE_FLUFF=/^(?:(?:built|designed|made|created|crafted|perfect|ideal|great)\s+for\b|(?:a|an|the|your)?\s*(?:new|true|real|unique|modern|authentic)?\s*(?:dining|culinary|gastronomic|food)\s+(?:experience|destination|journey|adventure|scene)\b|welcome to\b|(?:melbourne|sydney|brisbane|perth|adelaide|city)(?:'s)?\s+(?:dining|best|favourite|favorite|newest)\b)/i;
+var INFO_TYPE_WORDS=/\b(?:bath ?house|bathing|day spa|spa|hot springs?|ceramic painting|pottery painting|painting|studio|workshop|class|wine bar|cocktail bar|beer garden|dining room|bar|restaurant|bistro|brasserie|trattoria|osteria|izakaya|cafe|café|pub|eatery|diner|venue|spot|joint|place|tavern|canteen|bakery)\b/g;
+var INFO_ADVERBS='unapologetically|really|super|very|truly|seriously|totally|properly|pretty|genuinely|deliciously|wildly|refreshingly|effortlessly|always|seriously|incredibly|ridiculously';
+var INFO_FILLER=new RegExp('\\b(?:'+INFO_ADVERBS+'|a|an|the|and|with|of|in|into|on|for|by|its|their|our|little|bit|kind|sort|tucked|nestled|located|set|globally|internationally|inspired|over|experiences?|offerings?)\\b','gi');
+var INFO_GENERIC=/^(?:(?:cult|classic|iconic|signature|modern|timeless|famous|beloved|great|good|tasty|delicious|banging|epic|share|sharing)\s*)*(?:classics?|dishes|plates|food|fare|cuisine|eats|bites|menu|favourites|favorites|staples|offerings?)$/i;
+var INFO_FOOD=[[/\blight meals?\b/,'Light meals'],[/\bcocktails?\b/,'Cocktails'],[/\bchampagne\b/,'Champagne'],[/\bnatural wines?\b/,'Natural wine'],[/\b(?<!natural )wines?\b(?! bar)/,'Wine'],[/\bcraft beers?\b|\bbeers?\b(?! garden)/,'Beer'],[/\bcoffee\b/,'Coffee'],[/\bspritz\w*\b/,'Spritz'],[/\bmartinis?\b/,'Martinis'],[/\bnegronis?\b/,'Negronis'],[/\bwhisk(?:e)?y\b/,'Whisky'],[/\bsake\b/,'Sake'],[/\boysters?\b/,'Oysters'],[/\bsteaks?\b/,'Steak'],[/\bseafood\b/,'Seafood'],[/\bpasta\b/,'Pasta'],[/\bpizzas?\b/,'Pizza'],[/\bdumplings?\b/,'Dumplings'],[/\bdesserts?\b/,'Desserts'],[/\bcheese\b/,'Cheese'],[/\bburgers?\b/,'Burgers'],[/\bsushi\b/,'Sushi'],[/\bramen\b/,'Ramen'],[/\btapas\b/,'Tapas'],[/\bsmall plates\b/,'Small plates'],[/\bpastr(?:y|ies)\b/,'Pastries'],[/\bbrunch\b/,'Brunch'],[/\bbbq\b|\bbarbecue\b/,'BBQ']];
+// Price lists pasted as lines: headings, "Name: $60–$90 pp", "Adult $60", "(before 9am)"
+var PL_PRICE=/((?:from\s+)?\$\s?\d[\d,]*(?:\.\d\d)?(?:\s*(?:-|–|to)\s*\$?\s?\d[\d,]*(?:\.\d\d)?)?(?:\s*(?:pp|p\.p\.|per person|pax|each|a head|per head))?|price on (?:enquiry|request|application)|p\.?o\.?a\.?)\s*$/i;
+function plStrip(l){return String(l).replace(/^\s*(?:[*•·\-–]|\d+[.)])\s*/,'').trim()}
+function plIsPrice(l){l=plStrip(l);var m=l.match(PL_PRICE);if(!m)return false;var nm=l.slice(0,m.index).replace(/[:\-–\s]+$/,'');return !!nm&&nm.length<=70&&!/[.!?]\s/.test(nm)}
+function plIsNote(l){return /^\s*\(.*\)\s*$/.test(l)}
+function plIsHead(l){l=plStrip(l);return !!l&&!/\$\d|\$\s\d/.test(l)&&l.split(/\s+/).length<=6&&!/[.!?]$/.test(l)&&l.length<=50}
+function plColon(l){l=plStrip(l);var m=l.match(/^([^:]{1,40}):\s*(.+)$/);return m&&!/https?$/i.test(m[1])?m:null}
+function parsePriceLists(text){
+  var lines=String(text||'').split(/\n/),used={},groups=[],i,n=lines.length;
+  var isP=lines.map(plIsPrice);
+  for(i=0;i<n;i++){
+    if(!isP[i]||used[i])continue;
+    // a block needs 2+ price lines close together
+    var j=i,cnt=0,last=i;
+    while(j<n){
+      var L=lines[j].trim();
+      if(!L){j++;continue}
+      if(isP[j]){cnt++;last=j;j++;continue}
+      if(plIsNote(L)){j++;continue}
+      if(plIsHead(L)||plColon(L)){var k=j+1;while(k<n&&(!lines[k].trim()||plIsHead(lines[k])&&!isP[k]))k++;if(k<n&&(isP[k]||plColon(lines[k])&&k<=last+3)){j++;continue}if(plColon(L)&&j<=last+2){j++;continue}}
+      break;
+    }
+    if(cnt<2)continue;
+    var start=i,b=i-1;while(b>=0&&!lines[b].trim())b--;var nh=0;while(b>=0&&nh<2&&lines[b].trim()&&plIsHead(lines[b])&&!isP[b]&&!used[b]&&(nh===0||plStrip(lines[b]).split(/\s+/).length<=2)){start=b;nh++;b--;while(b>=0&&!lines[b].trim())b--}
+    var g=null;
+    for(var q=start;q<=Math.max(last,j-1)&&q<n;q++){
+      var t=lines[q].trim();if(!t)continue;used[q]=1;
+      if(isP[q]){
+        var s2=plStrip(t),cm=plColon(t),nm,pr,nt='';
+        if(cm){nm=cm[1].trim();pr=cm[2].trim()}else{var m2=s2.match(PL_PRICE);nm=s2.slice(0,m2.index).replace(/[:\-–\s]+$/,'');pr=m2[1].trim()}
+        var dm=nm.match(/\s*\((\d+\s*(?:min|mins|minutes|hr|hrs|hours?))\)\s*/i);if(dm){nt=dm[1].replace(/minutes|mins/i,'min');nm=nm.replace(dm[0],' ').trim()}
+        pr=pr.replace(/\$\s?(\d[\d,]*(?:\.\d\d)?)\s*(?:-|–|to)\s*\$?\s?(\d)/,'$$$1–$2').replace(/price on (?:enquiry|request|application)|p\.?o\.?a\.?/i,'Ask').replace(/\s*(?:per person|p\.p\.|a head|per head)\b/i,' pp').replace(/\s+/g,' ');
+        if(!g){g={n:'',w:'',it:[]};groups.push(g)}g.it.push([nm,pr,nt]);
+      }else if(plIsNote(t)){if(g&&!g.w)g.w=t.replace(/^\(|\)$/g,'').replace(/^./,function(c){return c.toUpperCase()})}
+      else if(plColon(t)&&g){var cc=plColon(t);g.it.push([cc[1].trim(),cc[2].trim(),''])}
+      else{var hn=plStrip(t).replace(/:$/,'');hn=hn.charAt(0).toUpperCase()+hn.slice(1);if(g&&!g.it.length)g.n=hn;else{g={n:hn,w:'',it:[]};groups.push(g)}}
+    }
+    i=Math.max(last,j-1);
+  }
+  groups=groups.filter(function(g){return g.it.length});
+  var rest=lines.filter(function(_,k){return !used[k]}).join('\n');
+  return {groups:groups,rest:rest};
+}
+function pricingFromText(t){
+  var pl=parsePriceLists(t),gs=pl.groups.slice();
+  // lines the list parser left (single prices like "Entry $25") still count here
+  var g=null;
+  pl.rest.split(/\n/).forEach(function(l){
+    var x=plStrip(l);if(!x)return;
+    if(plIsPrice(x)||plColon(x)){var cm=plColon(x),nm,pr;if(cm){nm=cm[1].trim();pr=cm[2].trim()}else{var m=x.match(PL_PRICE);nm=x.slice(0,m.index).replace(/[:\-–\s]+$/,'');pr=m[1].trim()}if(!g){g={n:'',w:'',it:[]};gs.push(g)}g.it.push([nm,pr.replace(/\s*(?:per person|p\.p\.|a head|per head)\b/i,' pp'),''])}
+    else if(plIsNote(x)){if(g)g.w=x.replace(/^\(|\)$/g,'')}
+    else if(plIsHead(x)){g={n:x.replace(/:$/,''),w:'',it:[]};gs.push(g)}
+  });
+  return cleanPrices(gs.filter(function(g){return g.it.length}));
+}
+function plNums(pr){return (String(pr).match(/\d[\d,]*(?:\.\d\d)?/g)||[]).map(function(x){return Number(x.replace(/,/g,''))})}
+function pricesFrom(gs){var lo=Infinity;gs.forEach(function(g){g.it.forEach(function(r){var a=plNums(r[1]);if(a.length&&a[0]<lo)lo=a[0]})});return lo===Infinity?0:lo}
+function levelFromPrices(gs){
+  var main=[],all=[];
+  gs.forEach(function(g){g.it.forEach(function(r){var a=plNums(r[1]);if(!a.length)return;var v=a.length>1?(a[0]+a[1])/2:a[0];all.push(v);if(/\bpp\b/.test(r[1])||/^adults?\b/i.test(r[0]))main.push(v)})});
+  var arr=(main.length?main:all.filter(function(v){return v<500})).sort(function(a,b){return a-b});if(!arr.length)return 0;
+  var med=arr[Math.floor(arr.length/2)];return med<25?1:med<60?2:med<120?3:4;
+}
+// "Weekday Getaway" -> mon–fri; "Sunday Graze" -> sun
+function itemDays(name){
+  var t=' '+String(name).toLowerCase()+' ',out=[];
+  if(/\bweekdays?\b|mon(?:day)?\s*(?:-|–|to)\s*fri(?:day)?/.test(t))out=['mon','tue','wed','thu','fri'];
+  if(/\bweekends?\b/.test(t))out=out.concat(['sat','sun']);
+  [['mon',/\bmondays?\b/],['tue',/\btuesdays?\b/],['wed',/\bwednesdays?\b/],['thu',/\bthursdays?\b/],['fri',/\bfridays?\b/],['sat',/\bsaturdays?\b/],['sun',/\bsundays?\b/]].forEach(function(x){if(x[1].test(t)&&out.indexOf(x[0])<0)out.push(x[0])});
+  return out;
+}
+function dayLabel(ds){if(ds.length===5&&ds.join()==='mon,tue,wed,thu,fri')return 'Mon–Fri';if(ds.length===2&&ds.join()==='sat,sun')return 'Sat–Sun';return ds.map(function(x){return DAY_SHORT[x]}).join(', ')}
+// packages tied to a day show in Deals on that day (they stay normal prices in Price)
+function pkgDeals(p,day){var out=[];(p.prices||[]).forEach(function(g){if(isMatrixGroup(p.prices,g))return;g.it.forEach(function(r){if(itemDays(r[0]).indexOf(day)>=0)out.push(r[0]+' '+r[1])})});return out}
+function hasLimitedDeal(p){return DAYS.some(function(x){return /\((?:starts|ends) \d/.test(dealOn(p,x))})}
+function dealParts(p,day){var v=((p.deals||{})[day]||'').trim();if(!v)return [];return v.split(/,\s*(?![^()]*\))/).map(function(x){return x.trim()}).filter(function(x){return x&&dealLive(x)})}
+// deals on every day aren't day-specific: they show in Good to know instead
+function everydayDeals(p){var first=dealParts(p,'mon');return first.filter(function(x){return DAYS.every(function(d){return dealParts(p,d).indexOf(x)>=0})})}
+// "Bring a friend for free (starts…) – Revitalise…, code X" -> "Bring a friend for free"
+function dealShort(x){return String(x).replace(/\s*\((?:starts|ends) [^)]*\)/g,'').split(/\s[–—]\s|\s-\s/)[0].replace(/,?\s*(?:promo\s+)?code\s+\S+/i,'').trim()}
+// regular day deals only (no limited-time offers) for the Deals section
+function regularDealOn(p,day){var ev=everydayDeals(p);return dealParts(p,day).filter(function(x){return ev.indexOf(x)<0&&!/\((?:starts|ends) \d/.test(x)}).map(dealShort).filter(Boolean).join(', ')}
+function offerNotes(p){var seen=[];DAYS.forEach(function(d){dealParts(p,d).forEach(function(x){if(/\((?:starts|ends) \d/.test(x)){var s=dealShort(x);if(seen.indexOf(s)<0)seen.push(s)}})});return seen.map(function(x){return 'Offer: '+x})}
+function dealOn(p,day){var ev=everydayDeals(p);return dealParts(p,day).filter(function(x){return ev.indexOf(x)<0}).map(dealShort).filter(Boolean).join(', ')}
+// groups like "Weekday daily" / "Weekend daily" with the same rows become one table
+function matrixKey(n){return String(n).toLowerCase().replace(/\b(?:weekdays?|weekends?|mon\s*(?:-|–)\s*fri|sat\s*(?:-|–)\s*sun)\b/g,'').replace(/\s+/g,' ').trim()}
+function colName(n){var m=String(n).match(/\b(weekdays?|weekends?)\b/i);return m?(/end/i.test(m[1])?'Weekend':'Weekday'):''}
+function isMatrixGroup(gs,g){if(!colName(g.n))return false;var k=matrixKey(g.n),rows=g.it.map(function(r){return r[0]}).join('|');return gs.some(function(o){return o!==g&&colName(o.n)&&colName(o.n)!==colName(g.n)&&matrixKey(o.n)===k&&o.it.map(function(r){return r[0]}).join('|')===rows})}
+// Price: $–$$$$ (1–4)
+var PRICE_WORDS=['','Cheap','Mid-range','Pricey','Splurge'];
+function parsePrice(t){
+  t=String(t||'');var m,lv=0,hit='';
+  if((m=t.match(/(?:^|[^\w$])(\${1,4})(?![\w$\d])/))){lv=m[1].length;hit=m[1]}
+  else if((m=t.match(/(?:about|around|approx\.?|roughly|~)?\s*\$\s?(\d+)(?:\s*(?:-|–|to)\s*\$?\s?(\d+))?\s*(?:pp|p\.p\.|per person|a head|per head|each person|a person)\b/i))){var a=Number(m[1]),b=Number(m[2]||m[1]),avg=(a+b)/2;lv=avg<25?1:avg<60?2:avg<120?3:4;hit=m[0]}
+  else if((m=t.match(/\b(?:splurge|fine dining|high[- ]end|luxur\w*|degustation|special occasion|blowout)\b/i))){lv=4;hit=m[0]}
+  else if((m=t.match(/\b(?:pricey|expensive|upmarket|up-market|upscale|premium|spendy)\b/i))){lv=3;hit=m[0]}
+  else if((m=t.match(/\b(?:mid[- ]?range|moderate(?:ly priced)?|mid[- ]priced|reasonabl[ey](?: priced)?)\b/i))){lv=2;hit=m[0]}
+  else if((m=t.match(/\b(?:cheap(?: eats)?|budget|affordable|inexpensive|bargain|wallet[- ]friendly)\b/i))){lv=1;hit=m[0]}
+  return {lv:lv,hit:hit};
+}
+function fmtPrices(d,noLevel){var out=d.price&&!noLevel?['$'.repeat(d.price)]:[];(d.prices||[]).forEach(function(g){out.push('');if(g.n)out.push(g.n);g.it.forEach(function(r){out.push(r[0]+(r[2]?' ('+r[2]+')':'')+': '+r[1])});if(g.w)out.push('('+g.w+')')});return out.join('\n').trim()}
+// Pricing rows: [{h:subheading or '', rows:[[name, price]]}]
+function priceLines(gs){
+  var out=[],done={},simple={h:'',rows:[]};
+  function isPure(pr){return /^(?:from\s+)?\$\d[\d,.]*(?:–\$?\d[\d,.]*)?(?: pp| each)?$|^ask$/i.test(String(pr).trim())}
+  function rng(prs){var ns=[],pp=prs.length>0;prs.forEach(function(pr){var a=plNums(pr);ns=ns.concat(a);if(!/\bpp\b/.test(pr))pp=false});if(!ns.length)return 'Ask';var lo=Math.min.apply(null,ns),hi=Math.max.apply(null,ns);return '$'+lo+(hi>lo?'–'+hi:'')+(pp?' pp':'')}
+  function nice(n){n=String(n||'').replace(/\s+(?:packages?|options?)$/i,'').replace(/^(?:deals?|specials?)\s*(?:&|and)\s*/i,'');return n.charAt(0).toUpperCase()+n.slice(1).toLowerCase()}
+  var tiersRe=/^(?:adults?|concessions?|child(?:ren)?|kids?|seniors?|students?|infants?|family|couples?)$/i;
+  gs.forEach(function(g,gi){
+    if(done[gi])return;
+    if(!g.it.every(function(r){return isPure(r[1])}))return;
+    var mates=gs.map(function(o,oi){return [o,oi]}).filter(function(x){return x[0]===g||(colName(x[0].n)&&matrixKey(x[0].n)===matrixKey(g.n)&&isMatrixGroup(gs,x[0])&&isMatrixGroup(gs,g))});
+    if(mates.length>1){
+      mates.forEach(function(x){done[x[1]]=1});
+      var w=mates.map(function(x){return x[0].w}).filter(Boolean)[0];
+      out.push({h:nice(matrixKey(g.n)||'Prices')+(w?' ('+w.toLowerCase()+')':''),rows:g.it.map(function(r,ri){return [r[0],rng(mates.map(function(x){return (x[0].it[ri]||['',''])[1]}))]})});
+    }else if(g.it.every(function(r){return tiersRe.test(r[0])})||!g.n){
+      out.push({h:g.n?nice(g.n)+(g.w?' ('+g.w.toLowerCase()+')':''):'',rows:g.it.map(function(r){return [r[0]+(r[2]?' ('+r[2]+')':''),r[1]]})});
+    }else simple.rows.push([nice(g.n)+(g.w?' ('+g.w.toLowerCase()+')':''),rng(g.it.map(function(r){return r[1]}))]);
+  });
+  if(simple.rows.length)out.unshift(simple);
+  function rk(x){return /^daily\b/i.test(x.h)?0:x.h?1:2}
+  return out.sort(function(a,b){return rk(a)-rk(b)});
+}
+function paintPrices(v,d,tk){
+  if(!d.price){v.appendChild(muted('No price yet'));return}
+  var top=el('div','vtext');top.appendChild(priceEl(d.price));top.appendChild(document.createTextNode(' '+PRICE_WORDS[d.price]));v.appendChild(top);
+}
+function paintPricing(v,d){
+  var blocks=priceLines(d.prices||[]);
+  if(!blocks.length){v.appendChild(muted('No pricing yet'));return}
+  blocks.forEach(function(b){
+    if(b.h)v.appendChild(el('div','dotsh',b.h));
+    var g=el('div','dots');
+    b.rows.forEach(function(r){g.appendChild(el('span','dn',r[0]));g.appendChild(el('i'));g.appendChild(el('span','dp'+(/^ask$/i.test(r[1])?' ask':''),r[1]))});
+    v.appendChild(g);
+  });
+}
+function priceEl(lv){var s=el('span','price');s.setAttribute('aria-label',PRICE_WORDS[lv]+' ('+'$'.repeat(lv)+' of $$$$)');s.appendChild(el('span','po','$'.repeat(lv)));s.appendChild(el('span','pf','$'.repeat(4-lv)));return s}
+var FEATURES=[[/mineral pools?|hot pools?|thermal pools?|geothermal|hot springs? pools?/,'Hot mineral pools'],[/cold plunges?(?: pools?)?/,'Cold plunges'],[/\bsaunas?\b/,'Saunas'],[/steam rooms?/,'Steam rooms'],[/clay (?:rituals?|treatments?)/,'Clay rituals'],[/\byoga\b/,'Yoga'],[/breathwork/,'Breathwork'],[/fire (?:&|and) ice/,'Fire & Ice'],[/massages?/,'Massages'],[/facials?/,'Facials'],[/body treatments?/,'Body treatments'],[/private bathing|private baths?/,'Private bathing'],[/spa treatments?/,'Spa treatments'],[/cave pool/,'Cave pool'],[/hilltop pool/,'Hilltop pool'],[/(?:infinity|rooftop|swimming|lap) pool/,'Pool'],[/hot tubs?|jacuzzi|spa baths?/,'Hot tub'],[/\bgym\b/,'Gym'],[/pool tables?|billiards/,'Pool tables'],[/arcade games?|pinball/,'Arcade games'],[/dance ?floor/,'Dance floor'],[/beer garden/,'Beer garden'],[/karaoke rooms?/,'Karaoke rooms'],[/private (?:dining )?rooms?/,'Private rooms'],[/playground/,'Playground'],[/board games/,'Board games'],[/lockers?/,'Lockers'],[/parents?'? room|baby chang/,'Parents room'],[/picnic areas?/,'Picnic area'],[/lawns?\b|gardens?\b(?! view)/,'Gardens'],[/gift shop|\bshop\b/,'Shop'],[/conference|convention|function rooms?/,'Conference rooms'],[/\bdarts\b/,'Darts'],[/table tennis|ping pong/,'Table tennis'],[/bowling lanes?/,'Bowling lanes']];
+function findFeatures(n){return FEATURES.filter(function(f){return f[0].test(n)}).map(function(f){return f[1]})}
+// "Allow at least 3–4 hours" -> "3–4 hours"
+function shortTime(t){return String(t).replace(/^at least\s+/i,'').replace(/hours?/,'hrs').replace(/minutes?/,'mins')+(/^at least/i.test(t)?'+':'')}
+function parseTime(t){
+  var m=String(t||'').match(/\b(?:allow|plan for|plan on|spend|set aside|takes?|needs?|budget|give yourself|time needed:?|time:?)\s+(?:at least\s+|about\s+|around\s+|roughly\s+|a good\s+)?(\d+(?:\.\d)?(?:\s*(?:-|–|to)\s*\d+(?:\.\d)?)?|an?|half an?)\s*(hours?|hrs?|minutes?|mins?|days?)\b/i)||String(t||'').match(/^\s*(\d+(?:\.\d)?(?:\s*(?:-|–|to)\s*\d+(?:\.\d)?)?)\s*(hours?|hrs?|minutes?|mins?)\s*$/i);
+  if(!m)return '';
+  var num=m[m.length-2].replace(/\s*(?:-|to)\s*/,'–').replace(/^an?$/i,'1').replace(/^half an?$/i,'½');var unit=m[m.length-1].toLowerCase();
+  unit=/^h/.test(unit)?'hour':/^m/.test(unit)?'minute':'day';var plural=!/^1$|^½$/.test(num);
+  return (/at least/i.test(m[0])?'At least ':'')+num+' '+unit+(plural?'s':'');
+}
+var RE_SALES=/^(?:visit us|simply|take advantage|we will|we'll|we'd|come (?:and|visit)|join us|treat yourself|indulge|escape to|immerse)\b|\b(?:we will confirm|select your preferred)\b/i;
 var RE_PHONEISH=/(?:^|\s)\+?\d[\d\s().-]{7,}\d(?=\s|$)/;
+function isTitleCase(l){var w=l.replace(/[^\w\s'’-]/g,' ').split(/\s+/).filter(function(x){return /[A-Za-z]/.test(x)&&!/^(?:a|an|the|and|of|in|on|at|to|for|from|with|by|&|-)$/i.test(x)});return w.length>=2&&w.filter(function(x){return /^[A-Z0-9]/.test(x)}).length/w.length>=0.75}
+// Pasted web pages / AI answers: headings, captions, tables, area lists, "when to go", recommendations
+function cleanPaste(text,o){
+  var lines=String(text||'').replace(/\r/g,'').split('\n'),out=[],sec='',area='',areas={},areaOrder=[],hoursRows=0,hadSec=false;
+  function addArea(n,fact){if(!areas[n]){areas[n]=[];areaOrder.push(n)}if(areas[n].indexOf(fact)<0)areas[n].push(fact)}
+  function sheet(u){return String(u).replace(/[?&]utm_[^&#\s]*/g,'').replace(/\?(?=#|$)/,'').replace(/\/$/,'')}
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i].trim();
+    // markdown links -> url (drop map credits)
+    l=l.replace(/\[([^\]]*)\]\(<?([^)>\s]+)>?\)/g,function(_,t,u){return /mapbox|openstreetmap|google\.com\/maps/.test(u)?' ':' '+sheet(u)+' '}).replace(/\s+/g,' ').trim();
+    if(!l)continue;
+    if(/^#{1,6}\s+/.test(l)){var h=l.replace(/^#+\s*/,'');sec=/when should|best time|when to go/i.test(h)?'when':/recommend|tips for|my advice|suggest/i.test(h)?'rec':/what can you do|things to do|what to do|facilities|features|what.?s on offer/i.test(h)?'do':/areas?|zones|spaces/i.test(h)?'areas':/practical|details|info|need to know/i.test(h)?'prac':'other';area='';if(/^#\s/.test(l)&&!/^##/.test(l))sec='';else hadSec=true;continue}
+    if(/^\+\d+$|^faq$|^reset view|expand map|^\[\]|©|^\W+$/i.test(l)||/★\s*\d/.test(l))continue;
+    if(/^https?:\/\/\S+$|^(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+\/?$/i.test(l)){o.links.push(sheet(l));continue}
+    if(/^official (?:website|site)\s*:/i.test(l)){var um=l.match(/https?:\/\/\S+/);if(um)o.links.push(sheet(um[0]));continue}
+    // captions / article titles
+    if(!/^\|.*\|$/.test(l)&&!/\$\s?\d|price on/i.test(l)&&(/\s[|]\s|\s[–—-]\s/.test(l)&&isTitleCase(l.split(/\s[|–—-]\s/)[0]+' '+(l.split(/\s[|–—-]\s/)[1]||'')))||(/\s[|]\s/.test(l)&&!/^\|/.test(l)))continue;
+    if(/\?\s*$/.test(l)&&l.split(/\s+/).length<=12&&!/^\|/.test(l))continue;
+    // tables
+    if(/^\|.*\|$/.test(l)){
+      var cells=l.slice(1,-1).split('|').map(function(c){return c.trim()});
+      if(cells.every(function(c){return /^:?-{2,}:?$/.test(c)})||/^(?:detail|details|item|info|information|what)$/i.test(cells[0])&&/^(?:information|info|details?|value)$/i.test(cells[1]||''))continue;
+      var k=(cells[0]||'').toLowerCase(),v=cells.slice(1).join(' ').trim();if(!v)continue;
+      if(/^(?:location|address|where)$/.test(k)){o.addr=v;continue}
+      if(/^(?:distance|getting there|from (?:the )?city)$/.test(k)){o.left.push(v.replace(/^(?:around|approximately|approx\.?|roughly)\b/i,'About'));continue}
+      if(/^(?:booking|bookings|reservations?)$/.test(k)){o.left.push('Bookings '+v.toLowerCase());continue}
+      if(/^parking$/.test(k)){o.left.push(/parking/i.test(v)?v:v+' parking');continue}
+      if(/^(?:what to bring|bring)$/.test(k)){o.left.push('Bring '+v.replace(/,\s*([^,]+)$/,' and $1').toLowerCase());continue}
+      if(/^(?:price|prices|cost|entry)$/.test(k)){out.push(v);continue}
+      if(/^(?:time needed|duration|time)$/.test(k)){o.time=parseTime('time '+v)||v;continue}
+      if(/\d\s*(?:am|pm)|\d:\d\d/i.test(v)){
+        var vv=v.split(/\s*;\s*/).map(function(x){var m=x.match(/^(.*?(?:am|pm))\s+(weekdays?|weekends?|daily|every day|mon\w*.*|tue\w*.*|wed\w*.*|thu\w*.*|fri\w*.*|sat\w*.*|sun\w*.*)$/i);return m?m[2]+' '+m[1]:x}).join('\n');
+        if(hoursRows===0&&!/kitchen/.test(k)){o.hours.push(vv);hoursRows++}
+        else if(/kitchen/.test(k))o.kitchen.push(vv);
+        else o.ohours.push(cells[0]+': '+vv.replace(/\n/g,'\n'));
+        continue;
+      }
+      if(/^(?:opening|open|hours)$/.test(k))continue;
+      o.left.push(cells[0]+': '+v);continue;
+    }
+    // numbered labels like "1. Geothermal bathing"
+    if(/^\d+[.)]\s+\S/.test(l)&&l.split(/\s+/).length<=6&&!/[.!]$/.test(l)&&!/\$/.test(l)){findFeatures(norm(l)).forEach(function(f){o.features.push(f)});continue}
+    // area lists: a short name line followed by bullets
+    var nxt=(lines[i+1]||'').trim();
+    if(sec==='areas'&&!/^[-*•]/.test(l)&&l.split(/\s+/).length<=4&&!/[.!]$/.test(l)&&isTitleCase(l)){area=l;continue}
+    if(sec==='areas'&&!/^[-*•]/.test(l)&&isTitleCase(l))continue;
+    if(sec==='areas'&&area){
+      l.split(/\s*-\s+|^\s*[-*•]\s*/).forEach(function(b){
+        b=b.trim();if(!b)return;var n=norm(b);
+        var age=b.match(/(\d+)\s*\+\s*(?:only)?|adults only|over (\d+)s? only/i);if(age){addArea(area,age[0].replace(/\s+/g,' ').replace(/(\d+)\s*\+\s*(?:only)?/,'$1+ only'));return}
+        findFeatures(n).forEach(function(f){o.features.push(f)});
+        VOCAB_VIBE.forEach(function(v){if(v[0].test(n)&&!/atmosphere|quiet|social|all ages/.test(n))o.vibe.push(v[1])});
+      });
+      continue;
+    }
+    if(sec==='when'){
+      var wm=l.replace(/^[-*•]\s*/,'').match(/^([^:]{2,40}):\s*(.+)$/);if(!wm)continue;
+      var lab=wm[1].trim(),txt=wm[2].replace(/[.]$/,'');
+      if(/\d\s*(?:am|pm)/i.test(txt)){
+        var days=lab.replace(/\b(?:nights?|evenings?|mornings?|afternoons?)\b/ig,'').replace(/\bmondays?\b/i,'Mon').replace(/\btuesdays?\b/i,'Tue').replace(/\bwednesdays?\b/i,'Wed').replace(/\bthursdays?\b/i,'Thu').replace(/\bfridays?\b/i,'Fri').replace(/\bsaturdays?\b/i,'Sat').replace(/\bsundays?\b/i,'Sun').replace(/\s+and\s+/i,' & ').trim();
+        var act=txt.split(/\s+from\s+|,/)[0].trim(),tm=(txt.match(/(\d{1,2}(?::\d\d)?\s*(?:am|pm))\s*(?:to|-|–|until|till)\s*(\d{1,2}(?::\d\d)?\s*(?:am|pm))/i)||[]),ag=txt.match(/(\d+)\s*\+/);
+        o.left.push((act+' '+days+(tm.length?' '+tm[1].replace(/\s/g,'')+'–'+tm[2].replace(/\s/g,''):'')+(ag?' ('+ag[1]+'+)':'')).replace(/\s+/g,' ').trim());
+      }else if(/quiet|less busy|avoid (?:the )?crowds|fewer people/i.test(txt))o.left.push(lab.replace(/^(\w+)\s+(\w+)$/,'$1 $2s').replace(/y$/,'ys')+' are quietest');
+      continue;
+    }
+    if(sec==='rec'){var tt=parseTime(l);if(tt){o.time=tt;continue}if(/^[-*•]?\s*(?:bring|arrive|go early|wear|avoid|book ahead)/i.test(l))out.push(l.replace(/^[-*•]\s*/,''));continue}
+    // descriptions of what's there: take features/food/vibes, drop the sentence
+    var nl=norm(l),ff=findFeatures(nl);
+    if(sec==='do'||(ff.length>=2&&!/\$|\d\s*(?:am|pm)/.test(l))||(hadSec&&ff.length&&/^(?:enjoy|soak|try|book|alternate|relax|unwind|discover|explore|choose)\b/i.test(l))){
+      ff.forEach(function(f){o.features.push(f)});
+      INFO_FOOD.forEach(function(f){if(f[0].test(nl))o.food.push(f[1])});if(/pizzas?/.test(nl)&&o.food.indexOf('Pizza')<0)o.food.push('Pizza');
+      VOCAB_VIBE.forEach(function(v){if(v[0].test(nl))o.vibe.push(v[1])});
+      if(/\bwellness\b/.test(nl))o.vibe.push('Wellness');if(/hot springs?|geothermal/.test(nl))o.vibe.push('Hot springs');
+      var dist=l.match(/(?:approximately|approx\.?|about|around|roughly)?\s*(\d+)\s*(minutes?|mins?|hours?|hrs?|km)\s+(?:drive\s+)?from\s+([A-Z][\w]+(?:\s[A-Z][\w]+)?)/);if(dist)o.left.push('About '+dist[1]+' '+dist[2].replace(/^mins?$/,'minutes')+' from '+dist[3]);
+      if(sec!=='do'&&ff.length<2)out.push(l);
+      continue;
+    }
+    // "X is a … destination in Y, approximately 90 minutes from Melbourne"
+    if(/\b(?:is an?|it'?s (?:essentially |basically )?an?)\b/i.test(l)&&l.split(/\s+/).length>=8){
+      var dm=l.match(/(?:approximately|approx\.?|about|around|roughly)?\s*(\d+)\s*(minutes?|mins?|hours?|hrs?|km)\s+(?:drive\s+)?from\s+([A-Z][\w]+(?:\s[A-Z][\w]+)?)/);if(dm)o.left.push('About '+dm[1]+' '+dm[2].replace(/^mins?$/,'minutes')+' from '+dm[3]);
+      findTypes(nl,2).forEach(function(t){o.types.push(t)});ff.forEach(function(f){o.features.push(f)});
+      VOCAB_VIBE.forEach(function(v){if(v[0].test(nl))o.vibe.push(v[1])});if(/\bwellness\b/.test(nl))o.vibe.push('Wellness');if(/hot springs?|geothermal/.test(nl))o.vibe.push('Hot springs');
+      continue;
+    }
+    if(/^best (?:overall|value|experience)|^if it'?s your first|i'?d suggest|^overall\b/i.test(l))continue;
+    var tl=parseTime(l);if(tl&&l.split(/\s+/).length<=8){o.time=tl;continue}
+    if(/can be hired|for hire|available to hire/i.test(l)){l.split(/(?<=[.])\s+/).forEach(function(x){x=x.replace(/[.]$/,'').replace(/\s+can be hired$/i,' for hire').trim();if(x)o.left.push(x)});continue}
+    out.push(l);
+  }
+  areaOrder.forEach(function(n){if(areas[n].length)o.left.push(n+': '+areas[n].join(', '))});
+  o.secMode=hadSec;
+  return out.join('\n');
+}
 function parseInfoText(text){
-  var o={types:[],cuisine:[],vibe:[],hours:[],kitchen:[],links:[],left:[]};
-  var chunks=[];
-  String(text||'').split(/\n+|\s*[|;•·]\s*/).forEach(function(l){l.split(/(?<=[.!?])\s+(?=[A-Z])/).forEach(function(x){x=x.replace(/^\s*[-*]\s*/,'').replace(/[.!]+$/,'').trim();if(x)chunks.push(x)})});
-  chunks.forEach(function(c){
+  var o={types:[],cuisine:[],vibe:[],food:[],features:[],hours:[],kitchen:[],ohours:[],links:[],left:[],price:0,prices:[],time:'',addr:''};
+  text=cleanPaste(text,o);
+  var pl=parsePriceLists(text);o.prices=pl.groups;text=pl.rest;
+  var chunks=[],ctx='';
+  String(text||'').split(/\n+|\s*[|;•·]\s*/).forEach(function(l){
+    l=l.trim();
+    if(/^(?:inclusions?|includes|what'?s included|pricing|prices|about|overview|details|highlights|features|info|the move|best for|good to know|notes?)\s*:?$/i.test(l)){ctx=/best for/i.test(l)?'best':'';return}
+    // headings like THE MOVE / BEST FOR / GOOD TO KNOW are labels, not info
+    if(/^[^a-z]{2,30}:?$/.test(l)&&/[A-Z]{2}/.test(l)&&l.split(/\s+/).length<=4){ctx=/best for|good for|perfect for|ideal for/i.test(l)?'best':'';return}
+    var mh=l.match(/^(best for|good for|perfect for|ideal for)\s*[:\-]\s*(.+)$/i);if(mh){l=mh[2];chunks.push({c:'',ctx:'best'});}
+    l.split(/(?<=[.!?])\s+(?=[A-Z])/).forEach(function(x){
+      x=x.replace(/^\s*[-*]\s*/,'').replace(/[.!]+$/,'').trim();if(!x)return;
+      x.split(/\s+or\s+(?=(?:show up|show|go|come|arrive|call|walk in|turn up|head)\b)/i).forEach(function(y){y=y.replace(/^show up\b/i,'Go').trim();if(y)chunks.push({c:y,ctx:mh?'best':ctx})});
+    });
+  });
+  chunks.forEach(function(ch){
+    var c=ch.c;if(!c)return;
+    var tq=parseTime(c);if(tq&&c.split(/\s+/).length<=8){o.time=tq;return}
+    if(/^(?:discover|explore|experience|enjoy)\s+/i.test(c))c=c.replace(/^(?:discover|explore|experience|enjoy)\s+(?:over\s+\d+\s+|more than\s+\d+\s+|\d+\+?\s+)?/i,'');
+    if(RE_SALES.test(c))return;
+    c=c.replace(/\s+and save\b.*$/i,'');
+    if(/prices? (?:are|may be) (?:indicative|approximate|subject)/i.test(c)){o.left.push('Prices are indicative and subject to availability');if(/surcharge/i.test(c))o.left.push('Date-specific surcharges apply');return}
+    // "The last Earlybird check in is at 8:30am, and the first Twilight check in is at 6pm"
+    if(/check[- ]?in|check[- ]?out|last (?:entry|admission|orders?|seating|session|booking|drinks)|first (?:entry|session|seating)/i.test(c)){
+      c.split(/\s*,\s*(?:and\s+)?|\s+and\s+(?=the\b|last\b|first\b)/i).forEach(function(x){x=x.replace(/^(?:and\s+)?the\s+/i,'').replace(/\bcheck[- ]?in\b/i,'check-in').replace(/\bcheck[- ]?out\b/i,'check-out').replace(/\s+(?:is|are)\s+(?:at\s+)?/i,' ').replace(/\s+at\s+(?=\d)/i,' ').trim();if(x)o.left.push(x.charAt(0).toUpperCase()+x.slice(1).toLowerCase().replace(/(\d)\s*(am|pm)/,'$1$2'))});
+      return;
+    }
+    if(/surcharge|discount|concession|seniors?|students?|special offer|entry fee|\boffers?\b/i.test(c)&&!/\bhappy hour\b/i.test(c)){o.left.push(c.replace(/\s+applies to\s+bookings made on\s+/i,' on ').replace(/\s+applies to\s+/i,' for ').replace(/same[- ]day arrival bookings/i,'same-day bookings').replace(/\s+applies\b/i,''));return}
+    if(ch.ctx==='best'){
+      c.split(/\s*,\s*|\s+or\s+(?=anyone|people|those|someone|everyone)/i).forEach(function(pc){
+        pc=pc.trim().replace(/^(?:and|or)\s+/i,'');if(!pc)return;var n=norm(pc),hit=false;
+        VOCAB_VIBE.forEach(function(v){if(v[0].test(n)){o.vibe.push(v[1]);hit=true}});
+        if(hit)return;
+        if(/^(?:anyone|people|those|someone|everyone)\b/i.test(pc))return;
+        if(/catch(?:ing)? up|groups?|famil|kids|friends|birthdays?|parties|solo|first dates?|team/i.test(pc))o.left.push('Good for '+pc.replace(/^good for\s+/i,''));
+      });
+      return;
+    }
+    // "… stocked with A, B and C" keeps the list together
+    var ml=c.match(/^(.*?)\s+(?:stocked with|featuring|full of|filled with|loaded with|including)\s+(.+)$/i);
+    if(ml&&/,| and /.test(ml[2])){o.left.push(ml[2].replace(/,\s*and\s+/i,' and ').replace(/^./,function(x){return x.toUpperCase()}));c=ml[1]}
+    var pr=parsePrice(c);if(pr.lv){o.price=pr.lv;c=c.replace(pr.hit,' ').replace(/^\s*(?:price|prices|pricing)\s*[:\-]?\s*/i,'').replace(/\s+/g,' ').trim();if(!c)return}
     var urls=c.match(/(?:https?:\/\/|www\.)[^\s<>"']+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|au|net|org|co|io|app|bar|restaurant|cafe|nz|uk)(?:\/[^\s<>"']*)?/ig)||[];
     var hasTime=RE_TIMEISH.test(c.replace(/(?:https?:\/\/|www\.)\S+/g,''));
     if(urls.length||(!hasTime&&RE_PHONEISH.test(c))){
@@ -2474,14 +2952,29 @@ function parseInfoText(text){
       return;
     }
     c.split(/\s*(?:,|\/|\+|&|\band\b)\s*/i).forEach(function(pc){
-      pc=pc.trim();if(!pc)return;var n=norm(pc),hit=false;
-      VOCAB_CUISINE.forEach(function(cz){if(new RegExp('\\b'+cz.toLowerCase()+'(?:[- ]inspired|[- ]style)?\\b').test(n)){o.cuisine.push(cz);hit=true}});
-      var tp=findTypes(n,3);if(tp.length){o.types=o.types.concat(tp);hit=true}
-      VOCAB_VIBE.forEach(function(v){if(v[0].test(n)){o.vibe.push(v[1]);hit=true}});
-      if(hit)return;
+      if(/^\s*(?:so|which|that|because|where|who)\b/i.test(pc))return;
+      if(/\bdrop[- ]in\b/i.test(pc)){o.left.push('Drop-in');pc=pc.replace(/\bdrop[- ]in\b/ig,' ')}
+      pc=pc.trim().replace(/^(?:a|an|the)\s+/i,'').replace(/^[\w'’-]+\s+(?:serves|pours|offers|does|has|brings)\s+/i,'').replace(/^(?:serves|serving|pours|pouring|offers|offering)\s+/i,'');if(!pc)return;
+      var n=norm(pc),hit=false,rest=' '+n+' ';
+      VOCAB_CUISINE.forEach(function(cz){var re=new RegExp('\\b'+cz.toLowerCase()+'(?:[- ]inspired|[- ]style)?\\b(?!\\s+(?:steam|bath|baths|sauna|saunas|massage|rugs?|spa|hammam|delight))','g');if(re.test(n)){o.cuisine.push(cz);hit=true;rest=rest.replace(re,' ')}});
+      var tp=o.secMode?[]:findTypes(n,3);if(tp.length){o.types=o.types.concat(tp);hit=true;rest=rest.replace(INFO_TYPE_WORDS,' ')}
+      // drinks and foods named here go to Food & drinks
+      var fd=INFO_FOOD.filter(function(f){return f[0].test(rest)}).map(function(f){return f[1]});
+      if(fd.length){o.food=o.food.concat(fd);return}
+      if(/\b(?:laneway|alleyway|arcade)\b/.test(n)){o.vibe.push('Laneway');hit=true;rest=rest.replace(/\b(?:tucked|hidden|nestled|located|set|down|in|into|on|off|a|an|the)\b|\b[\w'’-]+\s+(?:street|st|lane|place|pl|road|rd)\b|\b(?:laneway|alleyway|arcade)\b/g,' ')}
+      else VOCAB_VIBE.forEach(function(v){if(v[0].test(n)){o.vibe.push(v[1]);hit=true}});
+      if(hit&&/\d/.test(rest.replace(INFO_FILLER,' '))&&!/\$/.test(pc)){o.left.push(pc.charAt(0).toUpperCase()+pc.slice(1));return}
+      if(hit){
+        // leftover describing words, e.g. "fun" in "unapologetically fun French bar"
+        var lw=rest.replace(INFO_FILLER,' ').replace(/\s+/g,' ').trim();
+        if(lw&&lw.split(' ').length<=3&&!/\d/.test(lw)&&!INFO_GENERIC.test(lw)&&!VOCAB_VIBE.some(function(v){return v[0].test(lw)})&&new RegExp('(?:^|[^A-Za-z])'+lw.split(' ')[0].replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b').test(pc))o.vibe.push(lw);
+        return;
+      }
+      if(INFO_GENERIC.test(n.replace(INFO_FILLER,' ').trim()))return;
+      pc=pc.replace(new RegExp('^(?:'+INFO_ADVERBS+')\\s+','i'),'');
       if(RE_FLUFF.test(pc))return;
       var w=pc.split(/\s+/);
-      if(w.length<=6&&!/[$\d]/.test(pc)&&!/\b(?:is|are|was|were|has|have|gets?|can|will|should|you|your)\b/i.test(pc)&&!TIP_ADVICE.test(w[0])&&!TIP_RULES.some(function(r){return r[1].test(pc)})&&!/recommend|available|required|essential|\bonly\b|\bcash\b|\bbyo\b|walk[- ]?ins?|parking|\bkids?\b|\bdogs?\b|\bno\b/i.test(pc))o.vibe.push(pc);else o.left.push(pc);
+      if(w.length<=6&&!/[$\d]/.test(pc)&&!/\b(?:is|are|was|were|has|have|gets?|can|will|should|you|your|fills?|filling|book|show|avoid|wait|waiting|busy|queue|line)\b/i.test(pc)&&!TIP_ADVICE.test(w[0])&&!TIP_RULES.some(function(r){return r[1].test(pc)})&&!/recommend|available|required|essential|\bonly\b|\bcash\b|\bbyo\b|walk[- ]?ins?|parking|\bkids?\b|\bdogs?\b|\bno\b/i.test(pc))o.vibe.push(pc);else o.left.push(pc);
     });
   });
   return o;
@@ -2492,8 +2985,10 @@ function applyInfoText(text){
   d.types=parseTagText('types',o.types.join(' / '));d.cat=placeColor(d);
   d.cuisine=parseTagText('cuisine',o.cuisine.join(' / '));
   d.vibe=parseTagText('vibe',o.vibe.join(' / '));
+  d.features=parseTagText('features',o.features.join(', '));d.time=o.time;
+  if(o.addr&&(!d.loc||d.loc===E.initLoc||d.loc===E.autoLoc)){d.loc=o.addr;E.autoLoc=o.addr;if(document.activeElement!==$('fAddr'))$('fAddr').value=d.loc}
   d.hours=parseDaysText(o.hours.join('\n'),true);
-  d.kitchen=parseDaysText(o.kitchen.join('\n'),true);fixKitchen(d);
+  d.kitchen=parseDaysText(o.kitchen.join('\n'),true);fixKitchen(d);d.ohours=parseOHours((o.ohours||[]).join('\n'));
   var lk=parseLinks(o.links.join('\n'));if(lk.menu!==(d.menu||''))d.menuAt=lk.menu?Date.now():0;
   d.book=lk.book;d.menu=lk.menu;d.url=lk.url;d.phone=lk.phone;
   paintChoices();paintView();touched();
@@ -2522,16 +3017,19 @@ function recomputeDraft(){
   d.types=parseTagText('types',o.types.join(' / '));
   d.cuisine=parseTagText('cuisine',o.cuisine.join(' / '));
   d.vibe=parseTagText('vibe',o.vibe.join(' / '));
+  d.features=parseTagText('features',o.features.join(', '));d.time=o.time;
+  if(o.addr&&(!d.loc||d.loc===E.initLoc||d.loc===E.autoLoc)){d.loc=o.addr;E.autoLoc=o.addr;if(document.activeElement!==$('fAddr'))$('fAddr').value=d.loc}
   d.hours=parseDaysText(o.hours.join('\n'),true);
-  d.kitchen=parseDaysText(o.kitchen.join('\n'),true);fixKitchen(d);
+  d.kitchen=parseDaysText(o.kitchen.join('\n'),true);fixKitchen(d);d.ohours=parseOHours((o.ohours||[]).join('\n'));
   var lk=parseLinks(o.links.join('\n'));if(lk.menu!==(d.menu||''))d.menuAt=lk.menu?Date.now():0;
   d.book=lk.book;d.menu=lk.menu;d.url=lk.url;d.phone=lk.phone;
-  d.food=parseTagText('food',r.food);if(r.food)d.foodAt=Date.now();
+  d.prices=cleanPrices(o.prices.concat(pricingFromText(r.pricing||'')));if(!E.pricePicked)d.price=o.price||levelFromPrices(d.prices);
+  d.food=parseTagText('food',[r.food].concat(o.food).filter(Boolean).join(', '));if(r.food||o.food.length)d.foodAt=Date.now();
   d.deals=parseDaysText(r.deals,false);
   var notes=splitDeals(r.deals).notes;
   d.tips=organiseTips([r.tips].concat(notes,o.left).filter(Boolean).join('\n'));
   var mv=[];QUIET=true;try{mv=tipsToDeals();tipsToVibe()}finally{QUIET=false}
-  E.extra={tips:notes.concat(o.left),deals:mv};
+  E.extra={tips:notes.concat(o.left),deals:mv,food:o.food,prices:o.prices};
   d.cat=placeColor(d);
   paintView();touched();
 }
