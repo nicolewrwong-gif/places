@@ -190,7 +190,7 @@ ul.places{list-style:none;margin:0;padding:0}
 .tagdrop .sug .n{float:right;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 .tagdrop .kids{display:block;font-size:12px;color:var(--muted);margin-top:1px}
 .tagdrop .none{padding:10px 12px;color:var(--muted);font-size:13px}
-.item .meta .dist{font-size:12px;color:var(--fg);font-weight:500;white-space:nowrap}
+.item .meta .dist{font-size:12px;color:var(--fg);font-weight:500;white-space:nowrap;display:flex;flex-direction:column;align-items:flex-end;line-height:1.35}
 .vdist{margin:4px 0 0;font-size:13px;color:var(--muted)}
 .fbtn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--fg);font-weight:600}
 .fbtn[aria-expanded="true"]{border-color:var(--accent)}
@@ -379,6 +379,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .hdr{margin-top:6px}
 .hdaddr{display:flex;gap:5px;align-items:flex-start;font-size:13.5px;color:var(--muted,#666);margin:0;line-height:1.4}
 .hdaddr svg{flex:none;margin-top:2px}
+.hdtime{margin:2px 0 0 19px;font-size:13px;color:var(--fg);font-weight:500}
 .hbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;text-align:center}
 .hb{display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--fg);font-size:12px;font-weight:600}
 .hb .ci{position:relative;width:46px;height:46px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
@@ -743,7 +744,7 @@ function typeColor(t){return TYPE_COLOR[String(t||'').toLowerCase()]||'other'}
 function placeColor(p){return p.types&&p.types.length?typeColor(p.types[0]):'other'}
 
 /* ---------- state ---------- */
-var S={places:new Map(),ready:false,selId:null,fCat:'all',fStatus:'all',fFood:'all',fCuisine:'all',fVibe:'all',fTips:'all',fDeal:'all',q:'',sort:'new',fFoodQ:''};
+var S={places:new Map(),ready:false,selId:null,fCat:'all',fStatus:'all',fFood:'all',fCuisine:'all',fVibe:'all',fTips:'all',fDeal:'all',q:'',sort:'near',fFoodQ:''};
 var ME=null; // {lat,lng,acc} while location is on
 var E=null; // editor: {kind:'saved'|'draft', id, data}
 var V={w:300,h:300,cu:lng2u(10),cv:mercV(28),z:1.5};
@@ -1539,7 +1540,7 @@ var CARD_GROUPS=[
 ];
 function cardFood(food){
   var out=[],seen={};
-  food.forEach(function(f){
+  rollupFood(food).forEach(function(f){
     var g=CARD_GROUPS.filter(function(c){return c[1].test(f)})[0],lab=g?g[0]:f,k=lab.toLowerCase();
     if(!seen[k]){seen[k]=1;out.push(lab)}
   });
@@ -1562,7 +1563,7 @@ function itemEl(p){
   var dk=S.fDeal!=='all'?S.fDeal:todayKey(),deal=dealOn(p,dk);
   if(deal)body.appendChild(el('div','deal',(S.fDeal!=='all'?DAY_SHORT[dk]:'Today')+': '+deal));
   var meta=el('div','meta');
-  if(ME)meta.appendChild(el('span','dist',fmtDist(distM(ME,p))));
+  if(ME){var tt=el('span','dist');travelTimes(distM(ME,p)).forEach(function(x){tt.appendChild(el('span',null,x))});meta.appendChild(tt)}
   if(p.photos&&p.photos.length){var th=document.createElement('img');th.className='thumb';th.src=p.photos[0].t;th.alt='';b.appendChild(th);b.classList.add('hasthumb')}else{b.appendChild(el('span','thumb'));b.classList.add('hasthumb')}
   b.appendChild(dot);b.appendChild(body);b.appendChild(meta);li.appendChild(b);return li;
 }
@@ -2057,13 +2058,13 @@ function paintView(){
   // address
   v=$('v-addr');v.textContent='';
   v.appendChild(d.loc?el('p','vtext',d.loc):muted('No address yet'));
-  if(ME)v.appendChild(el('p','vdist',fmtDist(distM(ME,d))+' from you'));
+  if(ME)v.appendChild(el('p','vdist',travelTimes(distM(ME,d)).join(' · ')));
   var row=el('div','vlinks');row.appendChild(linkBtn(mapsHref(d),'Open in Maps ↗','soft'));v.appendChild(row);
   // links
   var bk=walkInsOnly(d)?'':normUrl(d.book),u=normUrl(d.url),tel=telHref(d.phone),mn=normUrl(d.menu);
   // header: address + Book / Menu / Website / Map
   var hd=$('vHdr');hd.textContent='';
-  if(d.loc){var ap=el('p','hdaddr');ap.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';ap.appendChild(document.createTextNode(d.loc+(ME?' · '+fmtDist(distM(ME,d)):'')));hd.appendChild(ap)}
+  if(d.loc||ME){var ap=el('p','hdaddr');ap.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';ap.appendChild(document.createTextNode(d.loc||travelTimes(distM(ME,d)).join(' · ')));hd.appendChild(ap);if(d.loc&&ME)hd.appendChild(el('p','hdtime',travelTimes(distM(ME,d)).join(' · ')))}
   var HB_ICON={book:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',menu:'<path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M16 3c-2 1-3 3.5-3 6.5V13h3v8"/>',url:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/>',map:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>'};
   var hb=el('div','hbtns');
   [['book',bk,'Book'],['menu',mn,'Menu'],['url',u,'Website'],['map',mapsHref(d),'Map']].forEach(function(L){
@@ -3631,6 +3632,15 @@ function distM(a,b){
   var h=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dLng/2)*Math.sin(dLng/2);
   return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
 }
+// Rough travel times from straight-line distance (streets aren't straight, so add a bit)
+function fmtMin(n){n=Math.max(1,Math.round(n));if(n<60)return n+' min';var h=Math.floor(n/60),r=Math.round((n%60)/5)*5;if(r===60){h++;r=0}return h+' hr'+(r?' '+r+' min':'')}
+function travelTimes(m){
+  if(m>800000)return [fmtDist(m)];
+  var out=[],walk=m*1.3/83,drive=m*1.25/(m<5000?420:m<30000?830:1400)+(m<2000?2:4);
+  if(walk<=90)out.push(fmtMin(walk)+' walk');
+  if(m>=400||!out.length)out.push(fmtMin(drive)+' drive');
+  return out;
+}
 function fmtDist(m){
   if(m<1000)return (m<100?Math.max(10,Math.round(m/10)*10):Math.round(m/50)*50)+' m';
   if(m<10000)return (Math.round(m/100)/10).toFixed(1).replace(/\.0$/,'')+' km';
@@ -3677,12 +3687,13 @@ $('sortSeg').addEventListener('click',function(e){
 });
 // If location was allowed before, turn it back on quietly
 try{
-  if(localStorage.getItem('place-pins:sort')==='near')S.sort='near';
-  if(localStorage.getItem('place-pins:loc')==='on'){
+  // Nearest is the default; Newest only if you picked it
+  S.sort=localStorage.getItem('place-pins:sort')==='new'?'new':'near';
+  if(S.sort==='near'||localStorage.getItem('place-pins:loc')==='on'){
     if(navigator.permissions&&navigator.permissions.query){
-      navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='granted')startLocation();else if(S.sort==='near'&&r.state==='denied'){S.sort='new';paintSort()}},function(){startLocation()});
-    }else startLocation();
-  }else if(S.sort==='near')S.sort='new';
+      navigator.permissions.query({name:'geolocation'}).then(function(r){if(r.state==='denied'){if(S.sort==='near'){S.sort='new';paintSort();renderList()}}else startLocation(function(){renderList()})},function(){startLocation(function(){renderList()})});
+    }else startLocation(function(){renderList()});
+  }
 }catch(e){}
 paintSort();
 
