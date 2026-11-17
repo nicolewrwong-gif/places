@@ -2304,7 +2304,7 @@ function splitKnown(key,piece){
 function stripAcc(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
 function looksLikeMenu(text){
   var lines=String(text||'').split(/\n/).filter(function(l){return l.trim()});
-  return /^\s*#/m.test(text)||lines.filter(function(l){return /^\s*[-*\u2022].+\s[\u2013\u2014-]\s/.test(l)}).length>=3||lines.length>=8;
+  return /^\s*#/m.test(text)||lines.filter(function(l){return /^\s*[-*\u2022].+\s[\u2013\u2014-]\s/.test(l)}).length>=3||(lines.length>=8&&lines.filter(function(l){return /\$\s?\d|\s[\u2013\u2014-]\s|\d/.test(l)}).length>=3);
 }
 var MENU_SECTIONS=[[/mocktail|non[- ]?alc/,'Mocktails'],[/cocktail/,'Cocktails'],[/beer|cider/,'Beer'],[/champagne|sparkling/,'Champagne'],[/wine/,'Wine'],[/spirit|aperitif|liqueur|whisk|gin\b|rum\b/,'Spirits'],[/coffee/,'Coffee'],[/\btea\b/,'Tea'],[/dessert|sweet/,'Dessert']];
 var MENU_WORDS=[[/oyster|huitre/,'Oysters'],[/scallop|saint-jacques/,'Scallops'],[/trout|tuna|thon|salmon|saumon|fish|poisson|squid|calamari|seiche|clam|palourde|mussel|moule|lobster|homard|prawn|shrimp|crevette|crab|octopus|poulpe/,'Seafood'],
@@ -2389,7 +2389,7 @@ var ROLL_KEEP=/^(?:roll|bun|bread|pie|toast|sauce|soup|salad|bowl|plate|board|pl
 // groups: [{t:'Mochi',v:['black sesame','grape']}]
 function rollupGroups(list){
   var head=function(t){var w=norm(t).split(/\s+/);return sing(w[w.length-1]||'')};
-  var vars=function(items,n){return items.map(function(x){var ws=String(x).trim().split(/\s+/);var v=ws.slice(0,ws.length-n).join(' ');return /^[A-Z][a-z]/.test(v)&&!/^(?:Dubai|Korean|Japanese|Thai|French|Italian|Chinese|Hong Kong|Swiss|Belgian|Turkish|Greek)\b/.test(v)?v.charAt(0).toLowerCase()+v.slice(1):v}).filter(Boolean)};
+  var vars=function(items,n){return items.map(function(x){var ws=String(x).trim().split(/\s+/);var v=ws.slice(0,ws.length-n).join(' ').toLowerCase();return v}).filter(Boolean)};
   var cnt={};list.forEach(function(t){var h=head(t);if(h)cnt[h]=(cnt[h]||0)+1});
   var out=[],done={};
   list.forEach(function(t){var h=head(t);
