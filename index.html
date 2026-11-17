@@ -1954,7 +1954,8 @@ var GTK_HEADS=[
   ['Booking',/cancell|\bbooking|\breserv|deposit/i,null],
   ['Timing',/quiet|busy|fill up|check-in|last (?:entry|orders?)|\bwait/i,null],
   ['Accessibility',/wheelchair|accessib|step[- ]free|\bsteps?\b/i,null],
-  ['Fees',/\bfees?\b/i,null]
+  ['Fees',/\bfees?\b/i,null],
+  ['Delivery',/\bdeliver(?:y|ies|s|ed)?\b/i,function(t){return t.replace(/^deliver(?:y|ies)\s*:?\s*/i,'')}]
 ];
 function gtkHead(t){
   var m=String(t).match(/^([A-Z][^:]{1,40}?[^\d\s]):\s+(.+)$/);if(m)return [m[1],m[2]];
@@ -2143,6 +2144,8 @@ function tidyTip(t){t=String(t).replace(/\s+/g,' ').replace(/^[\s\-–—*•,.;
 var TIP_FLUFF=/^(?:brings?|adds?|creates?|makes?|delivers?|gives?|lets|turns?|draws?|takes?|keeps?|rolls?|fills?|spills?|wraps?|sets?|showcases?|transports?|elevates?|promises?|invites?)$/i;
 var TIP_HAS=/^(?:has|have|features|boasts?|offers|serves|includes)$/i;
 var TIP_ADVICE=/^(?:get|ask|try|order|go|book|come|arrive|bring|avoid|sit|grab|check|skip|expect|don'?t|make|call|save|leave|park|head|walk|share|request|note)$/i;
+// a note must not end on a word like 'will' or 'to'
+var HALF_END=/^(?:will|would|can|could|should|may|might|must|to|it|we|us|you|they|aim|aims|the|a|an|for|of|and|or|our|your|their|be|with|that|how|long|which|who)$/i;
 function shortTip(t){
   t=String(t).replace(/\s+/g,' ').trim();
   var words=t.split(' ');
@@ -2163,7 +2166,7 @@ function shortTip(t){
   var bw=body.split(' ');
   for(var i=1;i<bw.length;i++){
     var w=bw[i].replace(/[^a-z']/ig,'');
-    if(TIP_FLUFF.test(w)&&!/^(?:up|out|quickly|fast)$/i.test(bw[i+1]||'')&&!/^(?:any|a|the|each|per|every|one|this|that|your)$/i.test(bw[i-1]||''))return bw.slice(0,i).join(' ');
+    if(TIP_FLUFF.test(w)&&!/^(?:up|out|quickly|fast)$/i.test(bw[i+1]||'')&&!/^(?:any|a|the|each|per|every|one|this|that|your)$/i.test(bw[i-1]||'')&&!HALF_END.test(bw[i-1]||''))return bw.slice(0,i).join(' ');
     if(TIP_HAS.test(w)){var rest=bw.slice(i+1).join(' ').split(/\s*,\s*/)[0];return bw.slice(0,i).join(' ')+(rest?' with '+rest:'')}
     if(/^(?:is|are|was|were)$/i.test(w))return t;
   }
@@ -2197,10 +2200,22 @@ function tipsToVibe(){
   return moved;
 }
 function organiseTips(text){
-  var out=[],seen={},m=canonMap('tips');
+  var out=[],seen={},m=canonMap('tips'),sawDel=0;
   function add(t){t=tidyTip(t);if(!t)return;var k=tagKey(t);if(!seen[k]&&out.length<TAGS.tips.max){seen[k]=1;out.push(t.slice(0,200))}}
   fixSurcharges(String(text||'').split(/\n+|(?<=[.!?])\s+|\s*[;•|]\s*/)).forEach(function(sentence){
-    sentence=sentence.trim().replace(/[.!?]+$/,'');if(!sentence)return;
+    sentence=sentence.trim().replace(/[.!?]+$/,'').replace(/^(?:however|additionally|also|please note(?: that)?|note(?: that)?|in addition),?\s+/i,'');if(!sentence)return;
+    // vague lines that say nothing
+    if(/\b(?:hard|difficult|impossible|tricky)\s+to\s+(?:estimate|say|predict|know|guarantee)\b|\bcan(?:not|'t)\s+(?:guarantee|say|predict)\b/i.test(sentence))return;
+    var isDel=/\bdeliver/i.test(sentence)||(sawDel&&/\b(?:text|sms|message|call|email)\b/i.test(sentence));
+    if(isDel&&!/^[A-Z][^:]{1,40}:\s/.test(sentence)){sawDel=1;
+      var dd=sentence.match(/\b(mon|tue|wed|thu|fri|sat|sun)[a-z]*\s*(?:to|-|–|—|through)\s*(mon|tue|wed|thu|fri|sat|sun)[a-z]*\b/i),days=dd?cap1(dd[1].toLowerCase())+'–'+cap1(dd[2].toLowerCase())+' ':'';
+      var tk=sentence.match(/\bdeliver(?:y|ies)?\s+(?:takes?|is|are|within|in)\s+(?:about\s+|around\s+|up to\s+)?(\d[\d\s\-–]*(?:business\s+|working\s+)?(?:days?|weeks?|hours?|hrs?))/i);
+      if(tk){add('Delivery: '+tk[1].replace(/\s*-\s*/,'–'));return}
+      var dt=sentence.match(/(\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)?)\s*(?:to|-|–|—|and|until|till)\s*(\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))/i);
+      if(dt&&/\b(?:between|from|aim|window|time|deliver(?:y|ies)?\s+(?:is|are|between|from))\b/i.test(sentence)){add('Delivery: '+days+normHours(dt[1]+'-'+dt[2]));return}
+      if(/\b(?:text|sms|message|call|email|notif)/i.test(sentence)){var how=/\b(?:text|sms)\b/i.test(sentence)?'text':/\bcall\b/i.test(sentence)?'call':/\bemail\b/i.test(sentence)?'email':'message';
+        add('Delivery: '+how+(how==='call'?' made':' sent')+(/\bon the day\b|\bsame day\b|\bday of\b/i.test(sentence)?' on delivery day':' before delivery'));return}
+    }
     if(/\b(?:staff|service|owners?)\b.*\b(?:friendly|lovely|nice|welcoming|warm|great|kind|helpful)\b|\b(?:friendly|lovely|welcoming|warm)\s+(?:staff|service)\b/i.test(sentence))return;
     if(!/^[A-Z][^:]{1,40}:\s/.test(sentence)){sentence=unchat(sentence).replace(/\bif you ask\b|\bon request\b|\bby request\b|\bjust ask\b/i,'on request').replace(/\b(?:queues?|lines?|waits?)\s+(?:are|is|can be|get)\s+(?:massive|huge|long|big|crazy|insane)\b/i,'busy').replace(/\bget there early\b|\barrive early\b/i,'go early').replace(/\b(?:can be|is|gets?)\s+(?=tricky|hard|difficult|limited|busy)/i,'').replace(/\bmaybe\s+/i,'');sentence=cap1(unchat(sentence));if(!sentence)return}
     var parts=sentence.split(/\b(?:is|are)\b/i.test(sentence)||/discount|surcharge|concession|offer|\bfees?\b/i.test(sentence)?/\s*,\s*|\s*\/\s*/:/\s*,\s*|\s+(?:and|&)\s+|\s*\/\s*/).map(function(x){return x.trim()}).filter(Boolean);
@@ -2215,6 +2230,8 @@ function organiseTips(text){
       else add(shortTip(pc));
     });
   });
+  var dl=[],di=-1;out=out.filter(function(t){var mm=t.match(/^Delivery:\s*(.+)$/);if(!mm)return true;dl.push(dl.length?mm[1].charAt(0).toLowerCase()+mm[1].slice(1):mm[1]);if(di<0){di=1;return true}return false});
+  if(dl.length>1)out=out.map(function(t){return /^Delivery:/.test(t)?'Delivery: '+dl.join(', '):t});
   return out;
 }
 // The filters use short points plus anything recognised inside longer ones
