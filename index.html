@@ -820,7 +820,7 @@ function dbFailed(err){
   if(mode==='db'){
     mode='local';if(unsub){try{unsub()}catch(e){}unsub=null}
     saveLocal();setSync();
-    toast("Couldn't save to your account. Places are kept in this browser.");
+    toast("Couldn't save to your account ("+String((err&&(err.code||err.message))||'error').slice(0,80)+"). Kept on this device.");
   }
   setEdState('Saved in this browser');
 }
@@ -937,11 +937,14 @@ function rescueLocal(uid){
   var want=local.filter(function(x){return x&&x.id&&(pend.indexOf(x.id)>=0||(first&&Number(x.ts)>recent))});
   if(!want.length){try{localStorage.setItem(flag,'1');localStorage.removeItem(PEND_KEY)}catch(e){}return Promise.resolve()}
   return col.get().then(function(snap){
-    var have=new Set(snap.docs.map(function(d){return d.id})),batch=FB.fs.batch(),n=0;
-    want.forEach(function(x){var p=clean(x.id,x);if(p&&(!have.has(p.id)||pend.indexOf(p.id)>=0)){batch.set(col.doc(p.id),payload(p));n++}});
-    return (n?batch.commit():Promise.resolve()).then(function(){
-      try{localStorage.setItem(flag,'1');localStorage.removeItem(PEND_KEY)}catch(e){}
-      if(n)toast('Synced '+n+' place'+(n===1?'':'s')+' that were only on this device.');
+    var have=new Set(snap.docs.map(function(d){return d.id})),ok=0,bad=[],left=[];
+    // one at a time, so one problem place can't block the others
+    var jobs=want.map(function(x){var p=clean(x.id,x);if(!p||(have.has(p.id)&&pend.indexOf(p.id)<0))return Promise.resolve();
+      return Promise.resolve().then(function(){return col.doc(p.id).set(payload(p))}).then(function(){ok++},function(err){bad.push((p.name||'Untitled')+' ('+((err&&err.message)||err)+')');left.push(p.id)})});
+    return Promise.all(jobs).then(function(){
+      try{localStorage.setItem(flag,'1');if(left.length)localStorage.setItem(PEND_KEY,JSON.stringify(left));else localStorage.removeItem(PEND_KEY)}catch(e){}
+      if(ok)toast('Synced '+ok+(ok===1?' place that was':' places that were')+' only on this device.');
+      if(bad.length)setTimeout(function(){toast("Couldn't sync: "+bad.join('; ').slice(0,180))},2600);
     });
   }).catch(function(e){try{console.warn('rescue failed',e)}catch(_){}});
 }
