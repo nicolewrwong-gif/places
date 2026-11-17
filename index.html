@@ -377,6 +377,9 @@ details.days[open] summary::after{transform:rotate(90deg)}
 @keyframes bdot{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--danger) 45%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.vlink.hasdot::after{animation:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--danger) 25%,transparent)}}
 .hdr{margin-top:6px}
+.vdesc{margin:4px 0 0;font-size:14px;line-height:1.45;font-style:italic;color:var(--muted)}
+#form.editall .vdesc,#form.all-open .vdesc{display:none}
+.desclab{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
 .hdaddr{display:flex;gap:5px;align-items:flex-start;font-size:13.5px;color:var(--muted,#666);margin:0;line-height:1.4}
 .hdaddr svg{flex:none;margin-top:2px}
 .hdtime{margin:2px 0 0 19px;font-size:13px;color:var(--fg);font-weight:500}
@@ -555,8 +558,10 @@ details.days[open] summary::after{transform:rotate(90deg)}
             <div class="sec-head"><h2 class="vname" id="vName"></h2><span class="lab">Name</span><button type="button" class="editbtn" data-sec="name">Edit</button></div>
             <p class="asof placeasof" id="vAsOf"></p>
             <p class="topdeal" id="vDeal" hidden></p><p class="surch topsurch" id="vSurch" hidden></p>
+            <p class="vdesc" id="vDesc" hidden></p>
             <div class="hdr" id="vHdr"></div>
             <div class="sec-edit"><span class="tagsearch"><input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off" aria-label="Name" role="combobox" aria-controls="nameDrop" aria-expanded="false"><ul id="nameDrop" class="tagdrop placedrop" role="listbox" hidden></ul></span>
+              <label class="desclab" for="fDesc">Description</label><input id="fDesc" type="text" maxlength="120" placeholder="One short sentence about this place" autocomplete="off">
               <div class="pgrid" id="pGrid"></div><input type="file" id="pFile" accept="image/*" multiple hidden>
               <div class="ppick" id="pricePick" role="radiogroup" aria-label="Price range"><span class="pplab">Price</span><button type="button" data-lv="1" role="radio">$</button><button type="button" data-lv="2" role="radio">$$</button><button type="button" data-lv="3" role="radio">$$$</button><button type="button" data-lv="4" role="radio">$$$$</button></div></div>
           </section>
@@ -844,6 +849,23 @@ function applyAllHours(d,text){var o=splitHours(text);d.hours=parseDaysText(o.op
 function fmtAllHours(d){var out=[];if(DAYS.some(function(x){return (d.hours[x]||'').trim()}))out.push(fmtDays(d.hours));if(DAYS.some(function(x){return ((d.kitchen||{})[x]||'').trim()}))out.push(fmtDays(d.kitchen).split('\n').map(function(l){return 'Kitchen: '+l}).join('\n'));if((d.ohours||[]).length)out.push(fmtOHours(d.ohours));return out.join('\n')}
 function fmtOHours(a){return (a||[]).map(function(g){return fmtDays(g.h).split('\n').map(function(x,i){return (i?'':g.n+': ')+x}).join('\n')}).join('\n')}
 // Photos: the place keeps a small thumbnail per photo; full photos are stored on their own
+// Description: one short sentence, capital at the start, full stop at the end
+function tidyDesc(t){t=unchat(String(t||'').replace(/\s+/g,' ').trim()).replace(/\s+([,.!?])/g,'$1');if(!t)return '';t=t.charAt(0).toUpperCase()+t.slice(1);if(!/[.!?]$/.test(t))t+='.';return t.slice(0,140)}
+// Auto description when none is typed: "Cosy Korean bakery known for mochi and rice cakes."
+function autoDesc(d){
+  var ty=(d.types||[])[0]||'',cz=(d.cuisine||[]).filter(function(c){return !/fusion/i.test(c)})[0]||'';
+  var vb=(d.vibe||[]).filter(function(v){return /^[A-Za-z-]+$/.test(v)&&!/^(?:all|wellness)$/i.test(v)})[0]||'';
+  var bf=(d.tips||[]).map(function(t){var m=String(t).match(/^best for:\s*(.+)$/i);return m&&m[1]}).filter(Boolean)[0];
+  var known=(bf?bf.split(/\s*,\s*/):[]).concat(rollupFood(d.food||[])).filter(function(x,i,a){return a.map(norm).indexOf(norm(x))===i});
+  known=known.slice(0,2).map(function(x){return String(x).toLowerCase()});
+  var feat=(d.features||[]).slice(0,2).map(function(x){return String(x).toLowerCase()});
+  var noun=[vb,cz,ty?ty.toLowerCase():(cz?'spot':'')].filter(Boolean).join(' ');
+  if(!noun)return '';
+  var tail=known.length?' known for '+known.join(' and '):feat.length?' with '+feat.join(' and '):'';
+  if(!tail&&!(vb&&(cz||ty)))return '';
+  var t=noun+tail;t=t.charAt(0).toUpperCase()+t.slice(1)+'.';
+  return t.length>130?t.slice(0,t.lastIndexOf(' ',126))+'.':t;
+}
 function cleanPhotos(a){if(!Array.isArray(a))return [];return a.slice(0,6).filter(function(x){return x&&typeof x.i==='string'&&/^ph_[\w-]+$/.test(x.i)&&typeof x.t==='string'&&/^data:image\/jpeg;base64,/.test(x.t)&&x.t.length<40000}).map(function(x){return {i:x.i,t:x.t}})}
 function cleanPrices(a){
   if(!Array.isArray(a))return [];
@@ -859,11 +881,11 @@ function clean(id,x){
   var r=Math.round(Number(x.rating)||0);
   var types=Array.isArray(x.types)?cleanFood(x.types,6):typesFromOld(x);
   return {id:id,name:String(x.name||''),types:types,cat:types.length?typeColor(types[0]):'other',status:x.status==='been'?'been':'want',
-    rating:Math.max(0,Math.min(5,r)),price:Math.max(0,Math.min(4,Math.round(Number(x.price)||0))),photos:cleanPhotos(x.photos),prices:cleanPrices(x.prices),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),features:cleanFood(x.features,20),time:String(x.time||'').slice(0,40),tips:cleanTips(x.tips),
+    rating:Math.max(0,Math.min(5,r)),price:Math.max(0,Math.min(4,Math.round(Number(x.price)||0))),photos:cleanPhotos(x.photos),desc:typeof x.desc==='string'?x.desc.slice(0,160):'',prices:cleanPrices(x.prices),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),features:cleanFood(x.features,20),time:String(x.time||'').slice(0,40),tips:cleanTips(x.tips),
     notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),raw:cleanRaw(x.raw),hours:cleanDays(x.hours),kitchen:cleanDays(x.kitchen),ohours:cleanOHours(x.ohours),deals:cleanDays(x.deals),
     lat:lat,lng:wrapLng(lng),loc:String(x.loc||''),ts:Number(x.ts)||0};
 }
-function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,price:p.price||0,photos:cleanPhotos(p.photos),prices:cleanPrices(p.prices).map(function(g){return {n:g.n,w:g.w,it:g.it.map(function(r){return {a:r[0],b:r[1],c:r[2]}})}}),food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],features:p.features||[],time:p.time||'',tips:p.tips||[],notes:p.notes||'',url:p.url||'',
+function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,price:p.price||0,photos:cleanPhotos(p.photos),desc:tidyDesc(p.desc),prices:cleanPrices(p.prices).map(function(g){return {n:g.n,w:g.w,it:g.it.map(function(r){return {a:r[0],b:r[1],c:r[2]}})}}),food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],features:p.features||[],time:p.time||'',tips:p.tips||[],notes:p.notes||'',url:p.url||'',
   book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',raw:cleanRaw(p.raw),hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),ohours:cleanOHours(p.ohours),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc||'',ts:p.ts||Date.now()}))}
 function loadLocal(){
   var m=new Map();
@@ -1463,7 +1485,7 @@ function searchExtras(p){
   return x.join(' ');
 }
 function placeHay(p){
-  return norm([p.name,p.notes,p.loc,(p.raw&&p.raw.food)||'',(p.features||[]).join(' '),p.types.join(' '),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),(p.tips||[]).join(' '),
+  return norm([p.name,p.desc||'',p.notes,p.loc,(p.raw&&p.raw.food)||'',(p.features||[]).join(' '),p.types.join(' '),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),(p.tips||[]).join(' '),
     searchExtras(p),DAYS.map(function(d){return dealOn(p,d)}).join(' '),(p.prices||[]).map(function(g){return g.n+' '+g.it.map(function(r){return r[0]}).join(' ')}).join(' '),p.phone].join(' '));
 }
 function hasTag(arr,f){return f==='all'||(arr||[]).some(function(x){return x.toLowerCase()===f})}
@@ -2047,6 +2069,7 @@ $('pricePick').addEventListener('click',function(e){var b=e.target.closest('butt
 function paintView(){
   if(!E)return;var d=E.data,tk=todayKey(),v;
   paintPick();paintPhotos();
+  var ad=autoDesc(d),dsc=tidyDesc(d.desc)||ad;$('vDesc').hidden=!dsc;$('vDesc').textContent=dsc;if(document.activeElement!==$('fDesc'))$('fDesc').value=d.desc||'';$('fDesc').placeholder=ad||'One short sentence about this place';
   $('vName').textContent=(d.name||'').trim()||'Untitled place';if(d.price)$('vName').appendChild(priceEl(d.price));if(d.time){var tsp=el('span','ptime');tsp.setAttribute('aria-label','Time needed '+d.time);tsp.appendChild(document.createTextNode(shortTime(d.time)));$('vName').appendChild(tsp)}
   v=$('v-pricing');v.textContent='';paintPricing(v,d);
   v=$('v-need');v.textContent='';var nr=needRows(d);$('sec-need').hidden=!nr.length;
@@ -2243,6 +2266,9 @@ function organiseTips(text){
   var out=[],seen={},m=canonMap('tips'),sawDel=0;
   function add(t){t=tidyTip(t);if(!t)return;var k=tagKey(t);if(!seen[k]&&out.length<TAGS.tips.max){seen[k]=1;out.push(t.slice(0,200))}}
   fixSurcharges(String(text||'').split(/\n+|(?<=[.!?])\s+|\s*[;•|]\s*/)).forEach(function(sentence){
+    // known for / must try / specialise in / signature -> "Best for: X"
+    var spm=String(sentence).replace(/^signature\s*:\s*/i,'signature ').match(/\b(?:known for|famous for|must[- ]try|signature(?:\s+dish(?:es)?)?(?:\s+(?:is|are))?|best[- ]?sellers?(?:\s+(?:is|are))?|specialt(?:y|ies)(?:\s+(?:is|are))?|speciality(?:\s+(?:is|are))?|speciali[sz]e[sd]?\s+in|speciali[sz]ing\s+in|best for)\s*:?\s+(?:the\s+|their\s+|our\s+|its\s+)?(.+?)[.,!]*$/i);
+    if(spm){var sx=spm[1].split(/\s*,\s*|\s+and\s+/).map(function(x){return foodWord(shortItem(x.replace(/^(?:the|their|our)\s+/i,'')))}).filter(Boolean).join(', ');if(sx){add('Best for: '+sx);return}}
     if(FRESH_RE.test(sentence))return;
     sentence=sentence.trim().replace(/[.!?]+$/,'').replace(/^(?:however|additionally|also|please note(?: that)?|note(?: that)?|in addition),?\s+/i,'');if(!sentence)return;
     // vague lines that say nothing
@@ -2330,6 +2356,9 @@ function menuTags(text){
 // Info boxes: words that belong in another section are copied there
 // e.g. Type "korean bakery" -> Cuisine: Korean ; Type "cosy rooftop bar" -> Vibe: Cosy, Rooftop
 function crossFill(key,text){
+  if(E&&(key==='tips'||key==='food')&&!FRESH_RE.test(text)&&/hand[- ]?(?:made|rolled|pulled|crafted)/i.test(text)&&E.data.features.map(norm).indexOf('handmade')<0){
+    E.data.features=E.data.features.concat(['Handmade']);var rh=rawOf('features');if(rh!=null)setRaw('features',(rh.trim()?rh.replace(/\s+$/,'')+', ':'')+'Handmade');paintTags('features');paintView();toast('Also added to Features: Handmade')
+  }
   if(E&&(key==='tips'||key==='food')&&FRESH_RE.test(text)){
     var fd=E.data,mv=[];
     if(fd.features.map(norm).indexOf('made fresh daily')<0){fd.features=fd.features.concat(['Made fresh daily']);var rf=rawOf('features');if(rf!=null)setRaw('features',(rf.trim()?rf.replace(/\s+$/,'')+', ':'')+'Made fresh daily');paintTags('features');mv.push('Features: Made fresh daily')}
@@ -2339,8 +2368,8 @@ function crossFill(key,text){
   }
   if(E&&key==='food'){
     // "Their signature is the X" / "famous for X" / "must try X" -> Good to know: Signature: X
-    var sg=[];String(text||'').split(/[.!?\n]+|,\s*(?=also|plus|and)/i).forEach(function(sn){var m=sn.match(/\b(?:signature(?:\s+dish)?|famous for|known for|must[- ]try|best seller|bestseller|specialty|speciality)\b(?:\s+(?:is|are|dish|item))?\s+(?:the\s+|their\s+)?(.+)$/i);if(m){var it=shortItem(m[1].split(/,|\s+also\s+|\s+and\s+(?:also\s+)?try\b/i)[0]);if(it)sg.push(it)}});
-    if(sg.length){var note='Signature: '+sg.join(', '),have=E.data.tips.some(function(t){return /^signature:/i.test(t)});
+    var sg=[];String(text||'').split(/[.!?\n]+|,\s*(?=also|plus|and)/i).forEach(function(sn){var m=sn.match(/\b(?:signature(?:\s+dish)?|famous for|known for|must[- ]try|best seller|bestseller|specialty|speciality|speciali[sz]e(?:s)? in|speciali[sz]ing in)\b(?:\s+(?:is|are|dish|item))?\s+(?:the\s+|their\s+)?(.+)$/i);if(m){var it=foodWord(shortItem(m[1].split(/,|\s+also\s+|\s+and\s+(?:also\s+)?try\b/i)[0]));if(it)sg.push(it)}});
+    if(sg.length){var note='Best for: '+sg.join(', '),have=E.data.tips.some(function(t){return /^(?:signature|best for):/i.test(t)});
       if(!have){E.data.tips=E.data.tips.concat([note]);var rt=rawOf('tips');if(rt!=null)setRaw('tips',(rt.trim()?rt.replace(/\s+$/,'')+'\n':'')+note);paintTags('tips');paintView();toast('Also added to Good to know: '+note)}}
     return;
   }
@@ -2362,7 +2391,7 @@ function crossFill(key,text){
   if(moved.length){paintChoices();paintView();toast('Also added to '+moved.join('; '))}
 }
 // Take the chat out of a phrase: "they have a lovely outdoor courtyard" -> "outdoor courtyard"
-var CHAT_LEAD=/^(?:and|or|plus|also|but|so|it'?s|it is|there(?:'s| is| are)|they(?:'ve| have| do| also| serve| offer| make| sell)+|you(?:'ll| can| will| probably| definitely| should)*\s+(?:get|want|need|find|try|grab|order)|we(?:'ve| have| serve| offer)+|try(?: the| their)?|get(?: the| their)?|order the|grab(?: the)?|their(?: signature| famous| best)?(?: dish| item)?(?: is| are)?(?: the)?|signature(?: is)?|famous for(?: the)?|known for(?: the| their)?|a few|a couple of|some|lots of|plenty of|loads of|a bit of|a little|a|an|the)\s+/i;
+var CHAT_LEAD=/^(?:(?:we|they)\s+(?:specialis|specializ)e\s+in|(?:specialis|specializ)(?:es|ing)\s+in|(?:we|they)(?:'re| are)\s+(?:known|famous)\s+for|and|or|plus|also|but|so|it'?s|it is|there(?:'s| is| are)|they(?:'ve| have| do| also| serve| offer| make| sell)+|you(?:'ll| can| will| probably| definitely| should)*\s+(?:get|want|need|find|try|grab|order)|we(?:'ve| have| serve| offer)+|try(?: the| their)?|get(?: the| their)?|order the|grab(?: the)?|their(?: signature| famous| best)?(?: dish| item)?(?: is| are)?(?: the)?|signature(?: is)?|famous for(?: the)?|known for(?: the| their)?|a few|a couple of|some|lots of|plenty of|loads of|a bit of|a little|a|an|the)\s+/i;
 var CHAT_WORDS=/\b(?:really|super|very|pretty|quite|absolutely|totally|honestly|literally|unfortunately|maybe|probably|definitely|lovely|amazing|awesome|incredible|delicious|cute|little|nice|just|actually|seriously|massive(?=\s+(?:range|selection|list)))\b/gi;
 function unchat(t){
   t=String(t||'').replace(/[!?]+/g,'').replace(/\s+/g,' ').trim();
@@ -2386,15 +2415,18 @@ var FOOD_COUNT=/^(?:oyster|dumpling|burger|taco|scallop|prawn|wing|rib|bun|crois
 // "Strawberry mochi, Black sesame mochi" -> "Mochi" ; "Fish dumplings, Pork dumplings" -> "Dumplings"
 // endings where the first word makes it a different food: spring rolls vs cinnamon rolls
 var ROLL_KEEP=/^(?:roll|bun|bread|pie|toast|sauce|soup|salad|bowl|plate|board|platter|set|special|cake|chip|fry|frie|stick|ball|cup|tart|pancake|sandwich|curry|rice|noodle|chicken|pork|beef|fish|egg|cream|sundae|shake|juice|soda|water|milk)$/;
+var STYLE_WORD=/^(?:traditional|authentic|classic|signature|house|homemade|modern|korean|japanese|chinese|thai|vietnamese|taiwanese|french|italian|spanish|greek|mexican|indian|turkish|lebanese|malaysian|indonesian|filipino|cantonese|sichuan|hong|kong)$/;
 // groups: [{t:'Mochi',v:['black sesame','grape']}]
 function rollupGroups(list){
   var head=function(t){var w=norm(t).split(/\s+/);return sing(w[w.length-1]||'')};
   var vars=function(items,n){return items.map(function(x){var ws=String(x).trim().split(/\s+/);var v=ws.slice(0,ws.length-n).join(' ').toLowerCase();return v}).filter(Boolean)};
-  var cnt={};list.forEach(function(t){var h=head(t);if(h)cnt[h]=(cnt[h]||0)+1});
+  // "traditional korean rice cake" is its own item, not a flavour of rice cake
+  var styleOnly=function(t){var w=norm(t).split(/\s+/);return w.length>1&&w.slice(0,-1).every(function(x,i,a){return STYLE_WORD.test(x)||(i===a.length-1&&/^(?:rice|sponge|layer)$/.test(x))})&&w.slice(0,-1).some(function(x){return STYLE_WORD.test(x)})};
+  var cnt={};list.forEach(function(t){var h=head(t);if(h&&!styleOnly(t))cnt[h]=(cnt[h]||0)+1});
   var out=[],done={};
-  list.forEach(function(t){var h=head(t);
+  list.forEach(function(t){var h=styleOnly(t)?'':head(t);
     if(cnt[h]>=2){if(done[h])return;done[h]=1;
-      var items=list.filter(function(x){return head(x)===h}),grp=items.map(function(x){return String(x).trim().split(/\s+/)}),n=1;
+      var items=list.filter(function(x){return !styleOnly(x)&&head(x)===h}),grp=items.map(function(x){return String(x).trim().split(/\s+/)}),n=1;
       while(grp.every(function(w){return w.length>n})&&grp.every(function(w){return sing(norm(w[w.length-1-n]))===sing(norm(grp[0][grp[0].length-1-n]))}))n++;
       if(n===1&&ROLL_KEEP.test(h)){
         // only roll up items that share the last two words: "rice cakes" + "red bean rice cake" -> Rice cakes
@@ -2410,7 +2442,7 @@ function rollupGroups(list){
 function rollupFood(list){return rollupGroups(list).map(function(g){return g.t})}
 function foodWord(t){
   t=String(t||'').trim();var prev;
-  do{prev=t;t=t.replace(/^(?:fresh(?:ly)?(?:\s+(?:made|baked|shucked|cooked|brewed|squeezed))?|house[- ]?made|home[- ]?made|hand[- ]?made|in[- ]house|signature|famous|classic|traditional|authentic|best|delicious|great|good|tasty|yummy|the|their|our)\s+/i,'')}while(t!==prev);
+  do{prev=t;t=t.replace(/^(?:fresh(?:ly)?(?:\s+(?:made|baked|shucked|cooked|brewed|squeezed))?|house[- ]?made|home[- ]?made|hand[- ]?made|in[- ]house|signature|famous|best|delicious|great|good|tasty|yummy|the|their|our)\s+/i,'')}while(t!==prev);
   t=t.replace(/^(?:an?\s+)?(?:glass(?:es)?|bottles?|cups?|pints?|jugs?|carafes?|serves?|plates?|bowls?|scoops?|pieces?|range|selection|list)\s+of\s+/i,'').replace(/\s+(?:made|baked)\s+(?:fresh|daily|in[- ]house)$/i,'');
   if(!t)return '';
   var w=t.split(' '),last=w[w.length-1],two=w.slice(-2).join(' ');
@@ -2425,15 +2457,25 @@ function parseTagText(key,text,noRoll){
   if(key==='food'&&looksLikeMenu(text))return parseTagText('food',menuTags(text).join(', '));
   var pieces=[];
   if(key==='features'||key==='food'||key==='vibe'){text=String(text||'').split(/(?<=[.!?])\s+|\n+/).filter(function(sn){if(FRESH_RE.test(sn)){if(key==='features')pieces.push('Made fresh daily');else if(key==='food'){var lf=freshLeft(sn);if(lf)pieces.push(cap1(lf))}return false}return true}).join('\n')}
+  // keep "Mochi (strawberry, grape)" together while splitting
+  if(key==='food')text=String(text||'').replace(/\(([^)]*)\)/g,function(m,inner){return '('+inner.replace(/\s*&\s*/g,'\u0002').replace(/\s*\+\s*/g,'\u0002').replace(/\s*(?:[,\/;|\n]|\band\b|\bor\b)\s*/g,'\u0001')+')'});
   String(text||'').replace(/\s+(?:also|plus|as well as|along with)\s+/gi,', ').replace(/,?\s+with\s+(?=[a-z])/gi,key==='features'?', ':' with ').split(/\s*(?:[\/,;|\n+&]|\band\b|\bor\b(?!\s+so)|(?<=[.!?])\s)\s*/i).forEach(function(part){
     part=part.trim().replace(/[.!?]+$/,'');if(!part)return;
     if(FRESH_RE.test(part)&&(key==='features'||key==='food'||key==='vibe')){if(key==='features')pieces.push('Made fresh daily');return}
+    if(key==='vibe'&&/speciali[sz]|hand[- ]?(?:made|rolled|pulled|crafted)|fresh(?:ly)?\s+(?:made|baked)/i.test(part))return;
     if(key==='vibe'){part=shortVibe(part);if(!part)return;if(/ \/ /.test(part)){pieces=pieces.concat(part.split(' / '));return}}
-    else if(key==='features'||key==='food'){if(key==='food')part=part.replace(/\s*\([^)]*\)?/g,' ').replace(/\s+/g,' ').trim();part=shortItem(part);if(key==='food')part=foodWord(part);if(!part)return;var fv=key==='features'?findFeatures(norm(part)):[];if(fv.length===1&&norm(part).split(' ').length<=3){part=fv[0]}}
+    else if(key==='features'||key==='food'){if(key==='food'){
+      // "Mochi (strawberry, grape)" -> strawberry mochi + grape mochi (shown as Mochi with its flavours)
+      var bm=part.match(/^(.*?)\s*\(([^)]*)\)?\s*(.*)$/);
+      if(bm){var base=(bm[1]+' '+bm[3]).replace(/\s+/g,' ').trim(),fl=bm[2].split('\u0001').map(function(x){return x.replace(/\u0002/g,' & ').replace(/^(?:flavou?rs?|options?|types?|choice of)\s*:?\s*/i,'').trim()}).filter(Boolean);
+        if(base&&fl.length>=2&&fl.every(function(x){return x.split(/\s+/).length<=4})){fl.forEach(function(f){var it=foodWord(shortItem(f.toLowerCase()+' '+base));if(it)pieces.push(it)});return}
+        part=base||bm[2].split('\u0001').join(', ')}
+      part=part.replace(/\u0001/g,', ').replace(/\u0002/g,' & ').replace(/\s+/g,' ').trim()}
+    part=shortItem(part);if(key==='food')part=foodWord(part);if(!part)return;var fv=key==='features'?findFeatures(norm(part)):[];if(fv.length===1&&norm(part).split(' ').length<=3){part=fv[0]}}
     var sp=splitKnown(key,part);if(sp)pieces=pieces.concat(sp);else pieces.push(part);
   });
   if(key==='types'){
-    var tp=[];pieces.forEach(function(pc){var f=findTypes(norm(pc),3);if(f.length){tp=tp.concat(f);if(false&&E&&!E.data.cuisine.length){var cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(norm(pc))});if(cz.length){E.data.cuisine=cz}}}else tp.push(pc)});
+    var tp=[];pieces.forEach(function(pc){var f=findTypes(norm(pc),3);if(f.length){tp=tp.concat(f);if(false&&E&&!E.data.cuisine.length){var cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(norm(pc))});if(cz.length){E.data.cuisine=cz}}}else if(unchat(pc).split(/\s+/).length<=2)tp.push(unchat(pc))});
     pieces=tp;
   }
   if(key==='cuisine')pieces=[].concat.apply([],pieces.map(function(pc){var n=norm(unchat(pc)).replace(/[-\s](?:inspired|style|influenced)\b/g,'').replace(/\bmod(?:ern)?\s*(?:oz|aus|aussie)\b|\bmodern aussie\b/g,'modern australian').replace(/\bmiddle-eastern\b/g,'middle eastern').replace(/\bszechuan\b/g,'sichuan'),cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(n)});var out=cz.slice();if(/\bfusion\b/.test(n))out.push('Fusion');return out.length?out:[cap1(unchat(pc))]})).filter(Boolean);
@@ -2543,7 +2585,7 @@ function openPlace(id){
 function blankDays(){var o={};DAYS.forEach(function(d){o[d]=''});return o}
 function startDraft(init){
   S.selId=null;
-  E={kind:'draft',data:{name:init.name||'',types:(init.types||[]).slice(),cat:'other',rating:0,price:0,photos:[],prices:[],food:[],cuisine:[],vibe:[],features:[],time:'',tips:[],notes:'',url:'',book:'',phone:'',
+  E={kind:'draft',data:{name:init.name||'',types:(init.types||[]).slice(),cat:'other',rating:0,price:0,photos:[],desc:'',prices:[],food:[],cuisine:[],vibe:[],features:[],time:'',tips:[],notes:'',url:'',book:'',phone:'',
     hours:blankDays(),kitchen:blankDays(),ohours:[],deals:blankDays(),lat:init.lat,lng:init.lng,loc:init.loc||'',ts:Date.now()}};
   E.initLoc=E.data.loc;E.data.cat=placeColor(E.data);E.raw=null;E.data.raw={};
   $('pasteBox').open=false;$('pasteTxt').value='';
@@ -2579,6 +2621,8 @@ $('addBtn').addEventListener('click',function(){
   startDraft({lat:lat,lng:lng,loc:'',paste:true});
 });
 $('fName').addEventListener('input',function(e){E.data.name=e.target.value;paintView();touched()});
+$('fDesc').addEventListener('input',function(e){if(!E)return;E.data.desc=e.target.value;paintView();touched()});
+$('fDesc').addEventListener('blur',function(e){if(!E)return;E.data.desc=tidyDesc(e.target.value);e.target.value=E.data.desc;paintView()});
 $('moreInfo').addEventListener('click',function(){$('form').classList.toggle('showempty');paintView()});
 $('ohoursTxt').addEventListener('input',function(e){if(!E)return;setRaw('ohours',e.target.value);E.data.ohours=parseOHours(e.target.value);paintView();touched()});
 $('l-time').addEventListener('input',function(e){if(!E)return;var t=parseTime(e.target.value);E.data.time=t||e.target.value.trim();paintView();touched()});
@@ -3136,8 +3180,8 @@ function priceEl(lv){var s=el('span','price');s.setAttribute('aria-label',PRICE_
 var FRESH_RE=/\b(?:fresh(?:ly)?\s+(?:hand[- ]?made|made|baked|prepared|cooked)|(?:hand[- ]?made|made|baked|prepared|cooked)\s+fresh(?:ly)?|hand[- ]?made|baked)\b[^.!?\n]*\b(?:daily|every day|each day|every morning|each morning)\b|\bmade fresh daily\b/i;
 // what's left after the fresh-daily words: "Pasta handmade daily" -> "Pasta"
 function freshLeft(sn){return unchat(String(sn).replace(/\b(?:in|at|from)\s+(?:our|the|their)\b[^.!?\n]*/i,' ').replace(/\b(?:fresh(?:ly)?|hand[- ]?made|made|baked|prepared|cooked|daily|every day|each day|every morning|each morning|everything|all|is|are|we|our|it'?s)\b/gi,' ').replace(/[.!?]/g,' ')).replace(/^(?:and|&)\s+|\s+(?:and|&)$/i,'').trim()}
-var FEATURES=[[FRESH_RE,'Made fresh daily'],[/\bwi-?fi\b/,'Free Wi-Fi'],[/al ?fresco|outdoor (?:seating|dining|tables)/,'Outdoor seating'],[/mineral pools?|hot pools?|thermal pools?|geothermal|hot springs? pools?/,'Hot mineral pools'],[/cold plunges?(?: pools?)?/,'Cold plunges'],[/\bsaunas?\b/,'Saunas'],[/steam rooms?/,'Steam rooms'],[/clay (?:rituals?|treatments?)/,'Clay rituals'],[/\byoga\b/,'Yoga'],[/breathwork/,'Breathwork'],[/fire (?:&|and) ice/,'Fire & Ice'],[/massages?/,'Massages'],[/facials?/,'Facials'],[/body treatments?/,'Body treatments'],[/private bathing|private baths?/,'Private bathing'],[/spa treatments?/,'Spa treatments'],[/cave pool/,'Cave pool'],[/hilltop pool/,'Hilltop pool'],[/(?:infinity|rooftop|swimming|lap) pool/,'Pool'],[/hot tubs?|jacuzzi|spa baths?/,'Hot tub'],[/\bgym\b/,'Gym'],[/pool tables?|billiards/,'Pool tables'],[/arcade games?|pinball/,'Arcade games'],[/dance ?floor/,'Dance floor'],[/beer garden/,'Beer garden'],[/karaoke rooms?/,'Karaoke rooms'],[/private (?:dining )?rooms?/,'Private rooms'],[/playground/,'Playground'],[/board games/,'Board games'],[/lockers?/,'Lockers'],[/parents?'? room|baby chang/,'Parents room'],[/picnic areas?/,'Picnic area'],[/lawns?\b|gardens?\b(?! view)/,'Gardens'],[/gift shop|\bshop\b/,'Shop'],[/conference|convention|function rooms?/,'Conference rooms'],[/\bdarts\b/,'Darts'],[/table tennis|ping pong/,'Table tennis'],[/bowling lanes?/,'Bowling lanes']];
-function findFeatures(n){return FEATURES.filter(function(f){return f[0].test(n)}).map(function(f){return f[1]})}
+var FEATURES=[[FRESH_RE,'Made fresh daily'],[/hand[- ]?(?:made|rolled|pulled|crafted)/,'Handmade'],[/\bwi-?fi\b/,'Free Wi-Fi'],[/al ?fresco|outdoor (?:seating|dining|tables)/,'Outdoor seating'],[/mineral pools?|hot pools?|thermal pools?|geothermal|hot springs? pools?/,'Hot mineral pools'],[/cold plunges?(?: pools?)?/,'Cold plunges'],[/\bsaunas?\b/,'Saunas'],[/steam rooms?/,'Steam rooms'],[/clay (?:rituals?|treatments?)/,'Clay rituals'],[/\byoga\b/,'Yoga'],[/breathwork/,'Breathwork'],[/fire (?:&|and) ice/,'Fire & Ice'],[/massages?/,'Massages'],[/facials?/,'Facials'],[/body treatments?/,'Body treatments'],[/private bathing|private baths?/,'Private bathing'],[/spa treatments?/,'Spa treatments'],[/cave pool/,'Cave pool'],[/hilltop pool/,'Hilltop pool'],[/(?:infinity|rooftop|swimming|lap) pool/,'Pool'],[/hot tubs?|jacuzzi|spa baths?/,'Hot tub'],[/\bgym\b/,'Gym'],[/pool tables?|billiards/,'Pool tables'],[/arcade games?|pinball/,'Arcade games'],[/dance ?floor/,'Dance floor'],[/beer garden/,'Beer garden'],[/karaoke rooms?/,'Karaoke rooms'],[/private (?:dining )?rooms?/,'Private rooms'],[/playground/,'Playground'],[/board games/,'Board games'],[/lockers?/,'Lockers'],[/parents?'? room|baby chang/,'Parents room'],[/picnic areas?/,'Picnic area'],[/lawns?\b|gardens?\b(?! view)/,'Gardens'],[/gift shop|\bshop\b/,'Shop'],[/conference|convention|function rooms?/,'Conference rooms'],[/\bdarts\b/,'Darts'],[/table tennis|ping pong/,'Table tennis'],[/bowling lanes?/,'Bowling lanes']];
+function findFeatures(n){var r=FEATURES.filter(function(f){return f[0].test(n)}).map(function(f){return f[1]});if(r.indexOf('Made fresh daily')>=0)r=r.filter(function(x){return x!=='Handmade'});return r}
 // "Allow at least 3–4 hours" -> "3–4 hours"
 function shortTime(t){return String(t).replace(/^about\s+/i,'~').replace(/^at least\s+/i,'').replace(/hours/,'hrs').replace(/hour/,'hr').replace(/minutes/,'mins').replace(/minute/,'min')+(/^at least/i.test(t)?'+':'')}
 function parseTime(t){
