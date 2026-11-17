@@ -783,7 +783,7 @@ function cleanPrices(a){
   if(!Array.isArray(a))return [];
   return a.slice(0,20).map(function(g){
     if(!g||typeof g!=='object')return null;
-    var it=(Array.isArray(g.it)?g.it:[]).slice(0,40).map(function(r){return Array.isArray(r)?[String(r[0]||'').slice(0,80),String(r[1]||'').slice(0,60),String(r[2]||'').slice(0,40)]:null}).filter(function(r){return r&&(r[0]||r[1])});
+    var it=(Array.isArray(g.it)?g.it:[]).slice(0,40).map(function(r){if(r&&!Array.isArray(r)&&typeof r==='object')r=[r.a,r.b,r.c];return Array.isArray(r)?[String(r[0]||'').slice(0,80),String(r[1]||'').slice(0,60),String(r[2]||'').slice(0,40)]:null}).filter(function(r){return r&&(r[0]||r[1])});
     return it.length?{n:String(g.n||'').slice(0,60),w:String(g.w||'').slice(0,80),it:it}:null;
   }).filter(Boolean);
 }
@@ -797,7 +797,7 @@ function clean(id,x){
     notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),raw:cleanRaw(x.raw),hours:cleanDays(x.hours),kitchen:cleanDays(x.kitchen),ohours:cleanOHours(x.ohours),deals:cleanDays(x.deals),
     lat:lat,lng:wrapLng(lng),loc:String(x.loc||''),ts:Number(x.ts)||0};
 }
-function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,price:p.price||0,prices:cleanPrices(p.prices),food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],features:p.features||[],time:p.time||'',tips:p.tips||[],notes:p.notes||'',url:p.url||'',
+function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,price:p.price||0,prices:cleanPrices(p.prices).map(function(g){return {n:g.n,w:g.w,it:g.it.map(function(r){return {a:r[0],b:r[1],c:r[2]}})}}),food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],features:p.features||[],time:p.time||'',tips:p.tips||[],notes:p.notes||'',url:p.url||'',
   book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',raw:cleanRaw(p.raw),hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),ohours:cleanOHours(p.ohours),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc||'',ts:p.ts||Date.now()}))}
 function loadLocal(){
   var m=new Map();
