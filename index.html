@@ -838,7 +838,7 @@ function persist(id){
     var run=prev.then(function(){return col.doc(id).set(payload(p))}).then(function(){if(E&&E.id===id)setEdState('Saved')},function(err){addPending(id);dbFailed(err)});
     chains.set(id,run);return run;
   }
-  saveLocal();if(FB.user)addPending(id);setEdState(mode==='local'?'Saved in this browser':'Saved');return Promise.resolve();
+  saveLocal();if(FB.on||FB.user)addPending(id);setEdState(mode==='local'?'Saved in this browser':'Saved');return Promise.resolve();
 }
 function removePersisted(id){
   clearTimeout(timers.get(id));
@@ -876,7 +876,8 @@ async function initStore(){
       }
     }
   }catch(e){try{console.warn(e)}catch(_){}}
-  if(!ok){mode='local';loadLocal();S.ready=true;renderAll()}
+  if(!ok){var wasIn=false;try{wasIn=!!localStorage.getItem('place-pins:lastuid')&&!!(window.FIREBASE_CONFIG&&window.FIREBASE_CONFIG.apiKey&&window.firebase)}catch(e){}
+    if(wasIn){mode='pending';S.places=new Map();S.ready=true;renderAll();setTimeout(function(){if(mode==='pending'){mode='local';loadLocal();setSync();renderAll()}},8000)}else{mode='local';loadLocal();S.ready=true;renderAll()}}
   setSync();
   if(!ok)initFirebase();
 }
@@ -894,6 +895,7 @@ function initFirebase(){
   FB.on=true;setSync();
   FB.auth.onAuthStateChanged(function(user){
     FB.user=user||null;
+    try{if(user)localStorage.setItem('place-pins:lastuid',user.uid);else localStorage.removeItem('place-pins:lastuid')}catch(e){}
     if(unsub){try{unsub()}catch(e){}unsub=null}
     if(user){
       col=FB.fs.collection('users').doc(user.uid).collection('places');
@@ -907,7 +909,7 @@ function initFirebase(){
       });
     }else{
       col=null;
-      if(mode==='db'){mode='local';loadLocal();renderAll()}
+      if(mode!=='local'){mode='local';loadLocal();renderAll()}
       setSync();
     }
   });
@@ -931,10 +933,10 @@ function migrateLocal(uid){
 }
 // Upload places that were only saved on this device because a sync failed
 function rescueLocal(uid){
-  var pend=[],local=[],flag='place-pins:rescued:'+uid,first=false;
+  var pend=[],local=[],flag='place-pins:rescued2:'+uid,first=false;
   try{pend=JSON.parse(localStorage.getItem(PEND_KEY)||'[]');local=JSON.parse(localStorage.getItem(LS_KEY)||'[]');first=!localStorage.getItem(flag)}catch(e){return Promise.resolve()}
-  var recent=Date.now()-7*864e5;
-  var want=local.filter(function(x){return x&&x.id&&(pend.indexOf(x.id)>=0||(first&&Number(x.ts)>recent))});
+  // pending places, plus (once per account on this device) any place saved here that the account doesn't have
+  var want=local.filter(function(x){return x&&x.id&&(pend.indexOf(x.id)>=0||first)});
   if(!want.length){try{localStorage.setItem(flag,'1');localStorage.removeItem(PEND_KEY)}catch(e){}return Promise.resolve()}
   return col.get().then(function(snap){
     var have=new Set(snap.docs.map(function(d){return d.id})),ok=0,bad=[],left=[];
