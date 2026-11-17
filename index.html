@@ -309,6 +309,10 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .topdeal{display:inline-block;margin:6px 6px 0 0;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;color:var(--c-see);background:color-mix(in srgb,var(--c-see) 14%,transparent)}
 .namesec.open .topdeal{display:none}
 .foodmore{border:0;background:none;padding:0;color:var(--accent);font-weight:600;font-size:14px;cursor:pointer}
+.foodul{margin:4px 0 0;padding-left:18px;font-size:14px;line-height:1.5}
+.foodul li{margin:2px 0}
+.foodul b{font-weight:400}
+.fvar{display:block;color:var(--muted);font-size:13px;line-height:1.4}
 .foodlist{margin:6px 0 0;font-size:14px;line-height:1.55}
 .namesec.open .placeasof,.all-open .placeasof{display:none}
 .menulink{display:inline-flex;flex-direction:column;align-items:center;gap:1px}
@@ -372,6 +376,18 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .vlink.hasdot::after{content:'';position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:var(--danger);border:2px solid var(--panel);animation:bdot 1.8s ease-out infinite}
 @keyframes bdot{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--danger) 45%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.vlink.hasdot::after{animation:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--danger) 25%,transparent)}}
+.hdr{margin-top:6px}
+.hdaddr{display:flex;gap:5px;align-items:flex-start;font-size:13.5px;color:var(--muted,#666);margin:0;line-height:1.4}
+.hdaddr svg{flex:none;margin-top:2px}
+.hbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;text-align:center}
+.hb{display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--fg);font-size:12px;font-weight:600}
+.hb .ci{position:relative;width:46px;height:46px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.hb.pri .ci{background:var(--accent);color:var(--accent-ink)}
+.hb.hasdot .ci::after{content:'';position:absolute;top:-1px;right:-1px;width:12px;height:12px;border-radius:50%;background:var(--danger);border:2px solid var(--panel);animation:bdot 1.8s ease-out infinite}
+@media (prefers-reduced-motion:reduce){.hb.hasdot .ci::after{animation:none}}
+#form.editall .hdr,#form.all-open .hdr{display:none}
+#form:not(.editall):not(.all-open) .linksec:not(.isempty):not(.open){display:none}
+#sec-phone{display:none!important}
 .vlinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .vlinks:first-child{margin-top:0}
 .vlink{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:13px;text-decoration:none}
@@ -538,6 +554,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
             <div class="sec-head"><h2 class="vname" id="vName"></h2><span class="lab">Name</span><button type="button" class="editbtn" data-sec="name">Edit</button></div>
             <p class="asof placeasof" id="vAsOf"></p>
             <p class="topdeal" id="vDeal" hidden></p><p class="surch topsurch" id="vSurch" hidden></p>
+            <div class="hdr" id="vHdr"></div>
             <div class="sec-edit"><span class="tagsearch"><input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off" aria-label="Name" role="combobox" aria-controls="nameDrop" aria-expanded="false"><ul id="nameDrop" class="tagdrop placedrop" role="listbox" hidden></ul></span>
               <div class="pgrid" id="pGrid"></div><input type="file" id="pFile" accept="image/*" multiple hidden>
               <div class="ppick" id="pricePick" role="radiogroup" aria-label="Price range"><span class="pplab">Price</span><button type="button" data-lv="1" role="radio">$</button><button type="button" data-lv="2" role="radio">$$</button><button type="button" data-lv="3" role="radio">$$$</button><button type="button" data-lv="4" role="radio">$$$$</button></div></div>
@@ -556,7 +573,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
             <div class="sec-edit"><input id="l-time" type="text" placeholder="How long to spend there" autocomplete="off" aria-label="Time needed"></div>
           </section>
             <div id="slot-addr">
-          <section class="sec" data-sec="addr" id="sec-addr">
+          <section class="sec linksec" data-sec="addr" id="sec-addr">
             <div class="sec-head"><span class="lab">Address</span><button type="button" class="editbtn" data-sec="addr">Edit</button></div>
             <div class="sec-view" id="v-addr"></div>
             <div class="sec-edit">
@@ -569,22 +586,22 @@ details.days[open] summary::after{transform:rotate(90deg)}
           </section>
             </div>
             <div id="slot-hours"></div>
-          <section class="sec" data-sec="book" id="sec-book">
+          <section class="sec linksec" data-sec="book" id="sec-book">
             <div class="sec-head"><span class="lab">Booking</span><button type="button" class="editbtn" data-sec="book">Edit</button></div>
             <div class="sec-view" id="v-book"></div>
             <div class="sec-edit"><input id="l-book" type="url" inputmode="url" data-link="book" placeholder="Paste the booking link" autocomplete="off" aria-label="Booking"></div>
           </section>
-          <section class="sec" data-sec="menu" id="sec-menu">
+          <section class="sec linksec" data-sec="menu" id="sec-menu">
             <div class="sec-head"><span class="lab">Menu</span><button type="button" class="editbtn" data-sec="menu">Edit</button></div>
             <div class="sec-view" id="v-menu"></div>
             <div class="sec-edit"><input id="l-menu" type="url" inputmode="url" data-link="menu" placeholder="Paste the menu link" autocomplete="off" aria-label="Menu"></div>
           </section>
-          <section class="sec" data-sec="url" id="sec-url">
+          <section class="sec linksec" data-sec="url" id="sec-url">
             <div class="sec-head"><span class="lab">Website</span><button type="button" class="editbtn" data-sec="url">Edit</button></div>
             <div class="sec-view" id="v-url"></div>
             <div class="sec-edit"><input id="l-url" type="url" inputmode="url" data-link="url" placeholder="Paste the website" autocomplete="off" aria-label="Website"></div>
           </section>
-          <section class="sec" data-sec="phone" id="sec-phone">
+          <section class="sec linksec" data-sec="phone" id="sec-phone">
             <div class="sec-head"><span class="lab">Phone</span><button type="button" class="editbtn" data-sec="phone">Edit</button></div>
             <div class="sec-view" id="v-phone"></div>
             <div class="sec-edit"><input id="l-phone" type="tel" inputmode="tel" data-link="phone" placeholder="Phone number" autocomplete="off" aria-label="Phone"></div>
@@ -1445,7 +1462,7 @@ function searchExtras(p){
   return x.join(' ');
 }
 function placeHay(p){
-  return norm([p.name,p.notes,p.loc,(p.features||[]).join(' '),p.types.join(' '),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),(p.tips||[]).join(' '),
+  return norm([p.name,p.notes,p.loc,(p.raw&&p.raw.food)||'',(p.features||[]).join(' '),p.types.join(' '),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),(p.tips||[]).join(' '),
     searchExtras(p),DAYS.map(function(d){return dealOn(p,d)}).join(' '),(p.prices||[]).map(function(g){return g.n+' '+g.it.map(function(r){return r[0]}).join(' ')}).join(' '),p.phone].join(' '));
 }
 function hasTag(arr,f){return f==='all'||(arr||[]).some(function(x){return x.toLowerCase()===f})}
@@ -1642,7 +1659,7 @@ function canonMap(key){
   return m;
 }
 function canonTag(key,t,map){
-  t=String(t||'').replace(/\s+/g,' ').trim().slice(0,(TAGS[key]&&TAGS[key].len)||30);if(!t)return '';
+  var mx=(TAGS[key]&&TAGS[key].len)||30;t=String(t||'').replace(/\s+/g,' ').trim();if(t.length>mx){t=t.slice(0,mx+1).replace(/\s+\S*$/,'').replace(/\s*\([^)]*$/,'').replace(/[\s,;:(\-–]+$/,'')}if(!t)return '';
   var c=(map||canonMap(key))[tagKey(t)];
   return c||(t.charAt(0).toUpperCase()+t.slice(1));
 }
@@ -2044,6 +2061,19 @@ function paintView(){
   var row=el('div','vlinks');row.appendChild(linkBtn(mapsHref(d),'Open in Maps ↗','soft'));v.appendChild(row);
   // links
   var bk=walkInsOnly(d)?'':normUrl(d.book),u=normUrl(d.url),tel=telHref(d.phone),mn=normUrl(d.menu);
+  // header: address + Book / Menu / Website / Map
+  var hd=$('vHdr');hd.textContent='';
+  if(d.loc){var ap=el('p','hdaddr');ap.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';ap.appendChild(document.createTextNode(d.loc+(ME?' · '+fmtDist(distM(ME,d)):'')));hd.appendChild(ap)}
+  var HB_ICON={book:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',menu:'<path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M16 3c-2 1-3 3.5-3 6.5V13h3v8"/>',url:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/>',map:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>'};
+  var hb=el('div','hbtns');
+  [['book',bk,'Book'],['menu',mn,'Menu'],['url',u,'Website'],['map',mapsHref(d),'Map']].forEach(function(L){
+    if(!L[1])return;var a=el('a','hb'+(L[0]==='book'?' pri':''));a.href=L[1];a.target='_blank';a.rel='noopener noreferrer';
+    var ci=el('span','ci');ci.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+HB_ICON[L[0]]+'</svg>';
+    a.appendChild(ci);a.appendChild(document.createTextNode(L[2]));
+    if(L[0]==='book'&&bookAhead(d)){a.classList.add('hasdot');a.setAttribute('aria-label','Book ('+bookTag(d).toLowerCase()+')')}
+    hb.appendChild(a);
+  });
+  hd.appendChild(hb);
   [['book',bk,'Book \u2197','','No booking link yet'],['menu',mn,'Menu \u2197','soft','No menu link yet'],['url',u,'Website \u2197','soft','No website yet'],['phone',tel,'Call '+String(d.phone||'').trim(),'soft','No phone yet']].forEach(function(L){
     v=$('v-'+L[0]);v.textContent='';
     var bn=L[0]==='book'?bookNotes(d):[];
@@ -2094,10 +2124,12 @@ function paintView(){
       [hd,pl].forEach(function(list,li){if(!list.length)return;var ul=el('ul','vtips'+(li&&hd.length?' gap':''));list.forEach(function(r){var e=el('li');if(r[0])e.appendChild(el('b',null,r[0]+':'));e.appendChild(document.createTextNode((r[0]?' ':'')+r[1]));ul.appendChild(e)});vv.appendChild(ul)});return}
     if(key==='features'){var fu=el('ul','vfeat');d.features.forEach(function(t){fu.appendChild(el('li',null,t))});vv.appendChild(fu);return}
     if(key!=='food'){vv.appendChild(el('p','vtext vtype',d[key].join(' / ')));return}
-    if(key==='food'&&E.raw){vv.appendChild(el('p','foodlist',d.food.join(', ')));return}
-    if(key==='food'){var n=d.food.length,fb=el('button','foodmore',n+(n===1?' item':' items')+(E.foodOpen?' ▴':' ▾'));fb.type='button';fb.setAttribute('aria-expanded',E.foodOpen?'true':'false');
-      fb.addEventListener('click',function(){E.foodOpen=!E.foodOpen;paintView()});vv.appendChild(fb);
-      if(E.foodOpen)vv.appendChild(el('p','foodlist',d.food.join(', ')));return}
+    if(key==='food'){
+      // one per line; grouped items show their kinds on the line below
+      var rf=rawOf('food'),src=rf&&rf.trim()&&!looksLikeMenu(rf)?parseTagText('food',rf,true):d.food,gs=rollupGroups(src);
+      if(!src.length)gs=d.food.map(function(t){return {t:t,v:[]}});
+      var fl=el('ul','foodul');gs.forEach(function(g){var li=el('li');if(g.v.length){li.appendChild(el('b',null,g.t));li.appendChild(el('span','fvar',g.v.join(', ')))}else li.appendChild(document.createTextNode(g.t));fl.appendChild(li)});
+      vv.appendChild(fl);return}
     var box=el('div','tags');
     d[key].forEach(function(t){
       var c=el('span','chip vtag',t);box.appendChild(c);
@@ -2105,7 +2137,7 @@ function paintView(){
     vv.appendChild(box);
   });
   // edit button wording: Add when empty
-  var empty={name:false,addr:!d.loc,book:!bk&&!bookTag(d),time:!d.time,pricing:!(d.prices||[]).length,menu:!mn,url:!u,phone:!tel,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),ohours:!(d.ohours||[]).length,deals:!dd2.length};
+  var empty={name:false,addr:!d.loc,book:!bk&&!bookTag(d),time:!d.time,pricing:!(d.prices||[]).length,menu:!mn,url:!u,phone:false,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),ohours:!(d.ohours||[]).length,deals:!dd2.length};
   TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});
   if(!hasFood(d.types)&&d.food.length)empty.tips=false;
   if(everydayDeals(d).length||offerNotes(d).length)empty.tips=false;
@@ -2138,7 +2170,7 @@ var TIP_RULES=[
   ['Bookings recommended',/book(?:ing)?s?\s+(?:are\s+)?(?:recommended|essential|advised|a must)|book ahead|reserve ahead|make a booking/i],
   ['Walk-ins only',/walk[- ]?ins?\s+only|no bookings|no reservations/i],
   ['Queue early',/queue early|get there early|arrive early|go early|long (?:queue|line|wait)s?|(?:queue|line)s? (?:get|gets|is|are) (?:long|huge|massive)|line out the door/i],
-  ['Kid friendly',/kid[- ]friendly|kids welcome|family[- ]friendly|high ?chairs?/i],['Dog friendly',/dog[- ]friendly|dogs welcome|pet[- ]friendly/i],
+  ['Kid friendly',/kid[- ]friendly|kids welcome|family[- ]friendly|high ?chairs?|(?:great|good|perfect|ideal) for (?:families|kids)/i],['Dog friendly',/dog[- ]friendly|dogs welcome|pet[- ]friendly/i],
   ['Wheelchair accessible',/wheelchair|step[- ]free/i],['Vegan options',/vegan/i],['Vegetarian options',/vegetarian|veggie options/i],
   ['Gluten free options',/gluten[- ]free|\bgf\b|coeliac|celiac/i],['Free wifi',/wi-?fi/i],['Free parking',/free parking|parking (?:available|on site)/i],
   ['Kitchen closes early',/kitchen closes early/i],['Happy hour',/happy hour/i],['Minimum spend',/min(?:imum)? spend/i],['Set menu only',/set menu only|degustation only/i],
@@ -2347,8 +2379,47 @@ function shortVibe(pc){
   if(hit.length){var left=n;hit.forEach(function(v){left=left.replace(v[0],' ')});if(!left.replace(/\b(?:and|a|the|spot|place)\b/g,'').trim())return hit.map(function(v){return v[1]}).join(' / ')}
   return cap1(t);
 }
+// Same wording for food & drinks: "fresh oyster" -> Oysters, "glass of wine" -> Wine, "Craft beers" -> Craft beer, "iced lattes" -> Iced latte
+var FOOD_MASS=/^(?:wine|wines|beer|beers|coffee|coffees|tea|teas|pasta|pastas|gelato|gelatos|matcha|sake|whisky|whiskey|whiskies|gin|gins|rum|cider|ciders|champagne|seafood|sushi|ramen|pho|bread|cheese|cheeses|chocolate|ice cream|latte|lattes|cappuccino|cappuccinos|espresso|espressos|mocha|mochas|chai|flat white|flat whites|long black|long blacks|soju|sangria|spritz|spritzes|kombucha|bingsu|charcuterie|steak|steaks|pizza|pizzas|fried chicken|toast)$/i;
+var FOOD_COUNT=/^(?:oyster|dumpling|burger|taco|scallop|prawn|wing|rib|bun|croissant|donut|doughnut|cookie|macaron|crepe|crêpe|waffle|skewer|noodle|mussel|slider|pancake|cocktail|mocktail|sandwich|pie|tart|bagel|empanada|gyoza|spring roll|fry|chip|churro|cannoli|brownie|meatball|sausage|olive|pastry)$/i;
+// "Strawberry mochi, Black sesame mochi" -> "Mochi" ; "Fish dumplings, Pork dumplings" -> "Dumplings"
+// endings where the first word makes it a different food: spring rolls vs cinnamon rolls
+var ROLL_KEEP=/^(?:roll|bun|bread|pie|toast|sauce|soup|salad|bowl|plate|board|platter|set|special|cake|chip|fry|frie|stick|ball|cup|tart|pancake|sandwich|curry|rice|noodle|chicken|pork|beef|fish|egg|cream|sundae|shake|juice|soda|water|milk)$/;
+// groups: [{t:'Mochi',v:['black sesame','grape']}]
+function rollupGroups(list){
+  var head=function(t){var w=norm(t).split(/\s+/);return sing(w[w.length-1]||'')};
+  var vars=function(items,n){return items.map(function(x){var ws=String(x).trim().split(/\s+/);var v=ws.slice(0,ws.length-n).join(' ');return /^[A-Z][a-z]/.test(v)&&!/^(?:Dubai|Korean|Japanese|Thai|French|Italian|Chinese|Hong Kong|Swiss|Belgian|Turkish|Greek)\b/.test(v)?v.charAt(0).toLowerCase()+v.slice(1):v}).filter(Boolean)};
+  var cnt={};list.forEach(function(t){var h=head(t);if(h)cnt[h]=(cnt[h]||0)+1});
+  var out=[],done={};
+  list.forEach(function(t){var h=head(t);
+    if(cnt[h]>=2){if(done[h])return;done[h]=1;
+      var items=list.filter(function(x){return head(x)===h}),grp=items.map(function(x){return String(x).trim().split(/\s+/)}),n=1;
+      while(grp.every(function(w){return w.length>n})&&grp.every(function(w){return sing(norm(w[w.length-1-n]))===sing(norm(grp[0][grp[0].length-1-n]))}))n++;
+      if(n===1&&ROLL_KEEP.test(h)){
+        // only roll up items that share the last two words: "rice cakes" + "red bean rice cake" -> Rice cakes
+        var two=function(x){var w=norm(x).split(/\s+/);return w.length>1?sing(w[w.length-2])+' '+sing(w[w.length-1]):''},c2={};
+        items.forEach(function(x){var k=two(x);if(k)c2[k]=(c2[k]||0)+1});
+        var d2={};items.forEach(function(x){var k=two(x);if(k&&c2[k]>=2){if(d2[k])return;d2[k]=1;var sub=items.filter(function(y){return two(y)===k}),ws=String(x).trim().split(/\s+/);out.push({t:cap1(ws.slice(-2).join(' ').toLowerCase()),v:vars(sub,2)})}else out.push({t:x,v:[]})});
+        return}
+      out.push({t:cap1(grp[0].slice(-n).join(' ').toLowerCase()),v:vars(items,n)})}
+    else out.push({t:t,v:[]});
+  });
+  return out;
+}
+function rollupFood(list){return rollupGroups(list).map(function(g){return g.t})}
+function foodWord(t){
+  t=String(t||'').trim();var prev;
+  do{prev=t;t=t.replace(/^(?:fresh(?:ly)?(?:\s+(?:made|baked|shucked|cooked|brewed|squeezed))?|house[- ]?made|home[- ]?made|hand[- ]?made|in[- ]house|signature|famous|classic|traditional|authentic|best|delicious|great|good|tasty|yummy|the|their|our)\s+/i,'')}while(t!==prev);
+  t=t.replace(/^(?:an?\s+)?(?:glass(?:es)?|bottles?|cups?|pints?|jugs?|carafes?|serves?|plates?|bowls?|scoops?|pieces?|range|selection|list)\s+of\s+/i,'').replace(/\s+(?:made|baked)\s+(?:fresh|daily|in[- ]house)$/i,'');
+  if(!t)return '';
+  var w=t.split(' '),last=w[w.length-1],two=w.slice(-2).join(' ');
+  if(FOOD_MASS.test(two)&&w.length>=2){var s2=two.replace(/(?:es|s)$/i,'');if(FOOD_MASS.test(s2))w.splice(-2,2,s2)}
+  else if(FOOD_MASS.test(last)){var s1=/(?:spritz)es$/i.test(last)?last.slice(0,-2):last.replace(/ies$/i,'y').replace(/([^s])s$/i,'$1');if(FOOD_MASS.test(s1))w[w.length-1]=s1}
+  else if(FOOD_COUNT.test(last))w[w.length-1]=/(?:ch|sh|x)$/i.test(last)?last+'es':/fry$/i.test(last)?last.slice(0,-1)+'ies':/[^aeiou]y$/i.test(last)?last.slice(0,-1)+'ies':last+'s';
+  return cap1(w.join(' '));
+}
 function shortItem(pc){var t=unchat(pc).replace(/\s+(?:is|are)\s+(?:a must|the best|so good|great|amazing|worth it).*$/i,'').replace(/\s+to (?:share|borrow|use|play)$/i,'');return cap1(t)}
-function parseTagText(key,text){
+function parseTagText(key,text,noRoll){
   if(key==='tips')return organiseTips(text);
   if(key==='food'&&looksLikeMenu(text))return parseTagText('food',menuTags(text).join(', '));
   var pieces=[];
@@ -2357,16 +2428,17 @@ function parseTagText(key,text){
     part=part.trim().replace(/[.!?]+$/,'');if(!part)return;
     if(FRESH_RE.test(part)&&(key==='features'||key==='food'||key==='vibe')){if(key==='features')pieces.push('Made fresh daily');return}
     if(key==='vibe'){part=shortVibe(part);if(!part)return;if(/ \/ /.test(part)){pieces=pieces.concat(part.split(' / '));return}}
-    else if(key==='features'||key==='food'){part=shortItem(part);if(!part)return;var fv=key==='features'?findFeatures(norm(part)):[];if(fv.length===1&&norm(part).split(' ').length<=3){part=fv[0]}}
+    else if(key==='features'||key==='food'){if(key==='food')part=part.replace(/\s*\([^)]*\)?/g,' ').replace(/\s+/g,' ').trim();part=shortItem(part);if(key==='food')part=foodWord(part);if(!part)return;var fv=key==='features'?findFeatures(norm(part)):[];if(fv.length===1&&norm(part).split(' ').length<=3){part=fv[0]}}
     var sp=splitKnown(key,part);if(sp)pieces=pieces.concat(sp);else pieces.push(part);
   });
   if(key==='types'){
     var tp=[];pieces.forEach(function(pc){var f=findTypes(norm(pc),3);if(f.length){tp=tp.concat(f);if(false&&E&&!E.data.cuisine.length){var cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(norm(pc))});if(cz.length){E.data.cuisine=cz}}}else tp.push(pc)});
     pieces=tp;
   }
-  if(key==='cuisine')pieces=[].concat.apply([],pieces.map(function(pc){var n=norm(unchat(pc)).replace(/[-\s](?:inspired|style|influenced)\b/g,''),cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(n)});var out=cz.slice();if(/\bfusion\b/.test(n))out.push('Fusion');return out.length?out:[cap1(unchat(pc))]})).filter(Boolean);
+  if(key==='cuisine')pieces=[].concat.apply([],pieces.map(function(pc){var n=norm(unchat(pc)).replace(/[-\s](?:inspired|style|influenced)\b/g,'').replace(/\bmod(?:ern)?\s*(?:oz|aus|aussie)\b|\bmodern aussie\b/g,'modern australian').replace(/\bmiddle-eastern\b/g,'middle eastern').replace(/\bszechuan\b/g,'sichuan'),cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(n)});var out=cz.slice();if(/\bfusion\b/.test(n))out.push('Fusion');return out.length?out:[cap1(unchat(pc))]})).filter(Boolean);
   if(key==='cuisine')pieces=pieces.map(function(pc){var n=norm(pc),cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(n)});return cz.length&&findTypes(n,3).length?cz.join(' / '):pc}).join(' / ').split(' / ').filter(Boolean);
   if(key==='cuisine')pieces=pieces.map(function(pc){return pc.split(/\s+/).map(function(w){return w.length>2?w.charAt(0).toUpperCase()+w.slice(1):w}).join(' ')});
+  if(key==='food'&&!noRoll)pieces=rollupFood(pieces);
   text=pieces.join('/');
   var m=canonMap(key),seen={},out=[];
   String(text||'').split(sepRe(key)).forEach(function(part){
@@ -2855,7 +2927,7 @@ var VOCAB_FOOD=[[/cocktails?/,'Cocktails'],[/\bwine\b|wine bar/,'Wine'],[/champa
   [/hot ?pot/,'Hot pot'],[/tapas/,'Tapas'],[/vegan/,'Vegan'],[/vegetarian/,'Vegetarian'],[/\bmatcha\b/,'Matcha'],[/waffles?/,'Waffles'],[/pancakes?/,'Pancakes']];
 var VOCAB_CUISINE=['French','Italian','Japanese','Chinese','Korean','Thai','Vietnamese','Mexican','Indian','Greek','Spanish','Lebanese','Middle Eastern','Turkish','Malaysian','Indonesian',
   'Filipino','American','Modern Australian','Mediterranean','Cantonese','Sichuan','Taiwanese','Peruvian','Brazilian','Ethiopian','German','British','Sri Lankan','Nepalese','Fusion'];
-var VOCAB_VIBE=[[/date night|romantic|(?<![-\w])dates?(?![-\w])(?! (?:specific|range|of))|date spot/,'Date night'],[/low[- ]key/,'Low-key'],[/wellness|relaxation/,'Wellness'],[/hot springs?|(?<!geo)thermal/,'Hot springs'],[/all ages/,'All ages'],[/\bcasual\b|laid[- ]back|relaxed/,'Casual'],[/lively|buzzy|energetic|high[- ]energy|vibrant/,'Lively'],[/\bcos[yi]\b|cozy|intimate/,'Cosy'],
+var VOCAB_VIBE=[[/date night|romantic|(?<![-\w])dates?(?![-\w])(?! (?:specific|range|of))|date spot/,'Date night'],[/low[- ]key/,'Low-key'],[/wellness|relaxation/,'Wellness'],[/hot springs?|(?<!geo)thermal/,'Hot springs'],[/all ages/,'All ages'],[/\bcasual\b|laid[- ]back|relaxed|\bchill(?:ed|y)?\b/,'Casual'],[/lively|buzz(?:y|ing)|energetic|high[- ]energy|vibrant|bustling/,'Lively'],[/\bcos[yi]\b|cozy|intimate/,'Cosy'],
   [/fancy|upscale|fine dining|elegant|classy|luxur/,'Fancy'],[/late[- ]night|open late|till late|until late/,'Late night'],[/rooftop/,'Rooftop'],[/outdoor|courtyard|beer garden|al fresco|alfresco|terrace/,'Outdoor seating'],
   [/\bviews?\b|waterfront|harbour views|panoramic/,'Great views'],[/groups?\b|share plates|sharing/,'Good for groups'],[/live music|\bdjs?\b/,'Live music'],[/hidden|secret|speakeasy|laneway/,'Hidden gem'],
   [/cheap|affordable|budget|bargain|everything is \$/,'Cheap eats'],[/quick bite|takeaway|take-away|grab and go/,'Quick bite'],[/family|kid[- ]friendly|kids/,'Family friendly'],[/dog[- ]friendly|pet[- ]friendly/,'Dog friendly']];
@@ -2951,6 +3023,12 @@ function parsePriceLists(text){
   return {groups:groups,rest:rest};
 }
 function pricingFromText(t){
+  // "Around $30-50 per person" -> "Per person: ~$30–50" ; "$20 to $35 a head" -> "Per person: $20–35" ; "Price range $15-40" -> "Price range: $15–40"
+  t=String(t||'').split(/\n/).map(function(l){
+    var m=l.trim().replace(/[.!]+$/,'').match(/^(?:(?:it'?s|usually|typically|normally|expect(?: to (?:pay|spend))?|price range|prices?|budget|spend|costs?)\s*:?\s*)?(around|about|roughly|approx\.?|approximately|~)?\s*\$\s?(\d[\d,]*)\s*(?:-|–|—|to)\s*\$?\s?(\d[\d,]*)\s*(per person|pp|p\.p\.|a head|per head|each|a person)?$/i);
+    if(!m)return l;
+    return (m[4]?'Per person':'Price range')+': '+(m[1]?'~':'')+'$'+m[2]+'–'+m[3];
+  }).join('\n');
   t=String(t||'').split(/\n/).map(function(l){return /,/.test(l)&&(l.match(/\$\s?\d/g)||[]).length>=2?l.split(/\s*,\s*(?:and\s+)?|\s+and\s+(?=[^$]*\$)/).map(function(x){return x.replace(/\s+(?:are|is|cost|costs|go for|for|at)?\s*(?:around|about|roughly|approx\.?|~)?\s*(?=\$)/i,': ').replace(/^./,function(c){return c.toUpperCase()})}).join('\n'):l}).join('\n');
   var pl=parsePriceLists(t),gs=pl.groups.slice();
   // lines the list parser left (single prices like "Entry $25") still count here
@@ -2961,6 +3039,9 @@ function pricingFromText(t){
     else if(plIsNote(x)){if(g)g.w=x.replace(/^\(|\)$/g,'')}
     else if(plIsHead(x)){g={n:x.replace(/:$/,''),w:'',it:[]};gs.push(g)}
   });
+  // same wording for menu headings: "entree"/"entrées" -> Entrées, "main" -> Mains
+  var PL_WORD={entree:'Entrées','entrée':'Entrées',entrees:'Entrées','entrées':'Entrées',main:'Mains',mains:'Mains','main course':'Mains','main courses':'Mains',side:'Sides',sides:'Sides',dessert:'Desserts',desserts:'Desserts',starter:'Starters',starters:'Starters',snack:'Snacks',snacks:'Snacks',small:'Small plates','small plate':'Small plates','small plates':'Small plates','large plate':'Large plates','large plates':'Large plates',share:'Share plates','share plate':'Share plates','share plates':'Share plates','sharing plates':'Share plates',drink:'Drinks',drinks:'Drinks',cocktail:'Cocktails',cocktails:'Cocktails',banquet:'Banquet',banquets:'Banquet'};
+  gs.forEach(function(g){g.it.forEach(function(r){var k=String(r[0]||'').trim().toLowerCase();if(PL_WORD[k])r[0]=PL_WORD[k];else if(r[0])r[0]=cap1(String(r[0]).trim())});if(g.n){var gk=g.n.trim().toLowerCase();g.n=PL_WORD[gk]||cap1(g.n.trim())}});
   return cleanPrices(gs.filter(function(g){return g.it.length}));
 }
 function plNums(pr){return (String(pr).match(/\d[\d,]*(?:\.\d\d)?/g)||[]).map(function(x){return Number(x.replace(/,/g,''))})}
@@ -3051,7 +3132,7 @@ function priceEl(lv){var s=el('span','price');s.setAttribute('aria-label',PRICE_
 var FRESH_RE=/\b(?:fresh(?:ly)?\s+(?:hand[- ]?made|made|baked|prepared|cooked)|(?:hand[- ]?made|made|baked|prepared|cooked)\s+fresh(?:ly)?|hand[- ]?made|baked)\b[^.!?\n]*\b(?:daily|every day|each day|every morning|each morning)\b|\bmade fresh daily\b/i;
 // what's left after the fresh-daily words: "Pasta handmade daily" -> "Pasta"
 function freshLeft(sn){return unchat(String(sn).replace(/\b(?:in|at|from)\s+(?:our|the|their)\b[^.!?\n]*/i,' ').replace(/\b(?:fresh(?:ly)?|hand[- ]?made|made|baked|prepared|cooked|daily|every day|each day|every morning|each morning|everything|all|is|are|we|our|it'?s)\b/gi,' ').replace(/[.!?]/g,' ')).replace(/^(?:and|&)\s+|\s+(?:and|&)$/i,'').trim()}
-var FEATURES=[[FRESH_RE,'Made fresh daily'],[/mineral pools?|hot pools?|thermal pools?|geothermal|hot springs? pools?/,'Hot mineral pools'],[/cold plunges?(?: pools?)?/,'Cold plunges'],[/\bsaunas?\b/,'Saunas'],[/steam rooms?/,'Steam rooms'],[/clay (?:rituals?|treatments?)/,'Clay rituals'],[/\byoga\b/,'Yoga'],[/breathwork/,'Breathwork'],[/fire (?:&|and) ice/,'Fire & Ice'],[/massages?/,'Massages'],[/facials?/,'Facials'],[/body treatments?/,'Body treatments'],[/private bathing|private baths?/,'Private bathing'],[/spa treatments?/,'Spa treatments'],[/cave pool/,'Cave pool'],[/hilltop pool/,'Hilltop pool'],[/(?:infinity|rooftop|swimming|lap) pool/,'Pool'],[/hot tubs?|jacuzzi|spa baths?/,'Hot tub'],[/\bgym\b/,'Gym'],[/pool tables?|billiards/,'Pool tables'],[/arcade games?|pinball/,'Arcade games'],[/dance ?floor/,'Dance floor'],[/beer garden/,'Beer garden'],[/karaoke rooms?/,'Karaoke rooms'],[/private (?:dining )?rooms?/,'Private rooms'],[/playground/,'Playground'],[/board games/,'Board games'],[/lockers?/,'Lockers'],[/parents?'? room|baby chang/,'Parents room'],[/picnic areas?/,'Picnic area'],[/lawns?\b|gardens?\b(?! view)/,'Gardens'],[/gift shop|\bshop\b/,'Shop'],[/conference|convention|function rooms?/,'Conference rooms'],[/\bdarts\b/,'Darts'],[/table tennis|ping pong/,'Table tennis'],[/bowling lanes?/,'Bowling lanes']];
+var FEATURES=[[FRESH_RE,'Made fresh daily'],[/\bwi-?fi\b/,'Free Wi-Fi'],[/al ?fresco|outdoor (?:seating|dining|tables)/,'Outdoor seating'],[/mineral pools?|hot pools?|thermal pools?|geothermal|hot springs? pools?/,'Hot mineral pools'],[/cold plunges?(?: pools?)?/,'Cold plunges'],[/\bsaunas?\b/,'Saunas'],[/steam rooms?/,'Steam rooms'],[/clay (?:rituals?|treatments?)/,'Clay rituals'],[/\byoga\b/,'Yoga'],[/breathwork/,'Breathwork'],[/fire (?:&|and) ice/,'Fire & Ice'],[/massages?/,'Massages'],[/facials?/,'Facials'],[/body treatments?/,'Body treatments'],[/private bathing|private baths?/,'Private bathing'],[/spa treatments?/,'Spa treatments'],[/cave pool/,'Cave pool'],[/hilltop pool/,'Hilltop pool'],[/(?:infinity|rooftop|swimming|lap) pool/,'Pool'],[/hot tubs?|jacuzzi|spa baths?/,'Hot tub'],[/\bgym\b/,'Gym'],[/pool tables?|billiards/,'Pool tables'],[/arcade games?|pinball/,'Arcade games'],[/dance ?floor/,'Dance floor'],[/beer garden/,'Beer garden'],[/karaoke rooms?/,'Karaoke rooms'],[/private (?:dining )?rooms?/,'Private rooms'],[/playground/,'Playground'],[/board games/,'Board games'],[/lockers?/,'Lockers'],[/parents?'? room|baby chang/,'Parents room'],[/picnic areas?/,'Picnic area'],[/lawns?\b|gardens?\b(?! view)/,'Gardens'],[/gift shop|\bshop\b/,'Shop'],[/conference|convention|function rooms?/,'Conference rooms'],[/\bdarts\b/,'Darts'],[/table tennis|ping pong/,'Table tennis'],[/bowling lanes?/,'Bowling lanes']];
 function findFeatures(n){return FEATURES.filter(function(f){return f[0].test(n)}).map(function(f){return f[1]})}
 // "Allow at least 3–4 hours" -> "3–4 hours"
 function shortTime(t){return String(t).replace(/^about\s+/i,'~').replace(/^at least\s+/i,'').replace(/hours/,'hrs').replace(/hour/,'hr').replace(/minutes/,'mins').replace(/minute/,'min')+(/^at least/i.test(t)?'+':'')}
