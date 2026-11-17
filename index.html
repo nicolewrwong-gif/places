@@ -300,6 +300,16 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .menulink{display:inline-flex;flex-direction:column;align-items:center;gap:1px}
 .menulink .asof{margin:0}
 .vempty{margin:0;font-size:13px;color:var(--muted)}
+.btag{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;white-space:nowrap;font-size:12px;font-weight:800;color:var(--danger);background:color-mix(in srgb,var(--danger) 12%,transparent);padding:3px 9px;border-radius:999px;line-height:1.3}
+.btag svg{flex:none}
+.item .name .btag{font-size:10.5px;padding:2px 7px;margin-left:6px;position:relative;top:-1px}
+.vname .btag{margin-left:8px;font-size:12px;position:relative;top:-2px}
+.namesec.open .vname .btag{display:none}
+.bookrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.vlink.hasdot{position:relative;overflow:visible}
+.vlink.hasdot::after{content:'';position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;background:var(--danger);border:2px solid var(--panel);animation:bdot 1.8s ease-out infinite}
+@keyframes bdot{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--danger) 45%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.vlink.hasdot::after{animation:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--danger) 25%,transparent)}}
 .vlinks{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .vlinks:first-child{margin-top:0}
 .vlink{display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:13px;text-decoration:none}
@@ -379,6 +389,12 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .app.adding #g-info .sec{padding:8px 0}
 .app.adding .sec-edit textarea{min-height:130px}
 .app.adding #sec-addr{border-bottom:0}
+.sec.open{display:flex;flex-direction:column}
+.sec.open .sec-edit{order:1}
+.sec.open:not(.namesec):not(#sec-addr):not([id^=sec-book]):not(#sec-menu):not(#sec-url):not(#sec-phone) .sec-view{display:block;margin-top:10px;order:2}
+.sec.open .sec-view:has(.vempty){display:none!important}
+.app.adding .sec.open .sec-view:has(.vempty){display:none}
+.app.adding #sec-addr .sec-view,.app.adding #sec-name .sec-view{display:none}
 @media (max-width:820px){
   .app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(190px,42%) minmax(0,1fr)}
   .mapbox{order:-1}
@@ -672,6 +688,25 @@ function typesFromOld(x){
   }
   return [];
 }
+// What you typed in each box, kept as typed
+function cleanRaw(r){var o={};if(r&&typeof r==='object')Object.keys(r).forEach(function(k){if(typeof r[k]==='string'&&/^[a-z]{2,10}$/.test(k))o[k]=r[k].slice(0,30000)});return o}
+// Booking notes (Bookings recommended, Walk-ins only…) show under Booking
+function isBookNote(t){return /\bbook(?:ing|ings|ed)?\b|reserv|walk[- ]?ins?|no bookings/i.test(t)&&String(t).split(/\s+/).length<=8}
+function bookNotes(d){return (d.tips||[]).filter(isBookNote)}
+// Short tag text: "Book ahead", "Walk-ins only", "No bookings"
+function bookTag(d){
+  var n=bookNotes(d);if(!n.length)return '';var t=n.join(' ');
+  if(/walk[- ]?ins?\s+only|no\s+book|not\s+tak\w*\s+book|no\s+reserv/i.test(t))return /walk/i.test(t)?'Walk-ins only':'No bookings';
+  if(/essential|required|must|mandatory|only\s+by\s+book|book(?:ing|ings)?\s+only|need/i.test(t))return 'Booking required';
+  if(/recommend|advised|suggest|book ahead|in advance|popular|fill|encouraged|best to book/i.test(t))return 'Booking recommended';
+  return n[0];
+}
+function bookAhead(d){return /^Booking (?:required|recommended)$/.test(bookTag(d))}
+var CLOCK_SVG='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+function bookTagEl(d,cls){var t=bookTag(d);if(!t)return null;var s=el('span','btag'+(cls?' '+cls:''));s.innerHTML=CLOCK_SVG;s.appendChild(document.createTextNode(t));return s}
+function rawOf(k){if(!E)return null;if(E.raw)return k in E.raw?E.raw[k]:null;var r=E.data.raw;return r&&typeof r[k]==='string'?r[k]:null}
+function setRaw(k,v){if(!E)return;if(E.raw){E.raw[k]=v;return}if(!E.data.raw)E.data.raw={};E.data.raw[k]=v}
+function addRaw(k,lines,sep){if(!E||E.raw)return;var cur=rawOf(k);if(cur==null)return;var low=cur.toLowerCase();lines=lines.filter(function(l){return low.indexOf(String(l).toLowerCase())<0});if(lines.length)setRaw(k,(cur.trim()?cur.replace(/\s+$/,'')+(sep||'\n'):'')+lines.join(sep||'\n'))}
 function clean(id,x){
   var lat=Number(x.lat),lng=Number(x.lng);
   if(!isFinite(lat)||!isFinite(lng))return null;
@@ -679,11 +714,11 @@ function clean(id,x){
   var types=Array.isArray(x.types)?cleanFood(x.types,6):typesFromOld(x);
   return {id:id,name:String(x.name||''),types:types,cat:types.length?typeColor(types[0]):'other',status:x.status==='been'?'been':'want',
     rating:Math.max(0,Math.min(5,r)),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),tips:cleanTips(x.tips),
-    notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),hours:cleanDays(x.hours),kitchen:cleanDays(x.kitchen),deals:cleanDays(x.deals),
+    notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),raw:cleanRaw(x.raw),hours:cleanDays(x.hours),kitchen:cleanDays(x.kitchen),deals:cleanDays(x.deals),
     lat:lat,lng:wrapLng(lng),loc:String(x.loc||''),ts:Number(x.ts)||0};
 }
 function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],tips:p.tips||[],notes:p.notes||'',url:p.url||'',
-  book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc||'',ts:p.ts||Date.now()}))}
+  book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',raw:cleanRaw(p.raw),hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc||'',ts:p.ts||Date.now()}))}
 function loadLocal(){
   var m=new Map();
   try{var arr=JSON.parse(localStorage.getItem(LS_KEY)||'[]');arr.forEach(function(x){var p=clean(x.id||('p_'+Math.random().toString(36).slice(2)),x);if(p)m.set(p.id,p)})}catch(e){}
@@ -1333,7 +1368,7 @@ function itemEl(p){
   b.type='button';b.dataset.id=p.id;
   var dot=el('span','dot');dot.style.background='var(--c-'+placeColor(p)+')';
   var body=el('div');
-  body.appendChild(el('div','name',(p.name||'').trim()||'Untitled place'));
+  var nmEl=el('div','name',(p.name||'').trim()||'Untitled place'),cbt=bookTagEl(p);if(cbt)nmEl.appendChild(cbt);body.appendChild(nmEl);
   var tags=hasFood(p.types)?p.cuisine.slice(0,2).join(', '):p.vibe.slice(0,2).join(', ');
   var sub=[p.types.slice(0,2).join(' / '),tags,p.loc].filter(Boolean).join(' · ');
   body.appendChild(el('div','sub',sub));
@@ -1670,7 +1705,7 @@ function muted(t){return el('p','vempty',t)}
 function linkBtn(href,label,cls){var a=el('a','vlink'+(cls?' '+cls:''),label);a.href=href;if(!/^tel:/.test(href)){a.target='_blank';a.rel='noopener noreferrer'}return a}
 function paintView(){
   if(!E)return;var d=E.data,tk=todayKey(),v;
-  $('vName').textContent=(d.name||'').trim()||'Untitled place';
+  $('vName').textContent=(d.name||'').trim()||'Untitled place';var nbt=bookTagEl(d);if(nbt)$('vName').appendChild(nbt);
   var ea=d.editedAt||d.ts;$('vAsOf').textContent=ea>1577836800000?'as of '+asOf(ea):'';
   var td=((d.deals||{})[tk]||'').trim();$('vDeal').hidden=!td||E.kind==='draft';$('vDeal').textContent=td?'Today: '+td:'';
   var sc=todaySurcharges(d);$('vSurch').hidden=!sc.length||E.kind==='draft';$('vSurch').textContent=sc.length?sc.join(', ')+' today':'';
@@ -1683,7 +1718,11 @@ function paintView(){
   var bk=normUrl(d.book),u=normUrl(d.url),tel=telHref(d.phone),mn=normUrl(d.menu);
   [['book',bk,'Book \u2197','','No booking link yet'],['menu',mn,'Menu \u2197','soft','No menu link yet'],['url',u,'Website \u2197','soft','No website yet'],['phone',tel,'Call '+String(d.phone||'').trim(),'soft','No phone yet']].forEach(function(L){
     v=$('v-'+L[0]);v.textContent='';
-    if(L[1]){var lr=el('div','vlinks');lr.appendChild(linkBtn(L[1],L[2],L[3]));v.appendChild(lr)}else v.appendChild(muted(L[4]));
+    var bn=L[0]==='book'?bookNotes(d):[];
+    var lr=el('div','vlinks bookrow');
+    if(L[1]){var lb=linkBtn(L[1],L[2],L[3]);if(L[0]==='book'&&bookAhead(d)){lb.classList.add('hasdot');lb.setAttribute('aria-label','Book ('+bookTag(d).toLowerCase()+')')}lr.appendChild(lb)}
+    if(bn.length&&!L[1]){var bt=bookTagEl(d);if(bt)lr.appendChild(bt)}
+    if(lr.children.length)v.appendChild(lr);else v.appendChild(muted(L[4]));
   });
   // opening + kitchen hours
   [['hours','No opening hours yet'],['kitchen','No kitchen hours yet']].forEach(function(hk){
@@ -1715,8 +1754,9 @@ function paintView(){
     $('sec-'+key).hidden=TAGS[key].eatOnly&&!hasFood(d.types);
     $('g-food').hidden=!hasFood(d.types)&&E.kind!=='draft';
     if(!d[key].length){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
-    if(key==='tips'){var ul=el('ul','vtips');d.tips.forEach(function(t){ul.appendChild(el('li',null,t))});vv.appendChild(ul);return}
+    if(key==='tips'){var rest=d.tips.filter(function(t){return !isBookNote(t)});if(!rest.length){vv.appendChild(muted('None added'));return}var ul=el('ul','vtips');rest.forEach(function(t){ul.appendChild(el('li',null,t))});vv.appendChild(ul);return}
     if(key!=='food'){vv.appendChild(el('p','vtext vtype',d[key].join(' / ')));return}
+    if(key==='food'&&E.raw){vv.appendChild(el('p','foodlist',d.food.join(', ')));return}
     if(key==='food'){var n=d.food.length,fb=el('button','foodmore',n+(n===1?' item':' items')+(E.foodOpen?' ▴':' ▾'));fb.type='button';fb.setAttribute('aria-expanded',E.foodOpen?'true':'false');
       fb.addEventListener('click',function(){E.foodOpen=!E.foodOpen;paintView()});vv.appendChild(fb);
       if(E.foodOpen)vv.appendChild(el('p','foodlist',d.food.join(', ')));return}
@@ -1727,7 +1767,7 @@ function paintView(){
     vv.appendChild(box);
   });
   // edit button wording: Add when empty
-  var empty={name:false,addr:!d.loc,book:!bk,menu:!mn,url:!u,phone:!tel,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),deals:!dd2.length};
+  var empty={name:false,addr:!d.loc,book:!bk&&!bookNotes(d).length,menu:!mn,url:!u,phone:!tel,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),deals:!dd2.length};
   TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});
   Array.prototype.forEach.call(document.querySelectorAll('#form .editbtn'),function(b){
     var sec=b.closest('.sec');b.textContent=sec.classList.contains('open')?'Done':(empty[b.dataset.sec]?'Add':'Edit');
@@ -1798,8 +1838,8 @@ function tipsToDeals(){
   if(!moved.length)return [];
   var add=parseDaysText(moved.join('\n'),false);
   DAYS.forEach(function(x){if(add[x]){var cur=(d.deals[x]||'').trim();d.deals[x]=cur?(cur.indexOf(add[x])>=0?cur:cur+', '+add[x]):add[x]}});
-  d.tips=keep;touched();paintTags('tips');paintDays();paintView();
-  toast('Moved to Deals: '+moved.join(', '));
+  addRaw('deals',moved);d.tips=keep;touched();paintTags('tips');paintDays();paintView();
+  if(!QUIET)toast('Moved to Deals: '+moved.join(', '));
   return moved;
 }
 function tipsToVibe(){
@@ -1812,7 +1852,8 @@ function tipsToVibe(){
       hits.forEach(function(h){if(!d.vibe.some(function(x){return tagKey(x)===tagKey(h)})&&d.vibe.length<TAGS.vibe.max){d.vibe.push(h);moved.push(h)}});
     }else keep.push(t);
   });
-  if(keep.length!==d.tips.length){d.tips=keep;touched();paintTags('tips');paintTags('vibe');paintView();if(moved.length)toast('Moved to Vibe: '+moved.join(', '))}
+  if(moved.length)addRaw('vibe',moved,' / ');
+  if(keep.length!==d.tips.length){d.tips=keep;touched();paintTags('tips');paintTags('vibe');paintView();if(moved.length&&!QUIET)toast('Moved to Vibe: '+moved.join(', '))}
   return moved;
 }
 function organiseTips(text){
@@ -1907,7 +1948,7 @@ function parseTagText(key,text){
 }
 function paintTags(key){
   var inp=$('t-'+key);
-  if(document.activeElement!==inp)inp.value=E.data[key].join(tagSep(key));
+  if(document.activeElement!==inp){var rw=rawOf(key);inp.value=rw!=null?rw:E.data[key].join(tagSep(key))}
   paintSug(key);
 }
 function tagPool(key){
@@ -1957,7 +1998,7 @@ function paintChoices(){
 }
 function paintDays(){
   var d=E.data;
-  ['hours','kitchen','deals'].forEach(function(f){var t=$(f+'Txt');if(!E.data[f])E.data[f]=blankDays();if(document.activeElement!==t)t.value=fmtDays(d[f])});
+  ['hours','kitchen','deals'].forEach(function(f){var t=$(f+'Txt');if(!E.data[f])E.data[f]=blankDays();if(document.activeElement!==t){var rw=rawOf(f);t.value=rw!=null?rw:fmtDays(d[f])}});
 }
 function setAllOpen(on){
   $('form').classList.toggle('all-open',on);
@@ -1974,7 +2015,7 @@ function showEditor(){
   $('edNote').hidden=true;
   $('pasteMsg').textContent='';
   if(draft)$('form').insertBefore($('sec-addr'),$('sec-name'));else $('slot-addr').appendChild($('sec-addr'));
-  $('infoTxt').value=E.infoTxt||'';
+  $('infoTxt').value=E.raw?E.raw.info:'';
   setEdState(draft?'Not saved yet':'');
   setAllOpen(draft);
   paintForm();
@@ -2000,7 +2041,7 @@ function startDraft(init){
   S.selId=null;
   E={kind:'draft',data:{name:init.name||'',types:(init.types||[]).slice(),cat:'other',rating:0,food:[],cuisine:[],vibe:[],tips:[],notes:'',url:'',book:'',phone:'',
     hours:blankDays(),kitchen:blankDays(),deals:blankDays(),lat:init.lat,lng:init.lng,loc:init.loc||'',ts:Date.now()}};
-  E.data.cat=placeColor(E.data);
+  E.data.cat=placeColor(E.data);E.raw={info:'',food:'',deals:'',tips:''};
   $('pasteBox').open=false;$('pasteTxt').value='';
   showEditor();renderList();
   if(init.paste)setTimeout(function(){$('fAddr').focus()},0);
@@ -2043,7 +2084,7 @@ document.addEventListener('pointerdown',function(e){
   if(e.target.closest('.tagsearch'))return;
   Array.prototype.forEach.call(document.querySelectorAll('.tagdrop'),function(u){u.hidden=true});
 });
-$('form').addEventListener('input',function(e){var k=e.target.dataset&&e.target.dataset.key;if(k&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')){setTagText(k,e.target.value);paintSug(k)}});
+$('form').addEventListener('input',function(e){var k=e.target.dataset&&e.target.dataset.key;if(k&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')){if(E&&E.raw&&k in E.raw){E.raw[k]=e.target.value;recomputeDraft();return}setRaw(k,e.target.value);setTagText(k,e.target.value);paintSug(k)}});
 $('form').addEventListener('keydown',function(e){
   var k=e.target.dataset&&e.target.dataset.key;if(!k||(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA'))return;
   if(e.key==='Enter'){
@@ -2053,16 +2094,18 @@ $('form').addEventListener('keydown',function(e){
 });
 // When you leave the box, show it tidied (e.g. "french/japanese" -> "French / Japanese")
 $('form').addEventListener('focusout',function(e){
-  var k=e.target.dataset&&e.target.dataset.key;if(!k||(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA')||!E)return;
-  setTimeout(function(){if(!E||document.activeElement===e.target)return;if(k==='tips'){tipsToDeals();tipsToVibe()}e.target.value=E.data[k].join(tagSep(k));$('sug-'+k).hidden=true},0);
+  var k=e.target.dataset&&e.target.dataset.key;if(!k||(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA')||!E||E.raw)return;
+  setTimeout(function(){if(!E||document.activeElement===e.target)return;if(k==='tips'){tipsToDeals();tipsToVibe()}$('sug-'+k).hidden=true;touched()},0);
 });
 
 $('form').addEventListener('input',function(e){
   var f=e.target.dataset&&e.target.dataset.days;if(!f||!E)return;
+  if(E.raw&&f in E.raw){E.raw[f]=e.target.value;recomputeDraft();return}
+  setRaw(f,e.target.value);
   E.data[f]=parseDaysText(e.target.value,f!=='deals');if(f==='kitchen')fixKitchen(E.data);touched();
 });
 $('form').addEventListener('focusout',function(e){
-  var f=e.target.dataset&&e.target.dataset.days;if(!f||!E)return;
+  var f=e.target.dataset&&e.target.dataset.days;if(!f||!E||E.raw)return;
   var target=E,raw=e.target.value;
   setTimeout(function(){
     if(E!==target||document.activeElement===e.target)return;
@@ -2072,10 +2115,10 @@ $('form').addEventListener('focusout',function(e){
         var before=E.data.tips.length;
         E.data.tips=organiseTips(E.data.tips.concat(notes).join('\n'));
         var added=E.data.tips.length-before;
-        if(added>0){touched();paintView();paintTags('tips');toast('Moved '+(added===1?'a note':added+' notes')+' to Good to know');tipsToVibe()}
+        if(added>0){addRaw('tips',notes);touched();paintView();paintTags('tips');toast('Moved '+(added===1?'a note':added+' notes')+' to Good to know');tipsToVibe()}
       }
     }
-    e.target.value=fmtDays(E.data[f]);
+    touched();
   },0);
 });
 $('backBtn').addEventListener('click',function(){
@@ -2086,7 +2129,11 @@ $('saveBtn').addEventListener('click',function(){
   if(!E||E.kind!=='draft')return;
   var d=E.data;d.name=(d.name||'').trim()||'Untitled place';d.url=d.url.trim();d.ts=Date.now();d.cat=placeColor(d);
   var id='p_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-  var p=Object.assign({id:id},d);
+  var p=Object.assign({id:id},d),rw=Object.assign({},E.raw),ex=E.extra||{tips:[],deals:[]};
+  // notes moved in from other boxes are added under what you typed, so editing later keeps them
+  function plus(t,lines){lines=(lines||[]).filter(function(l){return String(t).toLowerCase().indexOf(String(l).toLowerCase())<0});return lines.length?(String(t).trim()?String(t).replace(/\s+$/,'')+'\n':'')+lines.join('\n'):t}
+  rw.tips=plus(rw.tips,ex.tips);rw.deals=plus(rw.deals,ex.deals);
+  p.raw=cleanRaw(rw);
   S.places.set(id,p);
   E={kind:'saved',id:id,data:p};S.selId=id;
   persist(id);
@@ -2362,7 +2409,7 @@ var VOCAB_FOOD=[[/cocktails?/,'Cocktails'],[/\bwine\b|wine bar/,'Wine'],[/champa
   [/hot ?pot/,'Hot pot'],[/tapas/,'Tapas'],[/vegan/,'Vegan'],[/vegetarian/,'Vegetarian'],[/\bmatcha\b/,'Matcha'],[/waffles?/,'Waffles'],[/pancakes?/,'Pancakes']];
 var VOCAB_CUISINE=['French','Italian','Japanese','Chinese','Korean','Thai','Vietnamese','Mexican','Indian','Greek','Spanish','Lebanese','Middle Eastern','Turkish','Malaysian','Indonesian',
   'Filipino','American','Modern Australian','Mediterranean','Cantonese','Sichuan','Taiwanese','Peruvian','Brazilian','Ethiopian','German','British','Sri Lankan','Nepalese','Fusion'];
-var VOCAB_VIBE=[[/date night|romantic/,'Date night'],[/\bcasual\b|laid[- ]back|relaxed/,'Casual'],[/lively|buzzy|energetic|high[- ]energy|vibrant/,'Lively'],[/\bcos[yi]\b|cozy|intimate/,'Cosy'],
+var VOCAB_VIBE=[[/friendly staff|staff (?:are|is) (?:super |really |very |so )?friendly|friendly service|warm service/,'Friendly staff'],[/date night|romantic/,'Date night'],[/\bcasual\b|laid[- ]back|relaxed/,'Casual'],[/lively|buzzy|energetic|high[- ]energy|vibrant/,'Lively'],[/\bcos[yi]\b|cozy|intimate/,'Cosy'],
   [/fancy|upscale|fine dining|elegant|classy|luxur/,'Fancy'],[/late[- ]night|open late|till late|until late/,'Late night'],[/rooftop/,'Rooftop'],[/outdoor|courtyard|beer garden|al fresco|alfresco|terrace/,'Outdoor seating'],
   [/\bviews?\b|waterfront|harbour views/,'Great views'],[/groups?\b|share plates|sharing/,'Good for groups'],[/live music|\bdjs?\b/,'Live music'],[/hidden|secret|speakeasy|laneway/,'Hidden gem'],
   [/cheap|affordable|budget|bargain|everything is \$/,'Cheap eats'],[/quick bite|takeaway|take-away|grab and go/,'Quick bite'],[/family|kid[- ]friendly|kids/,'Family friendly'],[/dog[- ]friendly|pet[- ]friendly/,'Dog friendly']];
@@ -2466,17 +2513,28 @@ function fmtInfo(d){
   var kit=DAYS.some(function(x){return ((d.kitchen||{})[x]||'').trim()})?fmtDays(d.kitchen).split('\n').map(function(l){return 'Kitchen: '+l}).join('\n'):'';
   return [d.types.join(' / '),d.cuisine.join(' / '),d.vibe.join(' / '),hrs,kit,fmtLinks(d)].filter(Boolean).join('\n');
 }
-$('infoTxt').addEventListener('input',function(e){applyInfoText(e.target.value)});
-$('infoTxt').addEventListener('blur',function(e){
-  if(!E)return;var o=applyInfoText(e.target.value);if(!o)return;
-  if(o.left.length){
-    var before=E.data.tips.length;
-    E.data.tips=organiseTips(E.data.tips.concat(o.left).join('\n'));
-    if(E.data.tips.length>before){paintTags('tips');tipsToDeals();tipsToVibe();toast('Moved to Good to know: '+o.left.join(', '))}
-  }
-  E.infoTxt=e.target.value=fmtInfo(E.data);
+$('infoTxt').addEventListener('input',function(e){if(!E||!E.raw)return;E.raw.info=e.target.value;recomputeDraft()});
+// Adding a place: every box keeps what you typed; the sections below show it sorted
+var QUIET=false;
+function recomputeDraft(){
+  if(!E||!E.raw)return;var d=E.data,r=E.raw;
+  var o=parseInfoText(r.info);
+  d.types=parseTagText('types',o.types.join(' / '));
+  d.cuisine=parseTagText('cuisine',o.cuisine.join(' / '));
+  d.vibe=parseTagText('vibe',o.vibe.join(' / '));
+  d.hours=parseDaysText(o.hours.join('\n'),true);
+  d.kitchen=parseDaysText(o.kitchen.join('\n'),true);fixKitchen(d);
+  var lk=parseLinks(o.links.join('\n'));if(lk.menu!==(d.menu||''))d.menuAt=lk.menu?Date.now():0;
+  d.book=lk.book;d.menu=lk.menu;d.url=lk.url;d.phone=lk.phone;
+  d.food=parseTagText('food',r.food);if(r.food)d.foodAt=Date.now();
+  d.deals=parseDaysText(r.deals,false);
+  var notes=splitDeals(r.deals).notes;
+  d.tips=organiseTips([r.tips].concat(notes,o.left).filter(Boolean).join('\n'));
+  var mv=[];QUIET=true;try{mv=tipsToDeals();tipsToVibe()}finally{QUIET=false}
+  E.extra={tips:notes.concat(o.left),deals:mv};
+  d.cat=placeColor(d);
   paintView();touched();
-});
+}
 function labelKey(lab){
   var L=lab.toLowerCase().replace(/\s+/g,' ').trim();
   if(/^(name|place|place name|venue name|restaurant name|title)$/.test(L))return 'name';
