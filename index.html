@@ -2153,6 +2153,26 @@ function menuTags(text){
   });
   return tags;
 }
+// Info boxes: words that belong in another section are copied there
+// e.g. Type "korean bakery" -> Cuisine: Korean ; Type "cosy rooftop bar" -> Vibe: Cosy, Rooftop
+function crossFill(key,text){
+  if(!E||!/^(?:types|cuisine|vibe|features)$/.test(key))return;
+  var d=E.data,n=norm(text),add={types:[],cuisine:[],vibe:[],features:[]};
+  if(key!=='cuisine')VOCAB_CUISINE.forEach(function(cz){if(new RegExp('\\b'+cz.toLowerCase()+'\\b(?!\\s+(?:steam|bath|baths|sauna|massage|rugs?|spa|hammam|delight))').test(n))add.cuisine.push(cz)});
+  if(key!=='types')add.types=findTypes(n,3).filter(function(t){return !/^(?:Ceramic painting|Pottery)$/.test(t)||key==='features'});
+  if(key!=='vibe')VOCAB_VIBE.forEach(function(v){if(v[0].test(n))add.vibe.push(v[1])});
+  if(key!=='features')add.features=findFeatures(n);
+  var moved=[];
+  Object.keys(add).forEach(function(k){
+    var fresh=add[k].filter(function(x){return d[k].map(function(y){return y.toLowerCase()}).indexOf(x.toLowerCase())<0});
+    if(!fresh.length)return;
+    d[k]=d[k].concat(fresh);
+    var rw=rawOf(k);if(rw!=null)setRaw(k,(rw.trim()?rw.replace(/\s+$/,'')+', ':'')+fresh.join(', '));
+    paintTags(k);moved.push(TAGS[k].label+': '+fresh.join(', '));
+  });
+  if(key==='types')d.cat=placeColor(d);
+  if(moved.length){paintChoices();paintView();toast('Also added to '+moved.join('; '))}
+}
 function parseTagText(key,text){
   if(key==='tips')return organiseTips(text);
   if(key==='food'&&looksLikeMenu(text))return parseTagText('food',menuTags(text).join(', '));
@@ -2162,9 +2182,10 @@ function parseTagText(key,text){
     var sp=splitKnown(key,part);if(sp)pieces=pieces.concat(sp);else pieces.push(part);
   });
   if(key==='types'){
-    var tp=[];pieces.forEach(function(pc){var f=findTypes(norm(pc),3);if(f.length){tp=tp.concat(f);if(E&&!E.data.cuisine.length){var cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(norm(pc))});if(cz.length){E.data.cuisine=cz}}}else tp.push(pc)});
+    var tp=[];pieces.forEach(function(pc){var f=findTypes(norm(pc),3);if(f.length){tp=tp.concat(f);if(false&&E&&!E.data.cuisine.length){var cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(norm(pc))});if(cz.length){E.data.cuisine=cz}}}else tp.push(pc)});
     pieces=tp;
   }
+  if(key==='cuisine')pieces=pieces.map(function(pc){var n=norm(pc),cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(n)});return cz.length&&findTypes(n,3).length?cz.join(' / '):pc}).join(' / ').split(' / ').filter(Boolean);
   if(key==='cuisine')pieces=pieces.map(function(pc){return pc.split(/\s+/).map(function(w){return w.length>2?w.charAt(0).toUpperCase()+w.slice(1):w}).join(' ')});
   text=pieces.join('/');
   var m=canonMap(key),seen={},out=[];
@@ -2342,7 +2363,7 @@ $('form').addEventListener('keydown',function(e){
 // When you leave the box, show it tidied (e.g. "french/japanese" -> "French / Japanese")
 $('form').addEventListener('focusout',function(e){
   var k=e.target.dataset&&e.target.dataset.key;if(!k||(e.target.tagName!=='INPUT'&&e.target.tagName!=='TEXTAREA')||!E||E.raw)return;
-  setTimeout(function(){if(!E||document.activeElement===e.target)return;$('sug-'+k).hidden=true;touched()},0);
+  setTimeout(function(){if(!E||document.activeElement===e.target)return;$('sug-'+k).hidden=true;crossFill(k,e.target.value);touched()},0);
 });
 
 $('form').addEventListener('input',function(e){
