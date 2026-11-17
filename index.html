@@ -1437,9 +1437,16 @@ var TAGS={
     sug:['BYO','Cash only','Card only','Bookings recommended','Walk-ins only','Queue early','Kid friendly','Dog friendly','Wheelchair accessible','Vegan options','Gluten free options','Vegetarian options','Free wifi','Free parking','Kitchen closes early','Open late','Happy hour','Minimum spend','Set menu only','Cakeage fee']}
 };
 var TAG_KEYS=['types','cuisine','food','vibe','features','tips'];
+// Search only: "dessert" finds places with desserts on the menu, "delivery" finds places that deliver
+function searchExtras(p){
+  var dz=CARD_GROUPS.filter(function(g){return g[0]==='Desserts'})[0],x=[];
+  if(p.types.some(function(t){return /dessert/i.test(t)})||p.food.some(function(f){f=norm(f);return (dz&&dz[1].test(f))||/mochi|do(?:ugh)?nuts?|macarons?|cr[eê]pes?|waffles?|churros?|cookies?|brownies?|bingsu|bao ?ice|halo halo|tiramisu|sweets?|chocolate|gelato|sorbet|soft serve|bubble waffle|taiyaki|pudding/.test(f)}))x.push('dessert desserts sweets');
+  if((p.tips||[]).concat(p.features||[],p.notes?[p.notes]:[]).some(function(t){return /deliver|uber ?eats|doordash|menulog|deliveroo/i.test(t)}))x.push('delivery');
+  return x.join(' ');
+}
 function placeHay(p){
   return norm([p.name,p.notes,p.loc,(p.features||[]).join(' '),p.types.join(' '),p.food.join(' '),p.cuisine.join(' '),p.vibe.join(' '),(p.tips||[]).join(' '),
-    DAYS.map(function(d){return dealOn(p,d)}).join(' '),(p.prices||[]).map(function(g){return g.n+' '+g.it.map(function(r){return r[0]}).join(' ')}).join(' '),p.phone].join(' '));
+    searchExtras(p),DAYS.map(function(d){return dealOn(p,d)}).join(' '),(p.prices||[]).map(function(g){return g.n+' '+g.it.map(function(r){return r[0]}).join(' ')}).join(' '),p.phone].join(' '));
 }
 function hasTag(arr,f){return f==='all'||(arr||[]).some(function(x){return x.toLowerCase()===f})}
 /* Food grouping: "Fish dumplings" counts under "Dumplings", "Iced matcha" under "Matcha" */
@@ -2203,6 +2210,7 @@ function organiseTips(text){
   var out=[],seen={},m=canonMap('tips'),sawDel=0;
   function add(t){t=tidyTip(t);if(!t)return;var k=tagKey(t);if(!seen[k]&&out.length<TAGS.tips.max){seen[k]=1;out.push(t.slice(0,200))}}
   fixSurcharges(String(text||'').split(/\n+|(?<=[.!?])\s+|\s*[;•|]\s*/)).forEach(function(sentence){
+    if(FRESH_RE.test(sentence))return;
     sentence=sentence.trim().replace(/[.!?]+$/,'').replace(/^(?:however|additionally|also|please note(?: that)?|note(?: that)?|in addition),?\s+/i,'');if(!sentence)return;
     // vague lines that say nothing
     if(/\b(?:hard|difficult|impossible|tricky)\s+to\s+(?:estimate|say|predict|know|guarantee)\b|\bcan(?:not|'t)\s+(?:guarantee|say|predict)\b/i.test(sentence))return;
@@ -2289,6 +2297,13 @@ function menuTags(text){
 // Info boxes: words that belong in another section are copied there
 // e.g. Type "korean bakery" -> Cuisine: Korean ; Type "cosy rooftop bar" -> Vibe: Cosy, Rooftop
 function crossFill(key,text){
+  if(E&&(key==='tips'||key==='food')&&FRESH_RE.test(text)){
+    var fd=E.data,mv=[];
+    if(fd.features.map(norm).indexOf('made fresh daily')<0){fd.features=fd.features.concat(['Made fresh daily']);var rf=rawOf('features');if(rf!=null)setRaw('features',(rf.trim()?rf.replace(/\s+$/,'')+', ':'')+'Made fresh daily');paintTags('features');mv.push('Features: Made fresh daily')}
+    var ft=findTypes(norm(String(text).match(new RegExp('[^.!?\\n]*(?:'+FRESH_RE.source+')[^.!?\\n]*','i'))[0]),3).filter(function(t){return fd.types.map(norm).indexOf(norm(t))<0});
+    if(ft.length){fd.types=fd.types.concat(ft);var rt2=rawOf('types');if(rt2!=null)setRaw('types',(rt2.trim()?rt2.replace(/\s+$/,'')+', ':'')+ft.join(', '));paintTags('types');fd.cat=placeColor(fd);mv.push('Type: '+ft.join(', '))}
+    if(mv.length){paintChoices();paintView();toast((key==='tips'?'Moved to ':'Also added to ')+mv.join('; '))}
+  }
   if(E&&key==='food'){
     // "Their signature is the X" / "famous for X" / "must try X" -> Good to know: Signature: X
     var sg=[];String(text||'').split(/[.!?\n]+|,\s*(?=also|plus|and)/i).forEach(function(sn){var m=sn.match(/\b(?:signature(?:\s+dish)?|famous for|known for|must[- ]try|best seller|bestseller|specialty|speciality)\b(?:\s+(?:is|are|dish|item))?\s+(?:the\s+|their\s+)?(.+)$/i);if(m){var it=shortItem(m[1].split(/,|\s+also\s+|\s+and\s+(?:also\s+)?try\b/i)[0]);if(it)sg.push(it)}});
@@ -2337,8 +2352,10 @@ function parseTagText(key,text){
   if(key==='tips')return organiseTips(text);
   if(key==='food'&&looksLikeMenu(text))return parseTagText('food',menuTags(text).join(', '));
   var pieces=[];
+  if(key==='features'||key==='food'||key==='vibe'){text=String(text||'').split(/(?<=[.!?])\s+|\n+/).filter(function(sn){if(FRESH_RE.test(sn)){if(key==='features')pieces.push('Made fresh daily');else if(key==='food'){var lf=freshLeft(sn);if(lf)pieces.push(cap1(lf))}return false}return true}).join('\n')}
   String(text||'').replace(/\s+(?:also|plus|as well as|along with)\s+/gi,', ').replace(/,?\s+with\s+(?=[a-z])/gi,key==='features'?', ':' with ').split(/\s*(?:[\/,;|\n+&]|\band\b|\bor\b(?!\s+so)|(?<=[.!?])\s)\s*/i).forEach(function(part){
     part=part.trim().replace(/[.!?]+$/,'');if(!part)return;
+    if(FRESH_RE.test(part)&&(key==='features'||key==='food'||key==='vibe')){if(key==='features')pieces.push('Made fresh daily');return}
     if(key==='vibe'){part=shortVibe(part);if(!part)return;if(/ \/ /.test(part)){pieces=pieces.concat(part.split(' / '));return}}
     else if(key==='features'||key==='food'){part=shortItem(part);if(!part)return;var fv=key==='features'?findFeatures(norm(part)):[];if(fv.length===1&&norm(part).split(' ').length<=3){part=fv[0]}}
     var sp=splitKnown(key,part);if(sp)pieces=pieces.concat(sp);else pieces.push(part);
@@ -3030,7 +3047,11 @@ function paintPricing(v,d){
   });
 }
 function priceEl(lv){var s=el('span','price');s.setAttribute('aria-label',PRICE_WORDS[lv]+' ('+'$'.repeat(lv)+' of $$$$)');s.appendChild(el('span','po','$'.repeat(lv)));s.appendChild(el('span','pf','$'.repeat(4-lv)));return s}
-var FEATURES=[[/mineral pools?|hot pools?|thermal pools?|geothermal|hot springs? pools?/,'Hot mineral pools'],[/cold plunges?(?: pools?)?/,'Cold plunges'],[/\bsaunas?\b/,'Saunas'],[/steam rooms?/,'Steam rooms'],[/clay (?:rituals?|treatments?)/,'Clay rituals'],[/\byoga\b/,'Yoga'],[/breathwork/,'Breathwork'],[/fire (?:&|and) ice/,'Fire & Ice'],[/massages?/,'Massages'],[/facials?/,'Facials'],[/body treatments?/,'Body treatments'],[/private bathing|private baths?/,'Private bathing'],[/spa treatments?/,'Spa treatments'],[/cave pool/,'Cave pool'],[/hilltop pool/,'Hilltop pool'],[/(?:infinity|rooftop|swimming|lap) pool/,'Pool'],[/hot tubs?|jacuzzi|spa baths?/,'Hot tub'],[/\bgym\b/,'Gym'],[/pool tables?|billiards/,'Pool tables'],[/arcade games?|pinball/,'Arcade games'],[/dance ?floor/,'Dance floor'],[/beer garden/,'Beer garden'],[/karaoke rooms?/,'Karaoke rooms'],[/private (?:dining )?rooms?/,'Private rooms'],[/playground/,'Playground'],[/board games/,'Board games'],[/lockers?/,'Lockers'],[/parents?'? room|baby chang/,'Parents room'],[/picnic areas?/,'Picnic area'],[/lawns?\b|gardens?\b(?! view)/,'Gardens'],[/gift shop|\bshop\b/,'Shop'],[/conference|convention|function rooms?/,'Conference rooms'],[/\bdarts\b/,'Darts'],[/table tennis|ping pong/,'Table tennis'],[/bowling lanes?/,'Bowling lanes']];
+// "Freshly handmade daily in our Melbourne bakery" -> Features: Made fresh daily
+var FRESH_RE=/\b(?:fresh(?:ly)?\s+(?:hand[- ]?made|made|baked|prepared|cooked)|(?:hand[- ]?made|made|baked|prepared|cooked)\s+fresh(?:ly)?|hand[- ]?made|baked)\b[^.!?\n]*\b(?:daily|every day|each day|every morning|each morning)\b|\bmade fresh daily\b/i;
+// what's left after the fresh-daily words: "Pasta handmade daily" -> "Pasta"
+function freshLeft(sn){return unchat(String(sn).replace(/\b(?:in|at|from)\s+(?:our|the|their)\b[^.!?\n]*/i,' ').replace(/\b(?:fresh(?:ly)?|hand[- ]?made|made|baked|prepared|cooked|daily|every day|each day|every morning|each morning|everything|all|is|are|we|our|it'?s)\b/gi,' ').replace(/[.!?]/g,' ')).replace(/^(?:and|&)\s+|\s+(?:and|&)$/i,'').trim()}
+var FEATURES=[[FRESH_RE,'Made fresh daily'],[/mineral pools?|hot pools?|thermal pools?|geothermal|hot springs? pools?/,'Hot mineral pools'],[/cold plunges?(?: pools?)?/,'Cold plunges'],[/\bsaunas?\b/,'Saunas'],[/steam rooms?/,'Steam rooms'],[/clay (?:rituals?|treatments?)/,'Clay rituals'],[/\byoga\b/,'Yoga'],[/breathwork/,'Breathwork'],[/fire (?:&|and) ice/,'Fire & Ice'],[/massages?/,'Massages'],[/facials?/,'Facials'],[/body treatments?/,'Body treatments'],[/private bathing|private baths?/,'Private bathing'],[/spa treatments?/,'Spa treatments'],[/cave pool/,'Cave pool'],[/hilltop pool/,'Hilltop pool'],[/(?:infinity|rooftop|swimming|lap) pool/,'Pool'],[/hot tubs?|jacuzzi|spa baths?/,'Hot tub'],[/\bgym\b/,'Gym'],[/pool tables?|billiards/,'Pool tables'],[/arcade games?|pinball/,'Arcade games'],[/dance ?floor/,'Dance floor'],[/beer garden/,'Beer garden'],[/karaoke rooms?/,'Karaoke rooms'],[/private (?:dining )?rooms?/,'Private rooms'],[/playground/,'Playground'],[/board games/,'Board games'],[/lockers?/,'Lockers'],[/parents?'? room|baby chang/,'Parents room'],[/picnic areas?/,'Picnic area'],[/lawns?\b|gardens?\b(?! view)/,'Gardens'],[/gift shop|\bshop\b/,'Shop'],[/conference|convention|function rooms?/,'Conference rooms'],[/\bdarts\b/,'Darts'],[/table tennis|ping pong/,'Table tennis'],[/bowling lanes?/,'Bowling lanes']];
 function findFeatures(n){return FEATURES.filter(function(f){return f[0].test(n)}).map(function(f){return f[1]})}
 // "Allow at least 3–4 hours" -> "3–4 hours"
 function shortTime(t){return String(t).replace(/^about\s+/i,'~').replace(/^at least\s+/i,'').replace(/hours/,'hrs').replace(/hour/,'hr').replace(/minutes/,'mins').replace(/minute/,'min')+(/^at least/i.test(t)?'+':'')}
