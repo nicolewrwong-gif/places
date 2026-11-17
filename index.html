@@ -3042,6 +3042,9 @@ function pricingFromText(t){
   });
   // same wording for menu headings: "entree"/"entrées" -> Entrées, "main" -> Mains
   var PL_WORD={entree:'Entrées','entrée':'Entrées',entrees:'Entrées','entrées':'Entrées',main:'Mains',mains:'Mains','main course':'Mains','main courses':'Mains',side:'Sides',sides:'Sides',dessert:'Desserts',desserts:'Desserts',starter:'Starters',starters:'Starters',snack:'Snacks',snacks:'Snacks',small:'Small plates','small plate':'Small plates','small plates':'Small plates','large plate':'Large plates','large plates':'Large plates',share:'Share plates','share plate':'Share plates','share plates':'Share plates','sharing plates':'Share plates',drink:'Drinks',drinks:'Drinks',cocktail:'Cocktails',cocktails:'Cocktails',banquet:'Banquet',banquets:'Banquet'};
+  // tidy each price: "$5.30 - $6.00" -> "$5.30–6" ; "Mochi are" -> "Mochi"
+  function tidyPr(pr){return String(pr||'').replace(/\$\s?(\d[\d,]*)(\.\d\d)?\s*(?:-|–|—|to)\s*\$?\s?(\d[\d,]*)(\.\d\d)?/g,function(_,a,ac,b,bc){var c=ac||bc;return '$'+a+(c?(ac||'.00'):'')+' - $'+b+(c?(bc||'.00'):'')}).replace(/\s+/g,' ').trim()}
+  gs.forEach(function(g){g.it.forEach(function(r){r[1]=tidyPr(r[1]);r[0]=String(r[0]||'').replace(/\s+(?:are|is|cost|costs|go for|for|at|priced at)$/i,'').trim();});});
   gs.forEach(function(g){g.it.forEach(function(r){var k=String(r[0]||'').trim().toLowerCase();if(PL_WORD[k])r[0]=PL_WORD[k];else if(r[0])r[0]=cap1(String(r[0]).trim())});if(g.n){var gk=g.n.trim().toLowerCase();g.n=PL_WORD[gk]||cap1(g.n.trim())}});
   return cleanPrices(gs.filter(function(g){return g.it.length}));
 }
@@ -3094,8 +3097,8 @@ function fmtPrices(d,noLevel){var out=d.price&&!noLevel?['$'.repeat(d.price)]:[]
 // Pricing rows: [{h:subheading or '', rows:[[name, price]]}]
 function priceLines(gs){
   var out=[],done={},simple={h:'',rows:[]};
-  function isPure(pr){return /^(?:from\s+)?\$\d[\d,.]*(?:–\$?\d[\d,.]*)?(?: pp| each)?$|^ask$/i.test(String(pr).trim())}
-  function rng(prs){var ns=[],pp=prs.length>0;prs.forEach(function(pr){var a=plNums(pr);ns=ns.concat(a);if(!/\bpp\b/.test(pr))pp=false});if(!ns.length)return 'Ask';var lo=Math.min.apply(null,ns),hi=Math.max.apply(null,ns),dec=ns.some(function(v){return v%1});function f(v){return dec&&v%1?v.toFixed(2):String(v)}return '$'+f(lo)+(hi>lo?'–'+f(hi):'')+(pp?' pp':'')}
+  function isPure(pr){return /^~?(?:from\s+)?\$\d[\d,.]*(?:\s*[–-]\s*\$?\d[\d,.]*)?(?: pp| each)?$|^ask$/i.test(String(pr).trim())}
+  function rng(prs){var ns=[],pp=prs.length>0;prs.forEach(function(pr){var a=plNums(pr);ns=ns.concat(a);if(!/\bpp\b/.test(pr))pp=false});if(!ns.length)return 'Ask';var lo=Math.min.apply(null,ns),hi=Math.max.apply(null,ns),dec=ns.some(function(v){return v%1});function f(v){return dec?v.toFixed(2):String(v)}return '$'+f(lo)+(hi>lo?' - $'+f(hi):'')+(pp?' pp':'')}
   function nice(n){n=String(n||'').replace(/\s+(?:packages?|options?)$/i,'').replace(/^(?:deals?|specials?)\s*(?:&|and)\s*/i,'');return n.charAt(0).toUpperCase()+n.slice(1).toLowerCase()}
   var tiersRe=/^(?:adults?|concessions?|child(?:ren)?|kids?|seniors?|students?|infants?|family|couples?)$/i;
   gs.forEach(function(g,gi){
