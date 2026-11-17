@@ -1102,6 +1102,31 @@ function pinPath(x,y,r){
   ctx.closePath();
 }
 var pinHits=[];
+// Map marker icons (24px line drawings), by type first, then by colour group
+var PIN_ICONS={
+  fork:'M8 4v6M6 4v3a2 2 0 004 0V4M8 10v10M16 4c-2 1-3 3.5-3 6.5V13h3v7',
+  glass:'M5 5h14l-7 8zM12 13v6M9 19h6',
+  cup:'M5 9h11v5a4 4 0 01-4 4H9a4 4 0 01-4-4zM16 10h1.5a2.5 2.5 0 010 5H16',
+  beer:'M7 6h9v13a1 1 0 01-1 1H8a1 1 0 01-1-1zM16 9h2a2 2 0 012 2v3a2 2 0 01-2 2h-2M10 10v6M13 10v6',
+  music:'M9 18V6l10-2v12M9 18a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM19 16a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z',
+  cake:'M4 20h16v-7H4zM4 15c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 4 0M12 13V9M12 6.5v.5',
+  bath:'M4 13h16M6 13v3a3 3 0 003 3h6a3 3 0 003-3v-3M7 13V6a2 2 0 014 0',
+  star:'M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4 7.2 18.9l.9-5.4-3.9-3.8 5.4-.8z',
+  brush:'M14 4l6 6-8 8H6v-6zM11 7l6 6',
+  bed:'M3 18V8M3 14h18v4M21 14v-2a3 3 0 00-3-3h-7v5M7 11.5h.01',
+  pillar:'M4 20h16M5 9h14M12 4l8 5H4zM7 9v9M12 9v9M17 9v9',
+  tree:'M12 21v-5M7 16h10l-5-12z',
+  bag:'M6 8h12l-1 12H7zM9 8a3 3 0 016 0',
+  dot:'M12 9v.01M12 12v5'
+};
+var PIN_BY_TYPE={'restaurant':'fork','café':'cup','bakery':'cake','dessert':'cake','bar':'glass','pub':'beer','club':'music','bath house':'bath','diy':'brush','ceramic painting':'brush','pottery':'brush','hotel':'bed','airbnb':'bed','museum':'pillar','gallery':'pillar','theatre':'pillar','landmark':'pillar','park':'tree','garden':'tree','beach':'tree','lookout':'tree','market':'bag','shop':'bag'};
+var PIN_BY_CAT={restaurant:'fork',cafe:'cup',dessert:'cake',bar:'glass',pub:'beer',club:'music',games:'star',stay:'bed',see:'pillar',shop:'bag'};
+var pinPathCache={};
+function pinIcon(d){
+  if(typeof Path2D==='undefined')return null;
+  var t=String((d.types||[])[0]||'').toLowerCase(),k=PIN_BY_TYPE[t]||PIN_BY_CAT[placeColor(d)]||'dot';
+  return pinPathCache[k]||(pinPathCache[k]=new Path2D(PIN_ICONS[k]));
+}
 
 function draw(){
   var w=V.w,h=V.h,W=worldPx();
@@ -1142,12 +1167,12 @@ function draw(){
   pinHits=[];
   pins.forEach(function(p){
     for(var kk=k0-1;kk<=k1+1;kk++){
-      var x=lng2u(p.d.lng)*W+kk*W-ox,y=mercV(p.d.lat)*W-oy,r=(p.sel||p.draft)?12:10;
+      var x=lng2u(p.d.lng)*W+kk*W-ox,y=mercV(p.d.lat)*W-oy,r=(p.sel||p.draft)?14:12;
       if(x<-40||x>w+40||y<-10||y>h+r*3)continue;
       var item={p:p,x:x,y:y,r:r};
-      pf.push(item);rects.push([x-r,y-r*2.9,x+r,y+3]);
+      pf.push(item);rects.push([x-r-2,y-r-2,x+r+2,y+r+2]);
       var pn=(p.d.name||'').trim();
-      if(pn&&(z>=3.2||p.sel||p.draft)){var ptw=textW(pn,'600 12px '+UI);rects.push([x+r+3,y-r*1.9-8,x+r+7+ptw,y-r*1.9+8])}
+      if(pn&&(z>=3.2||p.sel||p.draft)){var ptw=textW(pn,'600 12px '+UI);rects.push([x+r+3,y-8,x+r+7+ptw,y+8])}
     }
   });
 
@@ -1197,28 +1222,28 @@ function draw(){
   }
 
   /* draw pins */
-  var pf2=cf;
+  var pf2=cf,lblR=[],markR=pf.map(function(it){return [it.x-it.r,it.y-it.r,it.x+it.r,it.y+it.r]});
   pf.forEach(function(it){
     var p=it.p,x=it.x,y=it.y,r=it.r,d=p.d,col2=C.cat[placeColor(d)]||C.cat.other;
     pinHits.push({id:p.id,x:x,y:y,r:r,draft:!!p.draft});
     ctx.save();
     ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=p.sel||p.draft?10:5;ctx.shadowOffsetY=2;
-    pinPath(x,y,r);ctx.fillStyle=col2;ctx.fill();
-    ctx.shadowColor='transparent';ctx.lineWidth=p.sel||p.draft?2.5:1.6;ctx.strokeStyle='#ffffff';ctx.stroke();
-    var cy3=y-r*1.9;
-    ctx.fillStyle='#ffffff';
-    ctx.beginPath();ctx.arc(x,cy3,r*0.36,0,6.2832);ctx.fill();
+    // round marker with an icon for the type of place
+    ctx.beginPath();ctx.arc(x,y,r,0,6.2832);ctx.fillStyle=col2;ctx.fill();
+    ctx.shadowColor='transparent';ctx.lineWidth=p.sel||p.draft?2.5:1.8;ctx.strokeStyle='#ffffff';ctx.stroke();
+    var ip=pinIcon(d);if(ip){var sc2=(r*1.25)/24;ctx.translate(x-12*sc2,y-12*sc2);ctx.scale(sc2,sc2);ctx.lineWidth=2.6;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#ffffff';ctx.stroke(ip)}
     ctx.restore();
     if(p.draft){
       ctx.save();ctx.setLineDash([3,3]);ctx.lineWidth=1.5;ctx.strokeStyle=col2;
-      ctx.beginPath();ctx.ellipse(x,y,r*0.9,r*0.35,0,0,6.2832);ctx.stroke();ctx.restore();
+      ctx.beginPath();ctx.arc(x,y,r+5,0,6.2832);ctx.stroke();ctx.restore();
     }
     var nm=(d.name||'').trim();
     if(nm&&(z>=3.2||p.sel||p.draft)){
-      var f='600 12px '+UI,tw3=textW(nm,f),bx=[x+r+3,y-r*1.9-8,x+r+7+tw3,y-r*1.9+8];
+      var f='600 12px '+UI,tw3=textW(nm,f),lb=[x+r+3,y-8,x+r+7+tw3,y+8];
+      if(!(p.sel||p.draft)&&(hit(lb,lblR)||hit(lb,markR.filter(function(m){return !(m[0]===x-r&&m[1]===y-r)}))))return;lblR.push(lb);
       ctx.textAlign='left';ctx.textBaseline='middle';ctx.font=f;
-      ctx.lineWidth=3.5;ctx.strokeStyle=C.halo;ctx.strokeText(nm,x+r+5,y-r*1.9);
-      ctx.fillStyle=C.fg;ctx.fillText(nm,x+r+5,y-r*1.9);
+      ctx.lineWidth=3.5;ctx.strokeStyle=C.halo;ctx.strokeText(nm,x+r+5,y);
+      ctx.fillStyle=C.fg;ctx.fillText(nm,x+r+5,y);
     }
   });
   if(ME){
@@ -1238,9 +1263,8 @@ function draw(){
 var ptrs=new Map(),drag=null,pinch=null;
 function pinAt(x,y){
   for(var i=pinHits.length-1;i>=0;i--){
-    var q=pinHits[i],dx=x-q.x,dy=y-(q.y-q.r*1.9);
-    if(dx*dx+dy*dy<=(q.r+3)*(q.r+3))return q;
-    if(Math.abs(x-q.x)<q.r*0.6&&y<=q.y+2&&y>=q.y-q.r*1.2)return q;
+    var q=pinHits[i],dx=x-q.x,dy=y-q.y;
+    if(dx*dx+dy*dy<=(q.r+5)*(q.r+5))return q;
   }
   return null;
 }
