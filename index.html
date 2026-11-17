@@ -338,6 +338,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .pgrid .pt img{width:100%;height:100%;object-fit:cover;display:block}
 .pgrid .px{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:14px;line-height:22px;text-align:center}
 .pgrid .pc{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.6);color:#fff;font-size:10.5px;font-weight:700;border-radius:6px;padding:1px 6px}
+.pgrid.dropping{outline:2px dashed var(--accent);outline-offset:4px;border-radius:12px;background:var(--accent-soft)}
 .pgrid .padd{aspect-ratio:1;border:2px dashed var(--line);border-radius:10px;background:none;color:var(--accent);font:inherit;font-weight:700;font-size:12.5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 .pgrid .padd b{font-size:22px;line-height:1}
 .pview{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:200;display:flex;align-items:center;justify-content:center}
@@ -377,6 +378,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
 @keyframes bdot{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--danger) 45%,transparent)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.vlink.hasdot::after{animation:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--danger) 25%,transparent)}}
 .hdr{margin-top:6px}
+#sec-cuisine{display:none!important}
 .vdesc{margin:4px 0 0;font-size:14px;line-height:1.45;font-style:italic;color:var(--muted)}
 #form.editall .vdesc,#form.all-open .vdesc{display:none}
 .desclab{display:block;font-size:13px;font-weight:600;margin:10px 0 4px}
@@ -1465,7 +1467,7 @@ function isOpenNow(p,now){
   return today.some(function(r){return t>=r[0]&&t<r[1]})||yday.some(function(r){return t+1440>=r[0]&&t+1440<r[1]});
 }
 var TAGS={
-  types:{label:'Type',max:6,eatOnly:false,sugN:40,ph:'What kind of place is it?',sug:TYPE_LIST.map(function(t){return t[0]})},
+  types:{label:'Type',max:6,eatOnly:false,sugN:40,ph:'What kind of place? e.g. Korean bakery',sug:TYPE_LIST.map(function(t){return t[0]})},
   cuisine:{label:'Cuisine',max:12,eatOnly:true,sugN:10,ph:'What cuisine?',
     sug:['French','Italian','Japanese','Chinese','Korean','Thai','Vietnamese','Mexican','Indian','Greek','Middle Eastern','Modern Australian','Spanish','American']},
   food:{label:'Dishes & drinks',max:40,eatOnly:true,sugN:12,ph:'What to eat and drink',
@@ -2048,14 +2050,24 @@ $('pGrid').addEventListener('click',function(e){
   if(e.target.closest('#pAdd')){$('pFile').click();return}
   var t=e.target.closest('.pt');if(t){var i=d.photos.findIndex(function(x){return x.i===t.dataset.i});if(i>0){var c=d.photos.splice(i,1)[0];d.photos.unshift(c);paintPhotos();touched()}}
 });
-$('pFile').addEventListener('change',function(e){
-  if(!E)return;var files=Array.prototype.slice.call(e.target.files||[]),target=E;e.target.value='';
+$('pFile').addEventListener('change',function(e){var files=Array.prototype.slice.call(e.target.files||[]);e.target.value='';addPhotoFiles(files)});
+// drag photos from your computer onto the place while adding or editing
+function photoDropOk(e){return E&&(E.kind==='draft'||$('form').classList.contains('editall')||$('form').classList.contains('all-open'))&&e.dataTransfer&&Array.prototype.indexOf.call(e.dataTransfer.types||[],'Files')>=0}
+['dragenter','dragover'].forEach(function(ev){$('form').addEventListener(ev,function(e){if(!photoDropOk(e))return;e.preventDefault();e.dataTransfer.dropEffect='copy';$('pGrid').classList.add('dropping')})});
+$('form').addEventListener('dragleave',function(e){if(!e.relatedTarget||!$('form').contains(e.relatedTarget))$('pGrid').classList.remove('dropping')});
+$('form').addEventListener('drop',function(e){$('pGrid').classList.remove('dropping');if(!photoDropOk(e))return;e.preventDefault();
+  var files=Array.prototype.filter.call(e.dataTransfer.files||[],function(f){return /^image\//.test(f.type)});
+  if(!files.length){toast('Only photos can be added here');return}
+  if((E.data.photos||[]).length>=6){toast('Up to 6 photos per place');return}
+  addPhotoFiles(files)});
+function addPhotoFiles(files){
+  if(!E)return;var target=E;
   files.slice(0,6-(target.data.photos||[]).length).reduce(function(pr,f){return pr.then(function(){return shrinkImage(f).then(function(r){
     if(E!==target)return;var id=newPhotoId();target.data.photos=(target.data.photos||[]).concat([{i:id,t:r.thumb}]);photoCache[id]=r.full;
     if(target.kind==='saved')savePhotoData(target.id,id,r.full);else{target.newPhotos=target.newPhotos||{};target.newPhotos[id]=r.full}
     paintPhotos();touched();
   },function(){toast("That file couldn't be read as a photo")})})},Promise.resolve());
-});
+}
 $('pStrip').addEventListener('scroll',function(){var st=$('pStrip'),ims=st.children;if(!ims.length)return;var n=0,best=1e9;for(var i=0;i<ims.length;i++){var dx=Math.abs(ims[i].offsetLeft-st.scrollLeft);if(dx<best){best=dx;n=i}}if(st.scrollLeft+st.clientWidth>=st.scrollWidth-2)n=ims.length-1;$('pCount').textContent=(n+1)+' / '+ims.length;var ds=$('pDots').children;for(var j=0;j<ds.length;j++)ds[j].className=j===n?'on':''},{passive:true});
 $('pStrip').addEventListener('click',function(e){
   var im=e.target.closest('img');if(!im)return;
@@ -2147,6 +2159,7 @@ function paintView(){
       var rows=rest.map(function(t){return gtkHead(t)}),hd=rows.filter(function(r){return r[0]}),pl=rows.filter(function(r){return !r[0]});
       [hd,pl].forEach(function(list,li){if(!list.length)return;var ul=el('ul','vtips'+(li&&hd.length?' gap':''));list.forEach(function(r){var e=el('li');if(r[0])e.appendChild(el('b',null,r[0]+':'));e.appendChild(document.createTextNode((r[0]?' ':'')+r[1]));ul.appendChild(e)});vv.appendChild(ul)});return}
     if(key==='features'){var fu=el('ul','vfeat');d.features.forEach(function(t){fu.appendChild(el('li',null,t))});vv.appendChild(fu);return}
+    if(key==='types'){var tl=(d.cuisine.length?d.cuisine.join(' / ')+' ':'')+d.types.map(function(t,i){return d.cuisine.length||i?t.toLowerCase():t}).join(' / ');vv.appendChild(el('p','vtext vtype',tl.trim()));return}
     if(key!=='food'){vv.appendChild(el('p','vtext vtype',d[key].join(' / ')));return}
     if(key==='food'){
       // one per line; grouped items show their kinds on the line below
@@ -2163,6 +2176,7 @@ function paintView(){
   // edit button wording: Add when empty
   var empty={name:false,addr:!d.loc,book:!bk&&!bookTag(d),time:!d.time,pricing:!(d.prices||[]).length,menu:!mn,url:!u,phone:false,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),ohours:!(d.ohours||[]).length,deals:!dd2.length};
   TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});
+  empty.types=!d.types.length&&!d.cuisine.length;
   if(!hasFood(d.types)&&d.food.length)empty.tips=false;
   if(everydayDeals(d).length||offerNotes(d).length)empty.tips=false;
   if(!everydayDeals(d).length&&!offerNotes(d).length&&!(!hasFood(d.types)&&d.food.length)&&d.tips.every(function(t){return isBookNote(t)||needOf(t)}))empty.tips=true;
@@ -2271,6 +2285,17 @@ function organiseTips(text){
     if(spm){var sx=spm[1].split(/\s*,\s*|\s+and\s+/).map(function(x){return foodWord(shortItem(x.replace(/^(?:the|their|our)\s+/i,'')))}).filter(Boolean).join(', ');if(sx){add('Best for: '+sx);return}}
     if(FRESH_RE.test(sentence))return;
     sentence=sentence.trim().replace(/[.!?]+$/,'').replace(/^(?:however|additionally|also|please note(?: that)?|note(?: that)?|in addition),?\s+/i,'');if(!sentence)return;
+    // questions to the reader ("Can't make it to Springvale?") say nothing
+    if(/\?\s*$/.test(String(sentence))||/^(?:can['’]?t|cannot|want|looking|need|wondering|fancy|craving)\b[^.]*$/i.test(sentence)&&/\bmake it\b|\bto go\b/i.test(sentence)&&!/\d/.test(sentence))return;
+    // "All the fillings ... are house-made" -> Features: House-made fillings
+    var hm=String(sentence).match(/^(?:all\s+)?(?:of\s+)?(?:the\s+|our\s+|their\s+)?([a-z][a-z\s&]*?)(?:\s+(?:that|which)\s+go\s+into\s+.+?)?\s+(?:are|is)\s+(?:all\s+)?(?:house|home)[- ]?made$/i);
+    if(hm&&hm[1].split(/\s+/).length<=4){var hf='House-made '+hm[1].toLowerCase().replace(/\s+and\s+/,' & ');if(E&&E.data&&E.data.features.map(norm).indexOf(norm(hf))<0){E.data.features=E.data.features.concat([cap1(hf)]);var rfh=rawOf('features');if(rfh!=null)setRaw('features',(rfh.trim()?rfh.replace(/\s+$/,'')+', ':'')+cap1(hf))}return}
+    // "All of Yoo's rice cakes can be pre-ordered via ..." -> "Can be pre-ordered via ..."
+    sentence=String(sentence).replace(/^all\s+(?:of\s+)?(?:the\s+|our\s+|their\s+|[\w’']+['’]s\s+)?[\w\s-]{1,30}?\s+(can be|are available|must be)\s+/i,function(_,v){return cap1(v)+' '});
+    // "via the Bok Rice Bakery website" -> "via Bok Rice Bakery website"
+    sentence=sentence.replace(/\b(via|on|through|from|at|in)\s+the\s+(?=[A-Z])/g,'$1 ');
+    // ", announced via its Instagram" -> " (announced via Instagram)"
+    sentence=sentence.replace(/,?\s+((?:announced|posted|shared|listed|updated|advertised)\s+(?:via|on|through))\s+(?:its|their|our|the)\s+(.+)$/i,' ($1 $2)');
     // vague lines that say nothing
     if(/\b(?:hard|difficult|impossible|tricky)\s+to\s+(?:estimate|say|predict|know|guarantee)\b|\bcan(?:not|'t)\s+(?:guarantee|say|predict)\b/i.test(sentence))return;
     var isDel=/\bdeliver/i.test(sentence)||(sawDel&&/\b(?:text|sms|message|call|email)\b/i.test(sentence));
@@ -2375,7 +2400,7 @@ function crossFill(key,text){
   }
   if(!E||!/^(?:types|cuisine|vibe|features)$/.test(key))return;
   var d=E.data,n=norm(text),add={types:[],cuisine:[],vibe:[],features:[]};
-  if(key!=='cuisine')VOCAB_CUISINE.forEach(function(cz){if(new RegExp('\\b'+cz.toLowerCase()+'\\b(?!\\s+(?:steam|bath|baths|sauna|massage|rugs?|spa|hammam|delight))').test(n))add.cuisine.push(cz)});
+  if(key!=='cuisine'&&key!=='types')VOCAB_CUISINE.forEach(function(cz){if(new RegExp('\\b'+cz.toLowerCase()+'\\b(?!\\s+(?:steam|bath|baths|sauna|massage|rugs?|spa|hammam|delight))').test(n))add.cuisine.push(cz)});
   if(key!=='types')add.types=findTypes(n,3).filter(function(t){return !/^(?:Ceramic painting|Pottery)$/.test(t)||key==='features'});
   if(key!=='vibe')VOCAB_VIBE.forEach(function(v){if(v[0].test(n))add.vibe.push(v[1])});
   if(key!=='features')add.features=findFeatures(n);
@@ -2384,7 +2409,7 @@ function crossFill(key,text){
     var fresh=add[k].filter(function(x){return d[k].map(function(y){return y.toLowerCase()}).indexOf(x.toLowerCase())<0});
     if(!fresh.length)return;
     d[k]=d[k].concat(fresh);
-    var rw=rawOf(k);if(rw!=null)setRaw(k,(rw.trim()?rw.replace(/\s+$/,'')+', ':'')+fresh.join(', '));
+    var rk=k==='cuisine'?'types':k,rw=rawOf(rk);if(rw!=null)setRaw(rk,(rw.trim()?(k==='cuisine'?fresh.join(', ')+' '+rw.trim():rw.replace(/\s+$/,'')+', '+fresh.join(', ')):fresh.join(', ')));if(rk!==k)paintTags(rk);
     paintTags(k);moved.push(TAGS[k].label+': '+fresh.join(', '));
   });
   if(key==='types')d.cat=placeColor(d);
@@ -2475,7 +2500,7 @@ function parseTagText(key,text,noRoll){
     var sp=splitKnown(key,part);if(sp)pieces=pieces.concat(sp);else pieces.push(part);
   });
   if(key==='types'){
-    var tp=[];pieces.forEach(function(pc){var f=findTypes(norm(pc),3);if(f.length){tp=tp.concat(f);if(false&&E&&!E.data.cuisine.length){var cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(norm(pc))});if(cz.length){E.data.cuisine=cz}}}else if(unchat(pc).split(/\s+/).length<=2)tp.push(unchat(pc))});
+    var tp=[];pieces.forEach(function(pc){var f=findTypes(norm(pc),3);if(f.length){tp=tp.concat(f);if(false&&E&&!E.data.cuisine.length){var cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(norm(pc))});if(cz.length){E.data.cuisine=cz}}}else if(!findCuisines(pc).length&&!/\bfusion\b/i.test(pc)&&unchat(pc).split(/\s+/).length<=2)tp.push(unchat(pc))});
     pieces=tp;
   }
   if(key==='cuisine')pieces=[].concat.apply([],pieces.map(function(pc){var n=norm(unchat(pc)).replace(/[-\s](?:inspired|style|influenced)\b/g,'').replace(/\bmod(?:ern)?\s*(?:oz|aus|aussie)\b|\bmodern aussie\b/g,'modern australian').replace(/\bmiddle-eastern\b/g,'middle eastern').replace(/\bszechuan\b/g,'sichuan'),cz=VOCAB_CUISINE.filter(function(c){return new RegExp('\\b'+c.toLowerCase()+'\\b').test(n)});var out=cz.slice();if(/\bfusion\b/.test(n))out.push('Fusion');return out.length?out:[cap1(unchat(pc))]})).filter(Boolean);
@@ -2494,6 +2519,7 @@ function parseTagText(key,text,noRoll){
 function paintTags(key){
   var inp=$('t-'+key);
   if(document.activeElement!==inp){var rw=rawOf(key);inp.value=rw!=null?rw:E.data[key].join(tagSep(key))}
+  if(key==='types'&&document.activeElement!==inp&&E.data.cuisine.length){var tv=inp.value,miss=E.data.cuisine.filter(function(c){return norm(tv).indexOf(norm(c))<0});if(miss.length)inp.value=miss.join(' / ')+(tv.trim()?' '+tv.trim():'')}
   paintSug(key);
 }
 function tagPool(key){
@@ -2527,8 +2553,18 @@ function paintSug(key){
   if(!sug.children.length){close();return}
   sug.hidden=false;inp.setAttribute('aria-expanded','true');
 }
+// Type and Cuisine share one box: "korean bakery" -> Cuisine Korean + Type Bakery
+function findCuisines(text){
+  var n=norm(unchat(String(text||''))).replace(/[-\s](?:inspired|style|influenced)\b/g,'').replace(/\bmod(?:ern)?\s*(?:oz|aus|aussie)\b|\bmodern aussie\b/g,'modern australian').replace(/\bmiddle-eastern\b/g,'middle eastern').replace(/\bszechuan\b/g,'sichuan');
+  var out=VOCAB_CUISINE.filter(function(cz){return new RegExp('\\b'+cz.toLowerCase()+'\\b(?!\\s+(?:steam|bath|baths|sauna|massage|rugs?|spa|hammam|delight))').test(n)});
+  // "modern australian" also contains "australian": keep the longer one
+  out=out.filter(function(c){return !out.some(function(o){return o!==c&&o.toLowerCase().indexOf(c.toLowerCase())>=0})}).sort(function(a,b){return n.search(new RegExp('\\b'+a.toLowerCase()))-n.search(new RegExp('\\b'+b.toLowerCase()))});
+  if(/\bfusion\b/.test(n)&&out.indexOf('Fusion')<0)out.push('Fusion');
+  return out;
+}
 function setTagText(key,text){
   E.data[key]=parseTagText(key,text);
+  if(key==='types')E.data.cuisine=findCuisines(text);
   if(key==='food')E.data.foodAt=Date.now();
   if(key==='types')E.data.cat=placeColor(E.data);
   paintView();touched();
@@ -3067,6 +3103,7 @@ function parsePriceLists(text){
   var rest=lines.filter(function(_,k){return !used[k]}).join('\n');
   return {groups:groups,rest:rest};
 }
+function centsPr(pr){return String(pr||'').replace(/\$\s?(\d[\d,]*)(?:\.(\d\d))?\s*(?:-|–|—|to)\s*\$?\s?(\d[\d,]*)(?:\.(\d\d))?/g,function(_,a,ac,b,bc){return '$'+a+'~~'+(ac||'00')+' - $'+b+'~~'+(bc||'00')}).replace(/\$\s?(\d[\d,]*)(?:\.(\d\d))?(?!~~|\d)/g,function(_,a,c){return '$'+a+'.'+(c||'00')}).replace(/~~/g,'.').replace(/\s+/g,' ').trim()}
 function pricingFromText(t){
   // "Around $30-50 per person" -> "Per person: ~$30–50" ; "$20 to $35 a head" -> "Per person: $20–35" ; "Price range $15-40" -> "Price range: $15–40"
   t=String(t||'').split(/\n/).map(function(l){
@@ -3087,7 +3124,7 @@ function pricingFromText(t){
   // same wording for menu headings: "entree"/"entrées" -> Entrées, "main" -> Mains
   var PL_WORD={entree:'Entrées','entrée':'Entrées',entrees:'Entrées','entrées':'Entrées',main:'Mains',mains:'Mains','main course':'Mains','main courses':'Mains',side:'Sides',sides:'Sides',dessert:'Desserts',desserts:'Desserts',starter:'Starters',starters:'Starters',snack:'Snacks',snacks:'Snacks',small:'Small plates','small plate':'Small plates','small plates':'Small plates','large plate':'Large plates','large plates':'Large plates',share:'Share plates','share plate':'Share plates','share plates':'Share plates','sharing plates':'Share plates',drink:'Drinks',drinks:'Drinks',cocktail:'Cocktails',cocktails:'Cocktails',banquet:'Banquet',banquets:'Banquet'};
   // tidy each price: "$5.30 - $6.00" -> "$5.30–6" ; "Mochi are" -> "Mochi"
-  function tidyPr(pr){return String(pr||'').replace(/\$\s?(\d[\d,]*)(\.\d\d)?\s*(?:-|–|—|to)\s*\$?\s?(\d[\d,]*)(\.\d\d)?/g,function(_,a,ac,b,bc){var c=ac||bc;return '$'+a+(c?(ac||'.00'):'')+' - $'+b+(c?(bc||'.00'):'')}).replace(/\s+/g,' ').trim()}
+  var tidyPr=centsPr;
   gs.forEach(function(g){g.it.forEach(function(r){r[1]=tidyPr(r[1]);r[0]=String(r[0]||'').replace(/\s+(?:are|is|cost|costs|go for|for|at|priced at)$/i,'').trim();});});
   gs.forEach(function(g){g.it.forEach(function(r){var k=String(r[0]||'').trim().toLowerCase();if(PL_WORD[k])r[0]=PL_WORD[k];else if(r[0])r[0]=cap1(String(r[0]).trim())});if(g.n){var gk=g.n.trim().toLowerCase();g.n=PL_WORD[gk]||cap1(g.n.trim())}});
   return cleanPrices(gs.filter(function(g){return g.it.length}));
@@ -3142,7 +3179,7 @@ function fmtPrices(d,noLevel){var out=d.price&&!noLevel?['$'.repeat(d.price)]:[]
 function priceLines(gs){
   var out=[],done={},simple={h:'',rows:[]};
   function isPure(pr){return /^~?(?:from\s+)?\$\d[\d,.]*(?:\s*[–-]\s*\$?\d[\d,.]*)?(?: pp| each)?$|^ask$/i.test(String(pr).trim())}
-  function rng(prs){var ns=[],pp=prs.length>0;prs.forEach(function(pr){var a=plNums(pr);ns=ns.concat(a);if(!/\bpp\b/.test(pr))pp=false});if(!ns.length)return 'Ask';var lo=Math.min.apply(null,ns),hi=Math.max.apply(null,ns),dec=ns.some(function(v){return v%1});function f(v){return dec?v.toFixed(2):String(v)}return '$'+f(lo)+(hi>lo?' - $'+f(hi):'')+(pp?' pp':'')}
+  function rng(prs){var ns=[],pp=prs.length>0;prs.forEach(function(pr){var a=plNums(pr);ns=ns.concat(a);if(!/\bpp\b/.test(pr))pp=false});if(!ns.length)return 'Ask';var lo=Math.min.apply(null,ns),hi=Math.max.apply(null,ns),dec=ns.some(function(v){return v%1});function f(v){return v.toFixed(2)}return '$'+f(lo)+(hi>lo?' - $'+f(hi):'')+(pp?' pp':'')}
   function nice(n){n=String(n||'').replace(/\s+(?:packages?|options?)$/i,'').replace(/^(?:deals?|specials?)\s*(?:&|and)\s*/i,'');return n.charAt(0).toUpperCase()+n.slice(1).toLowerCase()}
   var tiersRe=/^(?:adults?|concessions?|child(?:ren)?|kids?|seniors?|students?|infants?|family|couples?)$/i;
   gs.forEach(function(g,gi){
@@ -3171,7 +3208,7 @@ function paintPricing(v,d){
   blocks.forEach(function(b){
     if(b.h)v.appendChild(el('div','dotsh',b.h));
     var g=el('div','dots');
-    b.rows.forEach(function(r){g.appendChild(el('span','dn',r[0]));g.appendChild(el('i'));g.appendChild(el('span','dp'+(/^ask$/i.test(r[1])?' ask':''),r[1]))});
+    b.rows.forEach(function(r){g.appendChild(el('span','dn',r[0]));g.appendChild(el('i'));g.appendChild(el('span','dp'+(/^ask$/i.test(r[1])?' ask':''),centsPr(r[1])))});
     v.appendChild(g);
   });
 }
