@@ -330,7 +330,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .namesec.open .topdeal{display:none}
 .foodmore{border:0;background:none;padding:0;color:var(--accent);font-weight:600;font-size:14px;cursor:pointer}
 .foodul{margin:4px 0 0;padding-left:18px;font-size:14px;line-height:1.5}
-.foodul li{margin:2px 0}
+.foodul li{margin:2px 0}.foodul{columns:2;column-gap:28px}.foodul li{break-inside:avoid;margin:0;padding:2px 0}.cccols{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;margin-top:6px}.cccol{min-width:0}.ccit{display:flex;align-items:flex-start;gap:8px;font-size:13.5px;padding:1px 0}.ccit .ccic{width:15px;flex:none;margin-top:2px}.ccit.ccgap{margin-top:8px}.cclist{columns:2;column-gap:16px;flex:1;min-width:0}.cclist>span{display:block;break-inside:avoid;padding:1px 0}.ccrow.cctop{align-items:flex-start}.ccrow.cctop .ccic{margin-top:2px}
 .foodul b{font-weight:400}
 .fvar{display:block;color:var(--muted);font-size:13px;line-height:1.4}
 .foodlist{margin:6px 0 0;font-size:14px;line-height:1.55}
@@ -353,7 +353,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .pcount{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 8px}
 .pdots{display:flex;justify-content:center;gap:5px;margin-top:7px}.pdots i{width:6px;height:6px;border-radius:50%;background:var(--line)}.pdots i.on{background:var(--accent)}
 #form.editall .pwrap,#form.all-open .pwrap{display:none}
-.mfiles{display:flex;flex-direction:column;gap:6px;margin-top:8px}.mfiles:empty{display:none}.mrow{display:flex;align-items:center;gap:8px;background:var(--field);border-radius:9px;padding:4px 4px 4px 10px}.mrow svg{flex:none;color:var(--muted)}.mrow input{flex:1;min-width:0;border:0;background:none;padding:6px 0;font:inherit}.mrow input:focus{outline:none}.mrow button{flex:none;border:0;background:none;padding:6px;color:var(--muted);cursor:pointer;display:flex}.mupload{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:none;border:0;padding:4px 0;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer}.vlink.mfile{display:inline-flex;align-items:center;gap:6px}.foodul.fgap{margin-top:14px}.vlevels{list-style:none;margin:6px 0 10px;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.45}.fixbtn.mpick{display:flex;align-items:center;gap:8px;text-decoration:none}
+.mfiles{display:flex;flex-direction:column;gap:6px;margin-top:8px}.mfiles:empty{display:none}.mrow{display:flex;align-items:center;gap:8px;background:var(--field);border-radius:9px;padding:4px 4px 4px 10px}.mrow svg{flex:none;color:var(--muted)}.mrow input{flex:1;min-width:0;border:0;background:none;padding:6px 0;font:inherit}.mrow input:focus{outline:none}.mrow button{flex:none;border:0;background:none;padding:6px;color:var(--muted);cursor:pointer;display:flex}.mupload{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:none;border:0;padding:4px 0;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer}.vlink.mfile{display:inline-flex;align-items:center;gap:6px}.foodul.fgap{margin-top:14px}.gtkgrp.gap{margin-top:14px}.gtkh{font-size:13px;font-weight:600;color:var(--fg);margin:0 0 4px}.vtips .gico.gwarn,.gico.gwarn{color:#d9893b!important}.vlevels{list-style:none;margin:6px 0 10px;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.45}.fixbtn.mpick{display:flex;align-items:center;gap:8px;text-decoration:none}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
 .pgrid .pt{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--field);border:0;padding:0;cursor:pointer}
 .pgrid .pt img{width:100%;height:100%;object-fit:cover;display:block}
@@ -680,7 +680,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
           </section>
             <div id="slot-vibe"></div>
           </div>
-          <div class="group" id="g-food">
+          <div class="group single" id="g-food">
             <h3 class="ghead">Food &amp; drinks</h3>
             <div id="slot-food"></div>
           </div>
@@ -2344,15 +2344,27 @@ function pickMenu(d,link){var ms=d.menus||[];if(ms.length===1&&!link){openMenuFi
   if(link){var a=el('a','fixbtn mpick','Menu link ↗');a.href=link;a.target='_blank';a.rel='noopener noreferrer';a.addEventListener('click',close);sh.appendChild(a)}
   var cl=el('button','fixclose','Close');cl.type='button';cl.addEventListener('click',close);sh.appendChild(cl);ov.appendChild(sh);ov.addEventListener('click',function(ev){if(ev.target===ov)close()});document.body.appendChild(ov)}
 // Features: a cafe on site shows as a card — coffee cup badge, where it is, then food and seating rows
-var CF_IC={cup:'<path d="M3 14c.83 .642 2.077 1.017 3.5 1c1.423 .017 2.67 -.358 3.5 -1c.83 -.642 2.077 -1.017 3.5 -1c1.423 -.017 2.67 .358 3.5 1"/><path d="M8 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"/><path d="M12 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"/><path d="M3 10h14v5a6 6 0 0 1 -6 6h-2a6 6 0 0 1 -6 -6v-5z"/><path d="M16.746 16.726a3 3 0 1 0 .252 -5.555"/>',fork:'<path d="M19 3v12h-5c-.023 -3.681 .184 -7.406 5 -12zm0 12v6h-1v-3m-10 -14v17m-3 -17v3a3 3 0 1 0 6 0v-3"/>',sun:'<path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>',chair:'<path d="M5 11a2 2 0 0 1 2 2v2h10v-2a2 2 0 1 1 4 0v4a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z"/><path d="M5 11v-5a3 3 0 0 1 3 -3h8a3 3 0 0 1 3 3v5"/><path d="M6 19v2"/><path d="M18 19v2"/>',dot:'<path d="M5 12l5 5l10 -10"/>'};
+var CF_IC={leaf:'<path d="M5 21c.5 -4.5 2.5 -8 7 -10"/><path d="M9 18c6.218 0 10.5 -3.288 11 -12v-2h-4.014c-9 0 -11.986 4 -12 9c0 1 0 3 2 5h3z"/>',cup:'<path d="M3 14c.83 .642 2.077 1.017 3.5 1c1.423 .017 2.67 -.358 3.5 -1c.83 -.642 2.077 -1.017 3.5 -1c1.423 -.017 2.67 .358 3.5 1"/><path d="M8 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"/><path d="M12 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"/><path d="M3 10h14v5a6 6 0 0 1 -6 6h-2a6 6 0 0 1 -6 -6v-5z"/><path d="M16.746 16.726a3 3 0 1 0 .252 -5.555"/>',fork:'<path d="M19 3v12h-5c-.023 -3.681 .184 -7.406 5 -12zm0 12v6h-1v-3m-10 -14v17m-3 -17v3a3 3 0 1 0 6 0v-3"/>',sun:'<path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>',chair:'<path d="M5 11a2 2 0 0 1 2 2v2h10v-2a2 2 0 1 1 4 0v4a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z"/><path d="M5 11v-5a3 3 0 0 1 3 -3h8a3 3 0 0 1 3 3v5"/><path d="M6 19v2"/><path d="M18 19v2"/>',dot:'<path d="M5 12l5 5l10 -10"/>'};
 function cfSvg(k,sz){return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+CF_IC[k]+'</svg>'}
-function cafeCard(t){var m=String(t).match(/^(cafe|kiosk)(?:\s*\((.*)\))?$/i),name=cap1(m[1].toLowerCase()),dets=(m[2]||'').split(/\s*,\s*/).filter(Boolean),loc=[],food=[],seat=[],other=[];
+function cafeHere(d){return !!(d&&!hasFood(d.types)&&(d.features||[]).some(function(t){return /^(?:cafe|kiosk)(?:\s*\(.*\))?$/i.test(t)}))}
+function cafeDiet(d){if(!cafeHere(d))return [];return (d.tips||[]).filter(function(t){return !needOf(t)}).map(gtkHead).filter(function(g){return g[0]==='Dietary'}).map(function(g){return g[1]})}
+function cafeFood(d){return !!(d&&d.food&&d.food.length&&!hasFood(d.types)&&(d.features||[]).some(function(t){return /^(?:cafe|kiosk)(?:\s*\(.*\))?$/i.test(t)}))}
+function cafeCard(t,fd,diet){var m=String(t).match(/^(cafe|kiosk)(?:\s*\((.*)\))?$/i),name=cap1(m[1].toLowerCase()),dets=(m[2]||'').split(/\s*,\s*/).filter(Boolean),loc=[],food=[],seat=[],other=[];
   dets.forEach(function(x){if(/^(?:near|by|at|next to|on|opposite|inside|in|upstairs|downstairs|beside|behind|outside|level|ground floor|top floor)\b/i.test(x))loc.push(x);else if(/\b(?:seating|seats|tables|terrace|deck|courtyard|patio|indoor|outdoor|alfresco|undercover|shade|views?)\b/i.test(x))seat.push(x);else if(/\b(?:open|closes|wifi|toilets?|card|cash)\b/i.test(x))other.push(x);else food.push(x)});
   var li=el('li','fixable cafecard');li.dataset.fixk='features';li.dataset.fixt=t;
   var hd=el('div','cchead'),bd=el('span','ccbadge');bd.innerHTML=cfSvg('cup',22);hd.appendChild(bd);var tt=el('div','cctitle');tt.appendChild(el('div','ccname',name));if(loc.length)tt.appendChild(el('div','ccloc',cap1(loc.join(', '))));hd.appendChild(tt);li.appendChild(hd);
   function row(ic,txt){var r=el('div','ccrow'),i=el('span','ccic');i.innerHTML=cfSvg(ic,15);r.appendChild(i);r.appendChild(el('span',null,cap1(txt)));li.appendChild(r)}
-  if(food.length)row('fork',food.join(', '));seat.forEach(function(x){row(/\b(?:outdoor|terrace|deck|courtyard|patio|alfresco|garden)\b/i.test(x)?'sun':'chair',x)});other.forEach(function(x){row('dot',x)});
-  if(!food.length&&!seat.length&&!other.length)li.classList.add('ccbare');return li}
+  var drink=[];if(fd&&fd.length){var have=food.map(norm);fd.forEach(function(x){if(have.indexOf(norm(x))>=0)return;if(foodCat(x)==='Drinks')drink.push(x);else food.push(x)})}
+  // food and drinks: one item per line, in two columns
+  function listRow(ic,items){var r=el('div','ccrow cctop'),i=el('span','ccic');i.innerHTML=cfSvg(ic,15);r.appendChild(i);var g=el('div','cclist');items.forEach(function(x){g.appendChild(el('span',null,cap1(x)))});r.appendChild(g);li.appendChild(r)}
+  // food in the left column; drinks then dietary notes in the right. Dietary notes move under the food when that evens the columns up (food never moves right)
+  diet=diet||[];
+  if(food.length&&(drink.length||diet.length)){var L=food.map(function(x,i){return [i?'':'fork',x,0]}),R=drink.map(function(x,i){return [i?'':'cup',x,0]}),dl=diet.map(function(x,i){return ['leaf',x,i===0&&drink.length]}),best=0,bd=1e9;
+    for(var k=0;k<=dl.length;k++){var df=Math.abs(L.length+k-(R.length+dl.length-k));if(df<bd){bd=df;best=k}}
+    L=L.concat(dl.slice(0,best).map(function(r,i){return [r[0],r[1],i===0]}));R=R.concat(dl.slice(best).map(function(r,i){return [r[0],r[1],i===0&&drink.length>0]}));
+    var cols=el('div','cccols');[L,R].forEach(function(c){var cd=el('div','cccol');c.forEach(function(r){var it=el('div','ccit'+(r[2]?' ccgap':'')),ic=el('span','ccic');if(r[0])ic.innerHTML=cfSvg(r[0],15);it.appendChild(ic);it.appendChild(el('span',null,cap1(r[1])));cd.appendChild(it)});cols.appendChild(cd)});li.appendChild(cols)}
+  else{if(food.length)listRow('fork',food);if(drink.length)listRow('cup',drink);diet.forEach(function(x){row('leaf',x)})}seat.forEach(function(x){row(/\b(?:outdoor|terrace|deck|courtyard|patio|alfresco|garden)\b/i.test(x)?'sun':'chair',x)});other.forEach(function(x){row('dot',x)});
+  if(!food.length&&!drink.length&&!diet.length&&!seat.length&&!other.length)li.classList.add('ccbare');return li}
 // ---- Events: one per line, e.g. "Zoo Lights 20 Nov – 5 Jan, Thu–Sun, 6pm–10pm, $25pp" ----
 var EV_MON=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 var EV_MONRE='(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)';
@@ -2582,19 +2594,26 @@ function isMarket(d){return (d.types||[]).some(function(t){return /market/i.test
 function marketEntry(d){if(!isMarket(d))return '';var r='';(d.prices||[]).forEach(function(g){(g.it||[]).forEach(function(x){var a=Array.isArray(x)?x[0]:x.a,b=Array.isArray(x)?x[1]:x.b,c=Array.isArray(x)?x[2]:x.c;if(!r&&/^(?:general\s+)?(?:entry|admission|entrance)(?:\s+fee)?$/i.test(a||'')&&/\$\s?\d/.test(b||''))r='Entry '+b+(c?' ('+c+')':'')})});return r}
 // Good to know set headings
 var GTK_HEADS=[
+  ['Defrosting',/\bdefrost|\bthaw/i,function(t){return t.replace(/^defrost(?:ing)?\s+(?:it\s+|them\s+)?(?=(?:at|in|on|using|with|by|overnight|for)\b)/i,'').replace(/^using\s+(?:an?\s+|the\s+)?/i,'In a ').replace(/^(.*?),\s*(?:the\s+)?best(?:\s+way)?$/i,'$1 (best)')}],
+  ['Reheating',/\bre-?heat|\bwarm (?:up|through)\b|\bheat (?:up|in|for|through)\b|\bmicrowave|\bair ?fryer/i,function(t){return t.replace(/^re-?heat(?:ing)?\s+(?:it\s+|them\s+)?(?=(?:at|in|on|using|with|by|for)\b)/i,'').replace(/^using\s+(?:an?\s+|the\s+)?/i,'In a ')}],
+  ['Storing',/refrigerat|\bfridge|\bfreez|\bfrozen\b|\bstore[ds]?\b|\bstorage\b|\bkeeps? (?:for|fresh|well)\b|best (?:eaten|consumed|enjoyed) (?:on the day|fresh|the same day|same day|within)|shelf life|\bconsume (?:within|by)\b/i,null],
+  ['Pets',/\bdogs?\b|\bpets?\b|\bon (?:a )?(?:leash|lead)\b|\bassistance animals?\b/i,null],
   ['Age',/\b\d+\s*\+|\b\d+\s+(?:and|&)\s+(?:over|up)\b|adults only|over \d+s?\b|under \d+|\bchild(?:ren)?\b|\bkids?\b|infants?|seniors?/i,null],
   ['Getting there',/\bfrom\b.*\b(?:minutes?|mins?|km|hours?)\b|\b(?:minutes?|mins?|km|hours?)\b.*\bfrom\b|walk from|station|\btram\b|\btrain\b|public transport|\bbus(?:es)?\b|\btaxis?\b|\buber\b|rideshare|\bferry\b/i,null],
   ['Dietary',/\ballerg\w*[- ]friendly|\bvegan|vegetarian|veggie|pesc[ae]tarian|egg[- ]free|keto|low[- ]carb|sugar[- ]free|fodmap|paleo|diabetic|gluten|\bgf\b|coeliac|celiac|dairy[- ]free|nut[- ]free|halal|kosher|allerg/i,function(t){return t.replace(/^dietary\s*:?\s*/i,'')}],
   ['Parking',/\bparking\b|(?<!(?:near|by|next to|at|in|beside|opposite|from|behind|outside)\s+(?:the\s+)?)\bcar ?park\b/i,function(t){return t.replace(/^parking\s*:?\s*/i,'').replace(/\s+parking$/i,'')}],
   ['For hire',/\bhire\b/i,function(t){return t.replace(/\s+(?:for hire|available to hire|can be hired)$/i,'')}],
   ['Booking',/cancell|\bbooking|\breserv|deposit|tables? (?:are )?limited to|\d+[- ]?(?:hour|hr|minute|min)s?\s+(?:limit|sittings?|seatings?)|\bsittings?\b/i,null],
-  ['Crowds',/quiet|busy|fill up|\bwait|crowd|queue|packed|line ?up/i,null],
+  ['When to go',/quiet|busy|fill up|\bwait|crowd|queue|packed|line ?up|best (?:time|to (?:go|visit|come))|\bgo early\b|\bsunset\b|\bsunrise\b|off[- ]peak|school holidays/i,null],
+  ['Weather',/\brain(?:s|ing|y)?\b|wet weather|\bweather\b|\bseasonal\b|\bin (?:winter|summer|spring|autumn)\b|\bwindy\b|\bstorms?\b|\bhot days\b|extreme heat|fire danger/i,null],
+  ['Rules',/\bno (?:outside food|outside drinks|food or drinks?|byo|photos?|photography|filming|smoking|vaping|alcohol|glass|drones?|bikes?|scooters?|skateboards?|touching|flash)\b|not (?:permitted|allowed)|\bprohibited\b|\bstrictly\b|\bmust (?:wear|be accompanied|stay)\b/i,null],
   ['Accessibility',/wheelchair|accessib|step[- ]free|\bsteps?\b/i,null],
-  ['Fees',/\bfees?\b/i,null],
+  ['Paying',/\bfees?\b|\bcash\b|\bcards?\b|eftpos|split (?:the )?bills?|afterpay|\bpayment\b/i,null],
   ['Delivery',/\bdeliver(?:y|ies|s|ed)?\b/i,function(t){var r=t.replace(/^deliver(?:y|ies)\s*:?\s*/i,'');return /^(?:is\s+)?(?:available|yes|offered|ok)$/i.test(r)?'Delivery available':r}]
 ];
+var GTK_ORDER=['When to go','Getting there','Parking','Booking','Age','Accessibility','Dietary','Paying','Delivery','Ordering','For hire','Pets','Rules','Weather','Storing','Defrosting','Reheating'];
 function gtkHead(t){
-  var m=String(t).match(/^([A-Z][^:]{1,40}?[^\d\s]):\s+(.+)$/);if(m)return [m[1],m[2]];
+  var m=String(t).match(/^([A-Z][^:]{1,40}?[^\d\s]):\s+(.+)$/);if(m)return [{Crowds:'When to go',Fees:'Paying'}[m[1]]||m[1],m[2]];
   for(var i=0;i<GTK_HEADS.length;i++){var g=GTK_HEADS[i];if(g[1].test(t)){var v=g[2]?g[2](t):t;return [g[0],v.charAt(0).toUpperCase()+v.slice(1)]}}
   return ['',t];
 }
@@ -2819,19 +2838,31 @@ function paintView(){try{paintMenus()}catch(e){}
   // tags
   TAG_KEYS.forEach(function(key){
     var vv=$('v-'+key);vv.textContent='';
-    $('sec-'+key).hidden=TAGS[key].eatOnly&&!hasFood(d.types);
-    $('g-food').hidden=!hasFood(d.types)&&E.kind!=='draft';
+    // not a food place: no Food & drinks section on the page, but the box stays while editing (a Cafe feature card shows the food)
+    var editingNow=E.kind==='draft'||$('form').classList.contains('editall')||$('form').classList.contains('all-open');
+    $('sec-'+key).hidden=TAGS[key].eatOnly&&!hasFood(d.types)&&!(key==='food'&&editingNow);
+    $('g-food').hidden=!hasFood(d.types)&&!editingNow;
     var lvr=key==='tips'?levelRows(d):[];
     var klen=key==='features'?d.features.filter(function(t){return !featLevel(t)}).length:key==='tips'?d.tips.length+lvr.length:d[key].length;
-    if(!klen&&!(key==='tips'&&(offerNotes(d).length||(!hasFood(d.types)&&d.food.length)))){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
-    if(key==='tips'){var rest=d.tips.filter(function(t){return !isLevelNote(t)&&(/^booking:/i.test(t)||!isBookNote(t))&&!isSellNote(t)&&!MIN_RE.test(t)&&!(/^must try:/i.test(t)&&hasFood(d.types))&&!isClosure(t)}).concat(offerNotes(d));if(!hasFood(d.types)&&d.food.length)rest=rest.concat(['Food & drinks: '+d.food.join(', ')]);if(!rest.length&&!lvr.length){vv.appendChild(muted('None added'));return}rest=rest.filter(function(t){return !needOf(t)});if(!rest.length&&!lvr.length){vv.appendChild(muted('None added'));return}
+    if(!klen&&!(key==='tips'&&(offerNotes(d).length||false))){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
+    if(key==='tips'){var rest=d.tips.filter(function(t){return !isLevelNote(t)&&(/^booking:/i.test(t)||!isBookNote(t))&&!isSellNote(t)&&!MIN_RE.test(t)&&!(/^must try:/i.test(t)&&hasFood(d.types))&&!isClosure(t)}).concat(offerNotes(d));if(!rest.length&&!lvr.length){vv.appendChild(muted('None added'));return}rest=rest.filter(function(t){return !needOf(t)});if(!rest.length&&!lvr.length){vv.appendChild(muted('None added'));return}
       var rows=rest.map(function(t){var g=gtkHead(t);g[2]=d.tips.indexOf(t)>=0?t:'';return g}),hd=rows.filter(function(r){return r[0]}),pl=rows.filter(function(r){return !r[0]});
       [hd,pl].forEach(function(list){var on=list.filter(function(r){return textNow(r[1])});if(on.length){var off=list.filter(function(r){return !textNow(r[1])});list.length=0;on.concat(off).forEach(function(r){list.push(r)})}});
       [hd,pl].forEach(function(list){var AGR=/^(?:\d+\+ only(?: · .+)?|under \d+s with an? (?:adult|parent|guardian|parent or guardian))$/i,ai=-1;for(var q=0;q<list.length;q++){if(list[q][0]==='Age'&&AGR.test(String(list[q][1]))){if(ai<0)ai=q;else{list[ai]=[list[ai][0],list[ai][1]+' · '+list[q][1],list[ai][2]];list.splice(q,1);q--}}}if(ai>=0){var ap=String(list[ai][1]).split(' · ');ap.sort(function(a,b){return /^\d/.test(b)-/^\d/.test(a)});list[ai]=[list[ai][0],ap.join(' · '),list[ai][2]]}});
-      [hd,pl].forEach(function(list,li){if(!list.length)return;var ul=el('ul','vtips vico'+(li&&hd.length?' gap':''));list.forEach(function(r){var e=el('li');var ic=el('span','gico');ic.innerHTML=gtkIcon(r[0],r[1]);e.appendChild(ic);var tx=el('span');if(r[2]){e.dataset.fixk='tips';e.dataset.fixt=r[2];e.className='fixable'}if(r[0])tx.appendChild(el('span','sr-only',r[0]+': '));tx.appendChild(dayText(cap1(String(r[1])),true));e.appendChild(tx);ul.appendChild(e)});vv.appendChild(ul)});
-      if(lvr.length){var lu=el('ul','vtips vico'+(rest.length?' gap':''));lvr.forEach(function(r){var e=el('li','fixable');e.dataset.fixk='tips';e.dataset.fixt=r[0]+': '+r[1];var ic=el('span','gico');ic.innerHTML=iconSvg('tb-stairs');e.appendChild(ic);var tx=el('span');tx.appendChild(el('strong','dayb',r[0]+':'));tx.appendChild(document.createTextNode(' '+r[1]));e.appendChild(tx);lu.appendChild(e)});vv.appendChild(lu)}
+      // grouped under small headings ("Storing:", "Defrosting:"), a gap between groups; Must try and the like sit on top without one
+      var GTOP=/^(?:must try|best for|most popular|offer)$/i,grp=[],gby={},top=[];
+      if(cafeHere(d))hd=hd.filter(function(r){return r[0]!=='Dietary'});
+      hd.forEach(function(r){if(GTOP.test(r[0])){top.push(r);return}if(GTK_ORDER.indexOf(r[0])<0){var full=r[0]+': '+r[1];for(var gi=0;gi<GTK_HEADS.length;gi++)if(GTK_HEADS[gi][1].test(full)){r=[GTK_HEADS[gi][0],full,r[2]];break}}var k=r[0];if(!gby[k]){gby[k]=[];grp.push(k)}gby[k].push(r)});
+      grp.sort(function(a,b){var ia=GTK_ORDER.indexOf(a),ib=GTK_ORDER.indexOf(b);return (ia<0?50:ia)-(ib<0?50:ib)});
+      var DONT=/^(?:do not|don['’]?t|never|not|avoid)\b/i,nblk=0;
+      function tipLi(r,lab){var e=el('li');var ic=el('span','gico');ic.innerHTML=DONT.test(String(r[1]))&&!lab?iconSvg('tb-alert-triangle'):gtkIcon(r[0],r[1]);if(DONT.test(String(r[1]))&&!lab)ic.classList.add('gwarn');e.appendChild(ic);var tx=el('span');if(r[2]){e.dataset.fixk='tips';e.dataset.fixt=r[2];e.className='fixable'}if(lab)tx.appendChild(document.createTextNode(r[0]+': '));else if(r[0])tx.appendChild(el('span','sr-only',r[0]+': '));tx.appendChild(dayText(cap1(String(r[1])),true));e.appendChild(tx);return e}
+      if(top.length){var tu=el('ul','vtips vico');top.forEach(function(r){tu.appendChild(tipLi(r,true))});vv.appendChild(tu);nblk++}
+      grp.forEach(function(k){var list=gby[k].slice().sort(function(a,b){return DONT.test(String(a[1]))-DONT.test(String(b[1]))});var box=el('div','gtkgrp'+(nblk?' gap':''));box.appendChild(el('div','gtkh',k+':'));var ul=el('ul','vtips vico');list.forEach(function(r){ul.appendChild(tipLi(r))});box.appendChild(ul);vv.appendChild(box);nblk++});
+      if(pl.length){var pu=el('ul','vtips vico'+(nblk?' gap':''));pl.forEach(function(r){pu.appendChild(tipLi(r))});vv.appendChild(pu);nblk++}
+      if(!nblk&&!lvr.length){vv.appendChild(muted('None added'));return}
+      if(lvr.length){var lu=el('ul','vtips vico'+(nblk?' gap':''));lvr.forEach(function(r){var e=el('li','fixable');e.dataset.fixk='tips';e.dataset.fixt=r[0]+': '+r[1];var ic=el('span','gico');ic.innerHTML=iconSvg('tb-stairs');e.appendChild(ic);var tx=el('span');tx.appendChild(el('strong','dayb',r[0]+':'));tx.appendChild(document.createTextNode(' '+r[1]));e.appendChild(tx);lu.appendChild(e)});vv.appendChild(lu)}
       return}
-    if(key==='features'){var fu=el('ul','vfeat');var fl0=d.features.filter(function(t){return !featLevel(t)});fl0.filter(function(t){return /^(?:cafe|kiosk)\b/i.test(t)}).concat(fl0.filter(function(t){return !/^(?:cafe|kiosk)\b/i.test(t)})).forEach(function(t){if(/^(?:cafe|kiosk)(?:\s*\(.*\))?$/i.test(t)){fu.appendChild(cafeCard(t));return}var fi=el('li','fixable'),fm=String(t).match(/^(.*?)\s*\(([^)]+)\)$/);var fe=el('span','femo');fe.innerHTML=featIcon(t);fi.appendChild(fe);var ft=el('span','ftx',fm?fm[1]:t);if(fm)ft.appendChild(el('span','fsub',fm[2]));fi.appendChild(ft);fi.dataset.fixk='features';fi.dataset.fixt=t;fu.appendChild(fi)});vv.appendChild(fu);return}
+    if(key==='features'){var fu=el('ul','vfeat'),cafeDone=false;var fl0=d.features.filter(function(t){return !featLevel(t)});fl0.filter(function(t){return /^(?:cafe|kiosk)\b/i.test(t)}).concat(fl0.filter(function(t){return !/^(?:cafe|kiosk)\b/i.test(t)})).forEach(function(t){if(/^(?:cafe|kiosk)(?:\s*\(.*\))?$/i.test(t)){fu.appendChild(cafeCard(t,cafeDone?null:d.food,cafeDone?null:cafeDiet(d)));cafeDone=true;return}var fi=el('li','fixable'),fm=String(t).match(/^(.*?)\s*\(([^)]+)\)$/);var fe=el('span','femo');fe.innerHTML=featIcon(t);fi.appendChild(fe);var ft=el('span','ftx',fm?fm[1]:t);if(fm)ft.appendChild(el('span','fsub',fm[2]));fi.appendChild(ft);fi.dataset.fixk='features';fi.dataset.fixt=t;fu.appendChild(fi)});vv.appendChild(fu);return}
     if(key==='types'){var tp=el('p','vtext vtype'),first=true;
       d.cuisine.forEach(function(c,i){if(i)tp.appendChild(document.createTextNode(' / '));var sp=el('span','fixable',c);sp.dataset.fixk='cuisine';sp.dataset.fixt=c;tp.appendChild(sp);first=false});
       d.types.forEach(function(t,i){tp.appendChild(document.createTextNode(i?' / ':(first?'':' ')));var sp=el('span','fixable',first&&!i?t:t.toLowerCase());sp.dataset.fixk='types';sp.dataset.fixt=t;tp.appendChild(sp)});
@@ -2845,7 +2876,7 @@ function paintView(){try{paintMenus()}catch(e){}
         if(mtl.length)gs=gs.filter(function(g){var n=norm(g.t);return !mk.some(function(k){return k===n||n.indexOf(k)>=0||k.indexOf(n)>=0})});return gs}
       function foodUl(gs){var ul=el('ul','foodul');gs.forEach(function(g){var li=el('li','fixable');li.dataset.fixk='food';li.dataset.fixt=g.t;if(g.v.length){li.appendChild(el('b',null,g.t));li.appendChild(el('span','fvar',g.v.join(', ')))}else li.appendChild(document.createTextNode(g.t));ul.appendChild(li)});return ul}
       // several menus ("Breakfast menu", "Lunch:", "Dinner") each get their own heading
-      var secs=null;if(rf&&rf.trim()&&!looksLikeMenu(rf)){var cur={h:'',l:[]};secs=[cur];rf.split(/\n/).forEach(function(l){var h=menuHead(l);if(h){cur={h:h,l:[]};secs.push(cur)}else cur.l.push(l)});secs=secs.filter(function(x){return x.l.join('').trim()});if(!secs.some(function(x){return x.h}))secs=null}
+      var secs=null;if(rf&&rf.trim()&&!looksLikeMenu(rf)){var cur={h:'',l:[]};secs=[cur];rf.split(/\n/).forEach(function(l){var h=menuHead(l);if(h){if(SAME_H.test(h))h='';cur={h:h,l:[]};secs.push(cur)}else cur.l.push(l)});secs=secs.filter(function(x){return x.l.join('').trim()});if(!secs.some(function(x){return x.h}))secs=null}
       var fl=el('ul','foodul');mtl.forEach(function(t){var li=el('li','fixable mtry');li.dataset.fixk='tips';li.dataset.fixt='Must try: '+mtl.join(', ');li.appendChild(document.createTextNode(t));li.appendChild(el('span','mtag','Must try'));fl.appendChild(li)});
       if(secs){if(mtl.length)vv.appendChild(fl);secs.forEach(function(x){var gs=foodGs(x.l.join('\n'));if(!gs.length)return;if(x.h)vv.appendChild(el('div','ohead menuh',x.h+':'));vv.appendChild(foodUl(gs))});return}
       var gs=foodGs(rf,!(rf&&rf.trim()));if(!gs.length&&(d.food||[]).length&&!(rf&&rf.trim()&&parseTagText('food',rf,true).length))gs=d.food.map(function(t){return {t:t,v:[]}});
@@ -2864,9 +2895,9 @@ function paintView(){try{paintMenus()}catch(e){}
   try{paintEvents(d)}catch(e){}empty.events=!eventsView(d).length;
   TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});empty.features=!d.features.filter(function(t){return !featLevel(t)}).length;if(levelRows(d).length)empty.tips=false;
   empty.types=!d.types.length&&!d.cuisine.length;
-  if(!hasFood(d.types)&&d.food.length)empty.tips=false;
+  
   if(offerNotes(d).length)empty.tips=false;
-  if(!offerNotes(d).length&&!levelRows(d).length&&!(!hasFood(d.types)&&d.food.length)&&d.tips.every(function(t){return isBookNote(t)||isSellNote(t)||MIN_RE.test(t)||needOf(t)}))empty.tips=true;
+  if(!offerNotes(d).length&&!levelRows(d).length&&!false&&d.tips.every(function(t){return isBookNote(t)||isSellNote(t)||MIN_RE.test(t)||needOf(t)}))empty.tips=true;
   // a section that only says "None added" counts as empty, so it hides on the place page
   TAG_KEYS.concat(['types','pricing']).forEach(function(k){var v=$('v-'+k);if(v&&/^(?:None added|No type yet|No pricing yet)$/.test(v.textContent.trim()))empty[k]=true});
   Array.prototype.forEach.call(document.querySelectorAll('#form .sec'),function(sec){var k=sec.dataset.sec;if(k)sec.classList.toggle('isempty',!!empty[k]&&(!sec.classList.contains('open')||k==='kitchen'||k==='ohours'))});
@@ -2941,7 +2972,7 @@ function shortTip(t){
   var bw=body.split(' ');
   for(var i=1;i<bw.length;i++){
     var w=bw[i].replace(/[^a-z']/ig,'');
-    if(TIP_FLUFF.test(w)&&!/^(?:up|out|quickly|fast)$/i.test(bw[i+1]||'')&&!/^(?:any|a|the|each|per|every|one|this|that|your)$/i.test(bw[i-1]||'')&&!HALF_END.test(bw[i-1]||''))return bw.slice(0,i).join(' ');
+    if(TIP_FLUFF.test(w)&&!/^(?:up|out|quickly|fast|warm|cool|cold|fresh|frozen|refrigerated|chilled|dry)$/i.test(bw[i+1]||'')&&!/^(?:any|a|the|each|per|every|one|this|that|your)$/i.test(bw[i-1]||'')&&!HALF_END.test(bw[i-1]||''))return bw.slice(0,i).join(' ');
     if(TIP_HAS.test(w)){if(/^includ/i.test(w))return t;var rest=bw.slice(i+1).join(' ').split(/\s*,\s*/)[0];return bw.slice(0,i).join(' ')+(rest?' with '+rest:'')}
     if(/^(?:is|are|was|were)$/i.test(w))return t;
   }
@@ -3083,10 +3114,14 @@ var FI={
  dot:'<path d="M5 12l4.5 4.5L19 7"/>'
 };
 var FEAT_ICON=[[/^no (?:dogs|pets)\b/i,'tb-dog-off'],[/^best (?:at|in|during|on|around|for)\s+(?:sunrise|sunset|dawn|dusk|golden hour|night|morning|evening|daybreak|low tide|high tide|spring|summer|autumn|winter|weekdays?)\b/i,'tb-award'],[/chef['’]?s counter|open kitchen/i,'tb-chef-hat'],[/wood[- ]fired|charcoal/i,'fire'],[/nut[- ]free|no nuts|peanut[- ]free/i,'nut-off'],[/halal|kosher/i,'tb-moon-stars'],[/preservative/i,'ban'],[/^no /i,'ban'],[/^byo cake/i,'cake'],[/^byo beer|^beer/i,'beer'],[/byo|wine/i,'wine'],[/dog|pet/i,'paw'],[/kids? menu|kid friendly|family|kids/i,'kid'],[/high ?chair|recliner|seat/i,'chair'],[/licensed bar/i,'cocktail'],[/wi-?fi/i,'wifi'],[/^toilets?\b|\btoilets?\b|restrooms?|bathrooms?/i,'tb-toilet-paper'],[/\bparking\b|(?<!(?:near|by|next to|at|in|beside|opposite|from|behind|outside)\s+(?:the\s+)?)\bcar ?park\b/i,'park'],[/takeaway|take ?out|pick-?up/i,'bag'],[/deliver/i,'tb-moped'],[/outdoor|al ?fresco|courtyard|garden/i,'leaf'],[/rooftop/i,'roof'],[/pool table|billiard/i,'ball'],[/live music|\bdj\b|music/i,'music'],[/karaoke/i,'mic'],[/screen|sport|\btv\b|projector/i,'screen'],[/games?|arcade/i,'dice'],[/fire ?place|fire ?pit|heater/i,'fire'],[/sauna|steam/i,'steam'],[/cold plunge|ice bath|air ?con/i,'snow'],[/hot spring|mineral pool|thermal|bath|pool|spa/i,'waves'],[/massage|treatment|handmade|hand[- ]made|house-made|homemade/i,'hand'],[/wheelchair|accessible|step[- ]free/i,'access'],[/made fresh|fresh daily|baked|bread/i,'bread'],[/gift|shop/i,'gift'],[/locker/i,'lock'],[/towel|robe/i,'towel'],[/view/i,'view'],[/private room/i,'door'],[/\bbar\b|cocktail/i,'cocktail'],[/coffee/i,'coffee'],[/vegan|vegetarian|plant/i,'plant'],[/gluten/i,'wheat'],[/late|night/i,'moon'],[/breakfast|brunch/i,'pan'],[/charging|power/i,'plug'],[/bike/i,'bike']];
-var GTK_ICON={'Times':'tb-clock','Age':'tb-users','Getting there':'tb-route','Parking':'park','For hire':'bag','Booking':'tb-calendar','Crowds':'tb-users-group','Accessibility':'access','Fees':'receipt','Dietary':'plant','Delivery':'tb-moped','Best for':'tb-award','Most popular':'tb-flame','Must try':'tb-star','Ordering':'bag','Food & drinks':'fork','Offer':'tag'};
+var GTK_ICON={'Storing':'snow','Defrosting':'tb-temperature','Reheating':'tb-flame','Pets':'paw','Rules':'ban','Weather':'tb-cloud-rain','When to go':'tb-clock','Paying':'tb-receipt','Times':'tb-clock','Age':'tb-users','Getting there':'tb-route','Parking':'park','For hire':'bag','Booking':'tb-calendar','Crowds':'tb-users-group','Accessibility':'access','Fees':'receipt','Dietary':'plant','Delivery':'tb-moped','Best for':'tb-award','Most popular':'tb-flame','Must try':'tb-star','Ordering':'bag','Food & drinks':'fork','Offer':'tag'};
 FI["tb-users-group"]="<path d=\"M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\"/> <path d=\"M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1\"/> <path d=\"M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\"/> <path d=\"M17 10h2a2 2 0 0 1 2 2v1\"/> <path d=\"M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\"/> <path d=\"M3 13v-1a2 2 0 0 1 2 -2h2\"/>";
 FI["tb-toilet-paper"]="<path d=\"M3 10a3 7 0 1 0 6 0a3 7 0 1 0 -6 0\"/><path d=\"M21 10c0 -3.866 -1.343 -7 -3 -7\"/><path d=\"M6 3h12\"/><path d=\"M21 10v10l-3 -1l-3 2l-3 -3l-3 2v-10\"/><path d=\"M6 10h.01\"/>";
 FI["tb-clock"]='<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/>';
+FI['tb-temperature']='<path d="M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5"/><path d="M10 9l4 0"/>';
+FI['tb-cloud-rain']='<path d="M7 18a4.6 4.4 0 0 1 0 -9a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7"/><path d="M11 13v2m0 3v2m4 -5v2m0 3v2"/>';
+FI['tb-alert-triangle']='<path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"/><path d="M12 16h.01"/>';
+FI['tb-receipt']='<path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2"/>';
 FI["tb-stairs"]='<path d="M22 5h-5v5h-5v5h-5v5h-5"/>';
 FI["tb-route"]="<path d=\"M3 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\"/> <path d=\"M19 7a2 2 0 1 0 0 -4a2 2 0 0 0 0 4\"/> <path d=\"M11 19h5.5a3.5 3.5 0 0 0 0 -7h-8a3.5 3.5 0 0 1 0 -7h4.5\"/>";
 FI["tb-dog-off"]="<path d=\"M11 5h2\"/><path d=\"M19 12c-.667 5.333 -2.333 8 -5 8h-4c-2.667 0 -4.333 -2.667 -5 -8\"/><path d=\"M11 16c0 .667 .333 1 1 1s1 -.333 1 -1h-2\"/><path d=\"M12 18v2\"/><path d=\"M10 11v.01\"/><path d=\"M14 11v.01\"/><path d=\"M5 4l6 .97l-6.238 6.688a1.021 1.021 0 0 1 -1.41 .111a.953 .953 0 0 1 -.327 -.954l1.975 -6.815\"/><path d=\"M19 4l-6 .97l6.238 6.688c.358 .408 .989 .458 1.41 .111a.953 .953 0 0 0 .327 -.954l-1.975 -6.815\"/><path d=\"M3 3l18 18\"/>";
@@ -3235,6 +3270,8 @@ var TYPOS=[[/\bavali?able\b|\bavailible\b|\bavailabe\b|\bavaible\b/gi,'available
 function fixTypos(t){t=String(t);TYPOS.forEach(function(r){t=t.replace(r[0],function(m){var f=r[1];return /^[A-Z]/.test(m)?f.charAt(0).toUpperCase()+f.slice(1):f})});return t}
 function organiseTips(text){
   text=fixTypos(text);
+  // "Defrost at room temperature, best way" -> "Defrost at room temperature (best)"
+  text=String(text||'').replace(/\s*,\s*(?:(?:this|that|it)(?:'s| is)\s+)?(?:the\s+)?best(?:\s+(?:way|option|method))?\s*(?=[.\n]|$)/gim,' (best)');
   var out=[],seen={},m=canonMap('tips'),sawDel=0,src=[],PEND=null;MOVED=[];
   // a note that only went to another section (Features, Pricing, Time needed, Hours) is taken out of Good to know's text
   function chk(){if(PEND&&!src.some(function(x){return x===PEND.s})&&movSig()!==PEND.sig)MOVED.push(PEND.s);PEND=null}
@@ -3379,7 +3416,7 @@ function organiseTips(text){
     var ldf=sn0.match(/^(beer garden|rooftop(?: bar)?|courtyard|terrace|balcony|pool tables?|fireplace|open fire)\s*,\s*(.+)$/i);if(ldf){sideAdd('features',cap1(ldf[1].toLowerCase()));sn0=ldf[2];sentence=ldf[2]}
     // "Dogs welcome in the beer garden" / "Dogs allowed before 9am and after 6pm" -> Features: Dog friendly (…)
     var dgc=sn0.match(/^(?:dogs?|pets?)\s+(?:are\s+)?(?:welcome|allowed|ok|okay|permitted|friendly)\s+((?:in|on|at)\s+(?:the\s+)?(.+)|(?:before|after|until|from)\s+.+)$/i);
-    if(dgc){var cond=dgc[2]?dgc[2].replace(/^the\s+/i,'').toLowerCase():dgc[1].split(/\s+(?:and|&|or)\s+|\s*,\s*/).join(', ');sideAdd('features','Dog friendly ('+cond+')');return}
+    if(dgc){var cond=/^on\s+(?:a\s+)?(?:lead|leash)$/i.test(dgc[1])?'on lead':dgc[2]?dgc[2].replace(/^the\s+/i,'').toLowerCase():dgc[1].split(/\s+(?:and|&|or)\s+|\s*,\s*/).join(', ');sideAdd('features','Dog friendly ('+cond+')');return}
     // "Trivia Tuesdays 7pm" -> Features: Trivia (Tue 7pm)
     var evm=sn0.match(/^(trivia(?: night)?|quiz(?: night)?|bingo|karaoke|comedy(?: night)?|open mic(?: night)?|jazz(?: night)?|drag bingo|music bingo|run club)\s+(?:on\s+|every\s+)?((?:mon|tue|wed|thu|fri|sat|sun)[a-z]*(?:\s*(?:,|and|&)\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*)*)\s+(?:at\s+|from\s+)?(\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))$/i);
     if(evm){var evd=(evm[2].match(/\b(mon|tue|wed|thu|fri|sat|sun)/gi)||[]).map(function(x){return DLW[x.toLowerCase()]}).join('/');sideAdd('features',cap1(evm[1].toLowerCase())+' ('+evd+' '+(/from/i.test(sn0)?'from ':'')+evm[3].replace(/\s+/g,'').toLowerCase()+')');return}
@@ -3591,6 +3628,8 @@ var DESSERT_RE=/\b(?:desserts?|cakes?|cheesecake|ice cream|gelato|sorbet|soft se
 function foodCat(t){t=String(t||'');if(/\baffogato\b/i.test(t))return 'Desserts';if(DRINK_RE.test(t)&&!/\b(?:cake|ice cream|tiramisu|pudding|mousse|cookie|brownie|mochi)\b/i.test(t))return 'Drinks';if(DESSERT_RE.test(t)&&!/\b(?:chicken|beef|pork|lamb|fish|salad|burger|sandwich|toast|savoury|cheese board)\b/i.test(t))return 'Desserts';return 'Food'}
 // "Breakfast menu", "Lunch:", "Dinner", "Kids menu", "Desserts:" -> the menu's heading, or '' if the line is a dish
 var MEAL_RE=/^(?:breakfast|brunch|lunch|dinner|supper|all[- ]day|late[- ]night)$/i;
+// headings that just repeat the section's own title ("Food & drinks:", "Dishes & drinks:", "Menu") aren't shown
+var SAME_H=/^(?:(?:our|the)\s+)?(?:food|foods|dishes|eats|menu|food menu|(?:food|dishes|eats)\s*(?:and|&|\+)\s*drinks?|drinks?\s*(?:and|&|\+)\s*(?:food|snacks))(?:\s+menu)?$/i;
 function menuHead(l){l=String(l||'').trim().replace(/^#+\s*/,'');var colon=/:$/.test(l);l=l.replace(/\s*:$/,'').trim();if(!l||l.length>30||/\d|\$/.test(l))return '';
   var m=l.match(/^(?:the\s+)?(.+?)\s+(menu|list)$/i);if(m&&m[1].split(/\s+/).length<=3)return cap1(m[1].toLowerCase()+' '+m[2].toLowerCase());
   if(MEAL_RE.test(l))return cap1(l.toLowerCase())+' menu';
@@ -3646,7 +3685,7 @@ function crossFill(key,text){
   if(!E||!/^(?:types|cuisine|vibe|features)$/.test(key))return;
   var d=E.data,n=norm(text),add={types:[],cuisine:[],vibe:[],features:[]};
   if(key!=='cuisine'&&key!=='types')VOCAB_CUISINE.forEach(function(cz){if(new RegExp('\\b'+cz.toLowerCase()+'\\b(?!\\s+(?:steam|bath|baths|sauna|massage|rugs?|spa|hammam|delight))').test(n))add.cuisine.push(cz)});
-  if(key!=='types')add.types=findTypes(n,3).filter(function(t){return !/^(?:Ceramic painting|Pottery)$/.test(t)||key==='features'});
+  if(key!=='types')add.types=findTypes(n,3).filter(function(t){return (!/^(?:Ceramic painting|Pottery)$/.test(t)||key==='features')&&!(key==='features'&&/^(?:caf[eé]|kiosk|coffee shop|snack bar)$/i.test(t))});
   if(key!=='vibe')VOCAB_VIBE.forEach(function(v){if(v[0].test(n))add.vibe.push(v[1])});
   if(key!=='features')add.features=findFeatures(n);
   var moved=[];
