@@ -286,6 +286,8 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .namesec.open .vname{display:none}
 .namesec.open .lab{display:inline}
 .sec-edit input[type=text],.sec-edit input[type=url],.sec-edit input[type=tel]{width:100%;border:1px solid transparent;border-radius:9px;background:var(--field);padding:9px 10px}
+#fDesc{display:block;width:100%;border:1px solid transparent;border-radius:9px;background:var(--field);padding:9px 10px;resize:none;overflow:hidden;line-height:1.4;min-height:0}
+#fDesc:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .sec-edit input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 #fName{font:600 17px var(--f-head)}
 .linkedit label{display:block;font-size:12px;color:var(--muted);margin:8px 0 4px}
@@ -313,6 +315,9 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .vfeat{display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;list-style:none;padding:0;margin:0;font-size:14px;line-height:1.45}
 .vfeat li{display:flex;gap:6px;align-items:flex-start}
 .vfeat .femo{flex:none;color:var(--accent);margin-top:2px;line-height:0}
+.dllist{display:flex;flex-direction:column}.dlrow{border-bottom:1px solid var(--line)}.dlhead{display:flex;align-items:center;gap:10px;width:100%;padding:9px 0;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}div.dlhead{cursor:default}.dltag{flex:none;min-width:44px;text-align:center;font-size:11px;font-weight:700;border-radius:7px;padding:3px 6px;line-height:1.25;background:var(--accent-soft);color:var(--accent);white-space:nowrap}.dltag.off{background:var(--field);color:var(--muted)}.dlname{flex:1;min-width:0;font-size:14px;font-weight:500}.dlrow.on .dlname{font-weight:600}.dlright{flex:none;font-weight:600;font-size:13.5px}.dlchev{flex:none;width:14px;color:var(--muted);display:flex}.dlbody{margin:0 0 10px 54px}.dlic{display:flex;align-items:flex-start;gap:7px;font-size:13px;margin-top:4px}.dlic:first-child{margin-top:0}.dli{color:var(--accent);display:flex;margin-top:2px}.dlplist{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:13px;margin:6px 0 2px 20px}.dlpp{text-align:right}
+.evlist{display:flex;flex-direction:column;gap:8px}.evcard{display:flex;gap:12px;border:1px solid var(--line);border-radius:12px;padding:10px}.evblk{width:52px;flex:none;align-self:flex-start;background:var(--accent-soft);color:var(--accent);border-radius:10px;text-align:center;padding:6px 0}.evt{font-size:9.5px;font-weight:700;letter-spacing:.05em}.evb{font-size:13px;font-weight:700;line-height:1.15}.evbody{flex:1;min-width:0}.evname{font-weight:600;font-size:14.5px;line-height:1.35}.evline{font-size:12.5px;color:var(--muted);margin-top:2px}.evon{display:inline-flex;align-items:center;gap:5px;color:var(--accent);font-weight:600}.evon i{width:7px;height:7px;border-radius:50%;background:var(--accent)}.evtags{display:flex;flex-wrap:wrap}.evtag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--field);font-size:12px;margin:5px 5px 0 0}.evtag svg{color:var(--muted)}.evweek{display:flex;gap:3px;margin-top:6px}.evweek span{width:17px;height:17px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;background:var(--field);color:var(--muted)}.evweek span.on{background:var(--accent);color:#fff}
+.vfeat li.cafecard{grid-column:1/-1;display:block;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:2px 0 8px}.vfeat li.cafecard.ccbare{padding-bottom:10px}.cchead{display:flex;align-items:center;gap:10px}.ccbadge{width:42px;height:42px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}.cctitle{flex:1;min-width:0}.ccname{font-weight:600;font-size:15px;color:var(--accent);line-height:1.3}.ccloc{font-size:12.5px;color:var(--muted);line-height:1.35}.ccrow{display:flex;align-items:center;gap:8px;font-size:13.5px;margin-top:6px}.ccrow:first-of-type{margin-top:8px}.ccic{color:var(--accent);display:flex;flex:none}
 .vfeat .fsub{display:block;color:var(--muted);font-size:12.5px;line-height:1.35}
 .sec-edit textarea{width:100%;border:1px solid transparent;border-radius:9px;background:var(--field);padding:9px 10px;line-height:1.45;resize:vertical;font-size:16px}
 .sec-edit textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
@@ -348,6 +353,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .pcount{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 8px}
 .pdots{display:flex;justify-content:center;gap:5px;margin-top:7px}.pdots i{width:6px;height:6px;border-radius:50%;background:var(--line)}.pdots i.on{background:var(--accent)}
 #form.editall .pwrap,#form.all-open .pwrap{display:none}
+.mfiles{display:flex;flex-direction:column;gap:6px;margin-top:8px}.mfiles:empty{display:none}.mrow{display:flex;align-items:center;gap:8px;background:var(--field);border-radius:9px;padding:4px 4px 4px 10px}.mrow svg{flex:none;color:var(--muted)}.mrow input{flex:1;min-width:0;border:0;background:none;padding:6px 0;font:inherit}.mrow input:focus{outline:none}.mrow button{flex:none;border:0;background:none;padding:6px;color:var(--muted);cursor:pointer;display:flex}.mupload{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:none;border:0;padding:4px 0;color:var(--accent);font-size:13px;font-weight:500;cursor:pointer}.vlink.mfile{display:inline-flex;align-items:center;gap:6px}.foodul.fgap{margin-top:14px}.vlevels{list-style:none;margin:6px 0 10px;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.45}.fixbtn.mpick{display:flex;align-items:center;gap:8px;text-decoration:none}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
 .pgrid .pt{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--field);border:0;padding:0;cursor:pointer}
 .pgrid .pt img{width:100%;height:100%;object-fit:cover;display:block}
@@ -370,7 +376,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .namesec.open .vname .ptime{display:none}
 .dots{display:grid;grid-template-columns:auto 1fr auto;gap:5px 6px;font-size:14px;align-items:end;margin-top:4px}
 .dots i{border-bottom:2px dotted color-mix(in srgb,var(--muted) 40%,transparent);margin-bottom:5px;min-width:12px}
-.dots .dp{white-space:nowrap;justify-self:end;text-align:right}.dotsgap{height:14px}.dots .dnote{grid-column:1/-1;font-size:13px;color:var(--muted);margin-top:-3px}.dots .dp.ask{font-style:italic;color:var(--muted)}
+.dots .dp{white-space:nowrap;justify-self:end;text-align:right}.dotsgap{height:14px}.dots .dsub{color:var(--muted);font-size:13px}.dots .dn.dsub{padding-left:12px}.dots .dnote{grid-column:1/-1;font-size:13px;color:var(--muted);margin-top:-3px}.dots .dp.ask{font-style:italic;color:var(--muted)}
 .ohead{font-size:13px;font-weight:600;color:var(--fg);margin:14px -0px 8px;padding-top:12px;border-top:1px solid var(--line)}#sec-ohours .vlab{display:none}#sec-ohours.hasv:not(.open) .vlab{display:inline}#sec-ohours.hasv:not(.open) .lab:not(.vlab){display:none}.dotsh{font-size:13px;font-weight:700;margin:12px 0 2px}.dotsh:first-child{margin-top:0}
 .pgrp{border:1px solid var(--line);border-radius:12px;margin-top:8px;overflow:hidden}
 .pghead{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;border:0;background:var(--field);color:var(--fg);padding:10px 12px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;text-align:left}
@@ -418,7 +424,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .hdaddr{display:flex;gap:5px;align-items:flex-start;font-size:13.5px;color:var(--muted,#666);margin:0;line-height:1.4}
 .hdaddr svg{flex:none;margin-top:2px}
 .hdtime{margin:2px 0 0 19px;font-size:13px;color:var(--fg);font-weight:500}
-.hbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:12px;text-align:center}
+.hbtns{display:flex;justify-content:center;gap:4px;margin-top:12px;text-align:center}.hbtns .hb{flex:0 0 25%}
 .hb{display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--fg);font-size:12px;font-weight:600}
 .hb .ci{position:relative;width:46px;height:46px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center}
 .hb.pri .ci{background:var(--accent);color:var(--accent-ink)}
@@ -622,7 +628,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
             <div class="hdr" id="vHdr"></div>
             <div class="sec-edit"><span class="tagsearch"><input id="fName" type="text" maxlength="120" placeholder="What is this place called?" autocomplete="off" aria-label="Name" role="combobox" aria-controls="nameDrop" aria-expanded="false"><ul id="nameDrop" class="tagdrop placedrop" role="listbox" hidden></ul></span>
               <div class="dupbar" id="dupBar" hidden></div>
-              <label class="desclab" for="fDesc">Description</label><input id="fDesc" type="text" maxlength="120" placeholder="One short sentence about this place" autocomplete="off">
+              <label class="desclab" for="fDesc">Description</label><textarea id="fDesc" rows="1" maxlength="240" placeholder="One short sentence about this place" autocomplete="off"></textarea>
               <div class="pgrid" id="pGrid"></div><input type="file" id="pFile" accept="image/*" multiple hidden>
               <div class="ppick" id="pricePick" role="radiogroup" aria-label="Price range"><span class="pplab">Price</span><button type="button" data-lv="1" role="radio">$</button><button type="button" data-lv="2" role="radio">$$</button><button type="button" data-lv="3" role="radio">$$$</button><button type="button" data-lv="4" role="radio">$$$$</button></div></div>
           </section>
@@ -660,7 +666,7 @@ details.days[open] summary::after{transform:rotate(90deg)}
           <section class="sec linksec" data-sec="menu" id="sec-menu">
             <div class="sec-head"><span class="lab">Menu</span><button type="button" class="editbtn" data-sec="menu">Edit</button></div>
             <div class="sec-view" id="v-menu"></div>
-            <div class="sec-edit"><input id="l-menu" type="url" inputmode="url" data-link="menu" placeholder="Paste the menu link" autocomplete="off" aria-label="Menu"></div>
+            <div class="sec-edit"><input id="l-menu" type="url" inputmode="url" data-link="menu" placeholder="Paste the menu link" autocomplete="off" aria-label="Menu"><div class="mfiles" id="mFiles"></div><button type="button" class="mupload" id="mAdd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/><path d="M7 9l5 -5l5 5"/><path d="M12 4l0 12"/></svg>Upload menu PDFs</button><input type="file" id="mFile" accept="application/pdf,.pdf" multiple hidden></div>
           </section>
           <section class="sec linksec" data-sec="url" id="sec-url">
             <div class="sec-head"><span class="lab">Website</span><button type="button" class="editbtn" data-sec="url">Edit</button></div>
@@ -689,6 +695,10 @@ details.days[open] summary::after{transform:rotate(90deg)}
           <div class="group single" id="g-deals">
             <h3 class="ghead">Deals</h3>
             <div id="slot-deals"></div>
+          </div>
+          <div class="group single" id="g-events">
+            <h3 class="ghead">Events</h3>
+            <div id="slot-events"></div>
           </div>
           <div class="group single" id="g-tips">
             <h3 class="ghead">Good to know</h3>
@@ -807,7 +817,7 @@ var TYPE_LIST=[
   ['Spa','wellness'],['Bath house','wellness'],['Sauna','wellness'],['Massage','wellness'],['Hot springs','wellness'],
   ['Park','outdoors'],['Beach','outdoors'],['Lookout','outdoors'],['Garden','outdoors'],['Hike','outdoors'],['Waterfall','outdoors'],['Campsite','outdoors'],['Swimming hole','outdoors'],
   ['Hotel','stay'],['Airbnb','stay'],['Hostel','stay'],['Resort','stay'],
-  ['Museum','see'],['Gallery','see'],['Theatre','see'],['Landmark','see'],['Zoo','see'],['Aquarium','see'],['Library','see'],
+  ['Museum','see'],['Gallery','see'],['Theatre','see'],['Landmark','see'],['Zoo','see'],['Wildlife park','see'],['Wildlife sanctuary','see'],['Aquarium','see'],['Marine park','see'],['Aviary','see'],['Reptile park','see'],['Safari park','see'],['Butterfly house','see'],['Petting zoo','see'],['Animal farm','see'],['Animal shelter','see'],['Animal rescue','see'],['Dog park','outdoors'],['Trout farm','outdoors'],['Cat cafe','cafe'],['Equestrian centre','games'],['Library','see'],
   ['Market','shop'],['Shop','shop'],['Bookshop','shop'],['Op shop','shop'],['Florist','shop']
 ,
   ['Fine dining','restaurant'],['Burger joint','restaurant'],['Buffet','restaurant'],['Yum cha','restaurant'],['Kebab shop','restaurant'],['Ramen bar','restaurant'],['Dumpling house','restaurant'],['Korean BBQ','restaurant'],['Hot pot','restaurant'],['Fish and chips','restaurant'],
@@ -846,16 +856,16 @@ var LS_KEY='place-pins:v1';
 var col=null,mode='pending',unsub=null;
 var FB={on:false,user:null,auth:null,fs:null};
 var timers=new Map(),chains=new Map();
-function cleanFood(f,max){
+function cleanFood(f,max,len){
   var out=[];max=max||20;
   if(Array.isArray(f))f.forEach(function(t){
-    t=String(t).replace(/\s+/g,' ').trim().slice(0,30);
+    t=String(t).replace(/\s+/g,' ').trim().slice(0,len||30);
     if(t&&out.length<max&&out.every(function(o){return o.toLowerCase()!==t.toLowerCase()}))out.push(t);
   });
   return out;
 }
 var DAY_KEYS=['mon','tue','wed','thu','fri','sat','sun'];
-function cleanTips(t){var out=[];if(Array.isArray(t))t.forEach(function(x){x=String(x).replace(/\s+/g,' ').trim().slice(0,80);if(x&&out.length<15&&out.every(function(o){return o.toLowerCase()!==x.toLowerCase()}))out.push(x)});return out}
+function cleanTips(t){var out=[];if(Array.isArray(t))t.forEach(function(x){x=String(x).replace(/\s+/g,' ').trim().slice(0,200);if(x&&out.length<40&&out.every(function(o){return o.toLowerCase()!==x.toLowerCase()}))out.push(x)});return out}
 function cleanDays(o){var r={};DAY_KEYS.forEach(function(d){r[d]=o&&o[d]?String(o[d]).slice(0,300):''});return r}
 function typesFromOld(x){
   var n=String(x.name||'').toLowerCase(),f=(Array.isArray(x.food)?x.food:[]).join(' ').toLowerCase(),c=x.cat;
@@ -901,7 +911,7 @@ function isWalkWelcome(t){return /walk[- ]?ins?\s+(?:welcome|available|accepted|
 function bookTag(d){
   var n=bookNotes(d).filter(function(t){return !isWalkWelcome(t)&&!/^[^:]{2,30}:\s*walk[- ]?ins?\s+only/i.test(t)});if(!n.length)return '';var t=n.join(' ');
   if(/walk[- ]?ins?\s+only|no\s+book|not\s+tak\w*\s+book|no\s+reserv/i.test(t))return /walk/i.test(t)?'Walk-ins only':'No bookings';
-  var bd=dayLead(t+' x');bd=bd!==t+' x'?bd.split(':')[0]:'';if(bd&&/essential|required|must|mandatory|need|recommend|advised|ahead|in advance|encouraged|best to book/i.test(t))return 'Book '+(/^Week/.test(bd)?'on '+bd.toLowerCase():bd);
+  var bd=dayLead(t+' x');bd=bd!==t+' x'?bd.split(':')[0]:'';if(bd&&/essential|required|must|mandatory|need|recommend|advised|ahead|in advance|encouraged|best to book/i.test(t)){var bh=t.match(/\b(public|school)\s+holidays?\b/i);return 'Book '+(/^Week/.test(bd)?'on '+bd.toLowerCase():bd)+(bh?' and '+bh[1].toLowerCase()+' holidays':'')}
   if(/essential|required|must|mandatory|only\s+by\s+book|book(?:ing|ings)?\s+only|need/i.test(t))return 'Booking required';
   if(/recommend|advised|suggest|book ahead|in advance|popular|fill|encouraged|best to book/i.test(t))return 'Booking recommended';
   return /walk/i.test(n[0])?'':n[0];
@@ -929,23 +939,30 @@ function splitHours(text){
   var o={open:[],kitchen:[],other:[]};
   String(text||'').replace(/(\d{1,2})(?::(\d\d))?\s+in the morning/gi,function(_,h,m){return h+(m?':'+m:'')+'am'}).replace(/(\d{1,2})(?::(\d\d))?\s+(?:in the (?:afternoon|evening)|at night)/gi,function(_,h,m){return h+(m?':'+m:'')+'pm'}).split(/\n+|(?<=[.!])\s+(?=[A-Z])/).forEach(function(l){
     l=l.replace(/^\s*[-*•]\s*/,'').replace(/[.!]+$/,'').trim();if(!l)return;
+    // "(Closed Christmas Day)" on its own line or after the hours is a closure note, shown under the hours
+    var HOL=/\b(?:public holidays?|school holidays|christmas|easter|anzac|good friday|boxing day|new year'?s?)\b/i;
+    l=l.replace(/\s*\(([^()]*)\)/g,function(m,inner){if(HOL.test(inner)&&!/\d\s*(?:am|pm)/i.test(inner)){(o.notes=o.notes||[]).push(cap1(inner.trim()));return ''}return m}).trim();if(!l)return;
     if(/\bkitchen\b/i.test(l)){
       l.split(/\s*[,;(]\s*(?=(?:the\s+)?kitchen)|\s+(?:but|and|with|&)\s+(?=(?:the\s+)?kitchen)/i).forEach(function(x){x=x.replace(/[)]\s*$/,'').trim();if(!x)return;
         if(/\bkitchen\b/i.test(x))o.kitchen.push(x.replace(/^(?:the\s+)?kitchen\s*(?:hours|is open|open|opens|closes|closing)?\s*[:\-]?\s*/i,function(m){return /clos/i.test(m)?'until ':''}).replace(/^until\s+at\s+/i,'until '));else o.open.push(x)});
       return;
     }
+    if(!/\d/.test(l)&&/\b(?:public holidays?|school holidays|christmas|easter|anzac|good friday|boxing day|new year)\b/i.test(l)){(o.notes=o.notes||[]).push(cap1(l));return}
+    // "Breakfast 7-10:30am weekdays" (no colon) is its own kind of hours too
+    var km=l.match(/^((?:breakfast|brunch|lunch|dinner|bar|pool|spa|gym|sauna|cafe|café|restaurant|happy hour|reception|bottle shop|kids'? club|playground|museum|gallery|shop|store|bakery|deli)(?:\s+hours)?)\s+(?=\d|(?:mon|tue|wed|thu|fri|sat|sun|daily|every|weekdays?|weekends?|open|from)\b)(.+)$/i);
+    if(km){o.other.push(cap1(km[1].replace(/\s+hours$/i,''))+': '+km[2]);return}
     var m=l.match(/^([^:\d]{2,40}?)(?:\s+hours)?\s*:\s*(.+)$/i);
     if(m&&!/^(?:open(?:ing)?|hours|trading|mon|tue|wed|thu|fri|sat|sun|daily|every|weekdays?|weekends?|public holidays?)\b/i.test(m[1].trim())){o.other.push(m[1].trim()+': '+m[2]);return}
     o.open.push(l);
   });
   return o;
 }
-function applyAllHours(d,text){var o=splitHours(text);d.hours=parseDaysText(o.open.join('\n'),true);d.kitchen=parseDaysText(o.kitchen.join('\n'),true);fixKitchen(d);d.ohours=parseOHours(o.other.join('\n'))}
+function applyAllHours(d,text){var o=splitHours(text);(o.notes||[]).forEach(function(n){addTo(d,'tips',n);if(E&&E.data===d){var rt=rawOf('tips')||'';if(norm(rt).indexOf(norm(n))<0){setRaw('tips',(rt.trim()?rt.replace(/\s+$/,'')+'\n':'')+n);var tb=$('t-tips');if(tb&&document.activeElement!==tb)tb.value=rawOf('tips')}}});d.hours=parseDaysText(o.open.join('\n'),true);d.kitchen=parseDaysText(o.kitchen.join('\n'),true);fixKitchen(d);d.ohours=parseOHours(o.other.join('\n'))}
 function fmtAllHours(d){var out=[];if(DAYS.some(function(x){return (d.hours[x]||'').trim()}))out.push(fmtDays(d.hours));if(DAYS.some(function(x){return ((d.kitchen||{})[x]||'').trim()}))out.push(fmtDays(d.kitchen).split('\n').map(function(l){return 'Kitchen: '+l}).join('\n'));if((d.ohours||[]).length)out.push(fmtOHours(d.ohours));return out.join('\n')}
 function fmtOHours(a){return (a||[]).map(function(g){return g.n+': '+fmtDays(g.h).split('\n').filter(Boolean).join(', ')}).join('\n')}
 // Photos: the place keeps a small thumbnail per photo; full photos are stored on their own
 // Description: one short sentence, capital at the start, full stop at the end
-function tidyDesc(t){t=unchat(String(t||'').replace(/\s+/g,' ').trim()).replace(/\s+([,.!?])/g,'$1');if(!t)return '';t=t.charAt(0).toUpperCase()+t.slice(1);if(!/[.!?]$/.test(t))t+='.';return t.slice(0,140)}
+function tidyDesc(t){t=fixTypos(String(t||'').replace(/\s+/g,' ').trim()).replace(/\s+([,.!?])/g,'$1');if(!t)return '';t=t.charAt(0).toUpperCase()+t.slice(1);if(!/[.!?]$/.test(t))t+='.';return t.slice(0,240)}
 // Auto description when none is typed: "Cosy Korean bakery known for mochi and rice cakes."
 function autoDesc(d){
   var ty=typeLabel((d.types||[])[0]||'').replace(/^DIY · /,'').replace(/^Dessert$/i,'Dessert shop'),cz=(d.cuisine||[]).filter(function(c){return !/fusion/i.test(c)})[0]||'';
@@ -1047,7 +1064,7 @@ function cleanPrices(a){
   if(!Array.isArray(a))return [];
   return a.slice(0,20).map(function(g){
     if(!g||typeof g!=='object')return null;
-    var it=(Array.isArray(g.it)?g.it:[]).slice(0,40).map(function(r){if(r&&!Array.isArray(r)&&typeof r==='object')r=[r.a,r.b,r.c];return Array.isArray(r)?[String(r[0]||'').slice(0,80),String(r[1]||'').slice(0,60),String(r[2]||'').slice(0,40)]:null}).filter(function(r){return r&&(r[0]||r[1])});
+    var it=(Array.isArray(g.it)?g.it:[]).slice(0,40).map(function(r){if(r&&!Array.isArray(r)&&typeof r==='object')r=[r.a,r.b,r.c];return Array.isArray(r)?[String(r[0]||'').slice(0,80),String(r[1]||'').slice(0,60),String(r[2]||'').slice(0,100)]:null}).filter(function(r){return r&&(r[0]||r[1])});
     return it.length?{n:String(g.n||'').slice(0,60),w:String(g.w||'').slice(0,80),it:it}:null;
   }).filter(Boolean);
 }
@@ -1057,11 +1074,11 @@ function clean(id,x){
   var r=Math.round(Number(x.rating)||0);
   var types=Array.isArray(x.types)?cleanFood(x.types,6):typesFromOld(x);
   return {id:id,name:String(x.name||''),types:types,cat:types.length?typeColor(types[0]):'other',status:x.status==='been'?'been':'want',
-    rating:Math.max(0,Math.min(5,r)),price:Math.max(0,Math.min(4,Math.round(Number(x.price)||0))),photos:cleanPhotos(x.photos),fix:cleanFix(x.fix),desc:typeof x.desc==='string'?x.desc.slice(0,160):'',prices:cleanPrices(x.prices),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),features:cleanFood(x.features,20),time:String(x.time||'').slice(0,40),tips:cleanTips(x.tips),
+    rating:Math.max(0,Math.min(5,r)),price:Math.max(0,Math.min(4,Math.round(Number(x.price)||0))),photos:cleanPhotos(x.photos),menus:cleanMenus(x.menus),events:cleanEvents(x.events),fix:cleanFix(x.fix),desc:typeof x.desc==='string'?x.desc.slice(0,240):'',prices:cleanPrices(x.prices),food:cleanFood(x.food,20),cuisine:cleanFood(x.cuisine,12),vibe:cleanFood(x.vibe,12),features:cleanFood(x.features,20,140),time:String(x.time||'').slice(0,40),tips:cleanTips(x.tips),
     notes:String(x.notes||''),url:String(x.url||''),book:String(x.book||''),menu:String(x.menu||''),menuAt:Number(x.menuAt)||0,foodAt:Number(x.foodAt)||0,editedAt:Number(x.editedAt)||0,phone:String(x.phone||''),raw:cleanRaw(x.raw),hours:cleanDays(x.hours),kitchen:cleanDays(x.kitchen),ohours:cleanOHours(x.ohours),deals:cleanDays(x.deals),
     lat:lat,lng:wrapLng(lng),loc:String(x.loc||''),ts:Number(x.ts)||0};
 }
-function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,price:p.price||0,photos:cleanPhotos(p.photos),desc:tidyDesc(p.desc),fix:cleanFix(p.fix),prices:cleanPrices(p.prices).map(function(g){return {n:g.n,w:g.w,it:g.it.map(function(r){return {a:r[0],b:r[1],c:r[2]}})}}),food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],features:p.features||[],time:p.time||'',tips:p.tips||[],notes:p.notes||'',url:p.url||'',
+function payload(p){return JSON.parse(JSON.stringify({name:p.name||'',types:p.types||[],cat:placeColor(p),status:p.status||'want',rating:p.rating||0,price:p.price||0,photos:cleanPhotos(p.photos),menus:cleanMenus(p.menus),events:cleanEvents(p.events),desc:tidyDesc(p.desc),fix:cleanFix(p.fix),prices:cleanPrices(p.prices).map(function(g){return {n:g.n,w:g.w,it:g.it.map(function(r){return {a:r[0],b:r[1],c:r[2]}})}}),food:p.food||[],cuisine:p.cuisine||[],vibe:p.vibe||[],features:p.features||[],time:p.time||'',tips:p.tips||[],notes:p.notes||'',url:p.url||'',
   book:p.book||'',menu:p.menu||'',menuAt:p.menuAt||0,foodAt:p.foodAt||0,editedAt:p.editedAt||0,phone:p.phone||'',raw:cleanRaw(p.raw),hours:cleanDays(p.hours),kitchen:cleanDays(p.kitchen),ohours:cleanOHours(p.ohours),deals:cleanDays(p.deals),lat:p.lat,lng:p.lng,loc:p.loc||'',ts:p.ts||Date.now()}))}
 function loadLocal(){
   var m=new Map();
@@ -1652,8 +1669,8 @@ var TAGS={
     sug:['Cocktails','Wine','Beer','Coffee','Dumplings','Burgers','Pizza','Pasta','Seafood','Oysters','Sushi','Ramen','Tacos','Steak','Dessert','Crepes','Brunch','Gelato']},
   vibe:{label:'Vibe',max:12,eatOnly:false,sugN:14,ph:'What\u2019s it like?',
     sug:['Date night','Casual','Lively','Cosy','Fancy','Late night','Rooftop','Outdoor seating','Great views','Good for groups','Live music','Hidden gem','Cheap eats','Quick bite']},
-  features:{label:'Features',max:20,eatOnly:false,sugN:12,ph:'What do they have?',sug:['Pool','Hot mineral pools','Cold plunges','Saunas','Steam rooms','Spa treatments','Massages','Private bathing','Yoga','Pool tables','Arcade games','Dance floor','Beer garden','Private rooms','Playground']},
-  tips:{label:'Good to know',max:20,eatOnly:false,sugN:8,ph:'Write anything useful',len:200,
+  features:{label:'Features',max:20,len:120,eatOnly:false,sugN:12,ph:'What do they have?',sug:['Pool','Hot mineral pools','Cold plunges','Saunas','Steam rooms','Spa treatments','Massages','Private bathing','Yoga','Pool tables','Arcade games','Dance floor','Beer garden','Private rooms','Playground']},
+  tips:{label:'Good to know',max:40,eatOnly:false,sugN:8,ph:'Write anything useful',len:200,
     sug:['BYO','Cash only','Card only','Bookings recommended','Walk-ins only','Queue early','Kid friendly','Dog friendly','Wheelchair accessible','Vegan options','Gluten free options','Vegetarian options','Free wifi','Free parking','Kitchen closes early','Open late','Happy hour','Minimum spend','Set menu only','Cakeage fee']}
 };
 var TAG_KEYS=['types','cuisine','food','vibe','features','tips'];
@@ -1912,9 +1929,16 @@ function normHours(v){
   if(/^closed$/i.test(v))return 'Closed';
   v=v.replace(/\bnoon\b|\bmidday\b/ig,'12pm').replace(/\bmidnight\b/ig,'12am');
   v=v.replace(/(\d{1,2})(?:[:.](\d\d))?\s*([ap])\.?\s*m\.?(?![a-z])/ig,function(_,h,mm,ap){return h+(mm&&mm!=='00'?':'+mm:'')+ap.toLowerCase()+'m'});
-  if(!/[ap]m\b/i.test(v))v=v.replace(/\b([01]?\d|2[0-3])[:.]([0-5]\d)\b/g,function(_,h,mm){h=+h;return (h%12||12)+(mm!=='00'?':'+mm:'')+(h<12?'am':'pm')});
+  // 24-hour times ("0900-1700", "17:30") -> 9am, 5:30pm; plain "5:30" stays for the guess below
+  var is24=!/[ap]m\b/i.test(v)&&(/\b(?:[01]\d|2[0-3])[0-5]\d\b/.test(v)||/\b(?:0\d|1[3-9]|2[0-3])[:.][0-5]\d\b/.test(v));
+  if(is24){v=v.replace(/\b([01]\d|2[0-3])([0-5]\d)\b/g,'$1:$2');v=v.replace(/\b([01]?\d|2[0-3])[:.]([0-5]\d)\b/g,function(_,h,mm){h=+h;return (h%12||12)+(mm!=='00'?':'+mm:'')+(h<12?'am':'pm')})}
   v=v.replace(/\s*(?:-|–|—|\bto\b|\btill\b|\buntil\b|\btil\b)\s*(?=\d|late|close)/ig,'–');
   v=v.replace(/\b(late|close)\b/ig,function(w){return w.toLowerCase()});
+  // "9–5" -> 9am–5pm, "12–3" -> 12pm–3pm, "5:30–10" -> 5:30pm–10pm, "7–11" -> 7am–11am
+  v=v.replace(/(^|[^\d:])(\d{1,2})(?:[:.](\d\d))?–(\d{1,2})(?:[:.](\d\d))?(?![\d:]|\s*[ap]m)/g,function(x,pre,h1,m1,h2,m2){var a=+h1,b=+h2;if(a>12||b>12)return x;var p1,p2;
+    if(a===12){p1='pm';p2=b===12?'am':'pm'}else if(a<=4){p1='pm';p2='pm'}else if(a<=6){p1=(b>a&&b<=11)||b===12?'pm':'am';p2=b===12?'am':'pm';if(p1==='am'&&b>a)p2='am'}else{p1='am';p2=(b>a&&b<12)?'am':'pm'}
+    var t1=h1+(m1&&m1!=='00'?':'+m1:'')+p1,t2=h2+(m2&&m2!=='00'?':'+m2:'')+p2;return pre+t1+'–'+t2});
+  v=v.replace(/(^|[^\d:])(\d{1,2})(?:[:.](\d\d))?–(late|close)\b/g,function(x,pre,h,m,w){var a=+h;if(a>12)return x;return pre+h+(m&&m!=='00'?':'+m:'')+(a===10||a===11?'am':'pm')+'–'+w});
   // "5–11pm" -> "5pm–11pm", "11–3pm" -> "11am–3pm"
   v=v.replace(/(^|[^\d:])(\d{1,2})(:\d\d)?–(\d{1,2})(:\d\d)?([ap]m)/g,function(_,pre,h1,m1,h2,m2,ap){
     var a=+h1%12,b=+h2%12,same=a<b||(a===b&&(m1||'')<=(m2||''));
@@ -2032,7 +2056,7 @@ function labelNow(p){p=String(p).replace(/:$/,'');var tm=p.match(/^(After|Before
   if(/^School holidays$/.test(p)){var d0=new Date(),t=d0.getFullYear()+'-'+String(d0.getMonth()+1).padStart(2,'0')+'-'+String(d0.getDate()).padStart(2,'0');return (SCHOOL_HOLS[CUR_STATE]||[]).some(function(r){return t>=r[0]&&t<=r[1]})}if(/holidays$/i.test(p))return false;
   var dp=p.replace(/\s+(?:nights?|lunch|dinner|evenings?|brunch|breakfast|mornings?|afternoons?)$/,'');return dayIsToday(dp)}
 function textNow(t){var m=String(t).match(DAYPFX);return !!(m&&labelNow(m[1]))}
-function dayText(t){var f=document.createDocumentFragment(),m=String(t).match(DAYPFX);if(!m){f.appendChild(document.createTextNode(t));return f}var now=labelNow(m[1]);var db=el('strong','dayb'+(now?' istoday':''),dayFull(m[1]));if(now)db.title='Now';f.appendChild(db);var r2=/^[A-Z]{2}/.test(m[2])?m[2]:m[2].charAt(0).toLowerCase()+m[2].slice(1);f.appendChild(document.createTextNode(' '+r2));return f}
+function dayText(t,area){var f=document.createDocumentFragment(),m=String(t).match(DAYPFX);if(!m&&area){var am=String(t).match(/^([A-Z][^:]{1,30}:)\s+(.+)$/);if(am){f.appendChild(el('strong','dayb',am[1]));f.appendChild(document.createTextNode(' '+am[2]));return f}}if(!m){f.appendChild(document.createTextNode(t));return f}var now=labelNow(m[1]);var db=el('strong','dayb'+(now?' istoday':''),dayFull(m[1]));if(now)db.title='Now';f.appendChild(db);var r2=/^[A-Z]{2}/.test(m[2])?m[2]:m[2].charAt(0).toLowerCase()+m[2].slice(1);f.appendChild(document.createTextNode(' '+r2));return f}
 // Hours list: same every day -> one "Every day" row; otherwise today's hours with a chevron, tap to see the week
 var HOURS_OPEN={};
 var OH_NEED=/^(?:last (?:entry|admission|seating|sitting)|check[- ]?(?:in|out))\b/i;
@@ -2113,6 +2137,8 @@ function makePicker(ed,inp,kind){
     if(key==='types'){wrap.hidden=true;buildTypePicker(ed,inp)}
     $({types:'slot-types',cuisine:'slot-cuisine',food:'slot-food',vibe:'slot-vibe',features:'slot-features',tips:'slot-tips'}[key]).appendChild(sec);
   });
+  // events: one per line
+  (function(){var sec=secEl('events','Events'),ed=sec.querySelector('.sec-edit'),ta=el('textarea');ta.id='eventsTxt';ta.rows=3;ta.placeholder='Add events, one per line: "Zoo Lights 20 Nov – 5 Jan, Thu–Sun, 6pm–10pm, $25pp"';ta.setAttribute('aria-label','Events');ed.appendChild(ta);$('slot-events').appendChild(sec)})();
   // hours + deals: one free text box each
   [['hours','Opening hours','When is it open? Add lines like "Kitchen 12pm–9pm" or "Spa: 8am–11pm" for other hours'],['kitchen','Kitchen hours','When is the kitchen open?'],['deals','Deals','Any deals on certain days?']].forEach(function(g){
     if(g[0]==='deals'){var os=secEl('ohours','Other hours'),oe=os.querySelector('.sec-edit'),ot=el('textarea');ot.id='ohoursTxt';ot.rows=3;ot.placeholder='Other hours, one per line: Spa: Mon–Fri 8am–11pm';ot.setAttribute('aria-label','Other hours');oe.appendChild(ot);$('slot-hours').appendChild(os)}
@@ -2285,6 +2311,183 @@ function loadPhotoData(id){
   return Promise.resolve(null);
 }
 function deletePhotoData(id){delete photoCache[id];try{localStorage.removeItem(PHOTO_LS+id)}catch(e){}if(mode==='db'&&photoCol())photoCol().doc(id).delete().catch(function(){})}
+// ---- uploaded menus (photos or PDFs): stored in pieces so a big PDF fits ----
+var MENU_CHUNK=700000,MENU_IC={pdf:'<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/><path d="M9 9l1 0"/><path d="M9 13l6 0"/><path d="M9 17l6 0"/>',img:'<path d="M15 8h.01"/><path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z"/><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5"/><path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3"/>'};
+function cleanMenus(a){if(!Array.isArray(a))return [];return a.slice(0,8).filter(function(m){return m&&typeof m.i==='string'&&/^mn_[a-z0-9]+$/.test(m.i)}).map(function(m){return {i:m.i,n:String(m.n||'Menu').replace(/\s+/g,' ').trim().slice(0,40)||'Menu',k:m.k==='pdf'?'pdf':'img',c:Math.max(1,Math.min(20,Math.round(+m.c||1)))}})}
+function fileKeys(id,n){var k=[];for(var i=0;i<(n||1);i++)k.push(i?id+'_'+i:id);return k}
+function saveFileData(pid,id,data){photoCache[id]=data;var n=Math.max(1,Math.ceil(data.length/MENU_CHUNK)),ps=[];
+  fileKeys(id,n).forEach(function(k,i){var part=data.slice(i*MENU_CHUNK,(i+1)*MENU_CHUNK);try{localStorage.setItem(PHOTO_LS+k,part)}catch(e){if(!i)toast('Phone storage is full, menu kept until you close the app')}
+    if(mode==='db'&&photoCol())ps.push(photoCol().doc(k).set({place:pid,d:part,ts:Date.now()}))});
+  return Promise.all(ps).catch(function(err){toast(/permission/i.test(String(err&&err.code||err))?'Menu not synced: update the Firebase rules':"Couldn't save menu ("+String(err&&err.message||err).slice(0,60)+')')})}
+function loadFileData(id,n){if(photoCache[id])return Promise.resolve(photoCache[id]);var ks=fileKeys(id,n);
+  var ls=ks.map(function(k){try{return localStorage.getItem(PHOTO_LS+k)}catch(e){return null}});
+  if(ls.every(Boolean)){photoCache[id]=ls.join('');return Promise.resolve(photoCache[id])}
+  if(mode==='db'&&photoCol())return Promise.all(ks.map(function(k){return photoCol().doc(k).get()})).then(function(ds){var parts=ds.map(function(x){return x.exists&&x.data().d});if(!parts.every(Boolean))return null;photoCache[id]=parts.join('');return photoCache[id]}).catch(function(){return null});
+  return Promise.resolve(null)}
+function deleteFileData(id,n){delete photoCache[id];fileKeys(id,n).forEach(function(k){try{localStorage.removeItem(PHOTO_LS+k)}catch(e){}if(mode==='db'&&photoCol())photoCol().doc(k).delete().catch(function(){})})}
+// menu photos stay sharp enough to read: max 2000px
+function shrinkMenuImage(file){return new Promise(function(res,rej){var url=URL.createObjectURL(file),img=new Image();img.onload=function(){var w=img.naturalWidth,h=img.naturalHeight,k=Math.min(1,2000/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);var out=c.toDataURL('image/jpeg',0.82);if(out.length>2500000)out=c.toDataURL('image/jpeg',0.6);res(out)};img.onerror=function(){URL.revokeObjectURL(url);rej(new Error('not an image'))};img.src=url})}
+// "Breakfast-menu_2026.pdf" -> "Breakfast menu"; "IMG_1234.jpg" -> "Menu 2"
+function menuName(fn,have){var b=String(fn||'').replace(/\.[a-z0-9]{2,5}$/i,'').replace(/[_-]+/g,' ').replace(/\b(?:19|20)\d\d\b/g,'').replace(/\s+/g,' ').trim(),n=(have||[]).length;
+  if(!b||/^(?:img|image|scan|photo|dsc|pxl|screenshot|screen shot|document|file|untitled|download)\b/i.test(b)||!/[a-z]{3}/i.test(b))return n?'Menu '+(n+1):'Menu';
+  var h=menuHead(b);return (h||cap1(b.toLowerCase())).slice(0,40)}
+function openMenuFile(m){var w=m.k==='pdf'?window.open('','_blank'):null;
+  loadFileData(m.i,m.c).then(function(data){if(!data){if(w)w.close();toast("Couldn't load this menu");return}
+    if(m.k==='pdf'){var bin=atob(data.split(',')[1]||''),arr=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);var url=URL.createObjectURL(new Blob([arr],{type:'application/pdf'}));if(w)w.location.href=url;else{var a=document.createElement('a');a.href=url;a.download=(m.n||'Menu')+'.pdf';document.body.appendChild(a);a.click();a.remove()}return}
+    var ov=el('div','pview'),big=document.createElement('img'),cl=el('button',null,'×');big.src=data;big.alt=m.n;cl.type='button';cl.setAttribute('aria-label','Close');ov.appendChild(big);ov.appendChild(cl);document.body.appendChild(ov);
+    function close(){ov.remove();document.removeEventListener('keydown',kd,true)}function kd(ev){if(ev.key==='Escape'){ev.stopImmediatePropagation();ev.preventDefault();close()}}ov.addEventListener('click',close);document.addEventListener('keydown',kd,true)})}
+// header Menu button: one menu opens straight away; several show a list to pick from
+function pickMenu(d,link){var ms=d.menus||[];if(ms.length===1&&!link){openMenuFile(ms[0]);return}
+  var ov=el('div','fixwrap'),sh=el('div','fixsheet');sh.setAttribute('role','dialog');sh.setAttribute('aria-label','Menus');sh.appendChild(el('p','fixq','Menus'));
+  function close(){ov.remove()}
+  ms.forEach(function(m){var b=el('button','fixbtn mpick');b.type='button';b.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MENU_IC[m.k]+'</svg>';b.appendChild(document.createTextNode(m.n));b.addEventListener('click',function(){close();openMenuFile(m)});sh.appendChild(b)});
+  if(link){var a=el('a','fixbtn mpick','Menu link ↗');a.href=link;a.target='_blank';a.rel='noopener noreferrer';a.addEventListener('click',close);sh.appendChild(a)}
+  var cl=el('button','fixclose','Close');cl.type='button';cl.addEventListener('click',close);sh.appendChild(cl);ov.appendChild(sh);ov.addEventListener('click',function(ev){if(ev.target===ov)close()});document.body.appendChild(ov)}
+// Features: a cafe on site shows as a card — coffee cup badge, where it is, then food and seating rows
+var CF_IC={cup:'<path d="M3 14c.83 .642 2.077 1.017 3.5 1c1.423 .017 2.67 -.358 3.5 -1c.83 -.642 2.077 -1.017 3.5 -1c1.423 -.017 2.67 .358 3.5 1"/><path d="M8 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"/><path d="M12 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"/><path d="M3 10h14v5a6 6 0 0 1 -6 6h-2a6 6 0 0 1 -6 -6v-5z"/><path d="M16.746 16.726a3 3 0 1 0 .252 -5.555"/>',fork:'<path d="M19 3v12h-5c-.023 -3.681 .184 -7.406 5 -12zm0 12v6h-1v-3m-10 -14v17m-3 -17v3a3 3 0 1 0 6 0v-3"/>',sun:'<path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>',chair:'<path d="M5 11a2 2 0 0 1 2 2v2h10v-2a2 2 0 1 1 4 0v4a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-4a2 2 0 0 1 2 -2z"/><path d="M5 11v-5a3 3 0 0 1 3 -3h8a3 3 0 0 1 3 3v5"/><path d="M6 19v2"/><path d="M18 19v2"/>',dot:'<path d="M5 12l5 5l10 -10"/>'};
+function cfSvg(k,sz){return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+CF_IC[k]+'</svg>'}
+function cafeCard(t){var m=String(t).match(/^(cafe|kiosk)(?:\s*\((.*)\))?$/i),name=cap1(m[1].toLowerCase()),dets=(m[2]||'').split(/\s*,\s*/).filter(Boolean),loc=[],food=[],seat=[],other=[];
+  dets.forEach(function(x){if(/^(?:near|by|at|next to|on|opposite|inside|in|upstairs|downstairs|beside|behind|outside|level|ground floor|top floor)\b/i.test(x))loc.push(x);else if(/\b(?:seating|seats|tables|terrace|deck|courtyard|patio|indoor|outdoor|alfresco|undercover|shade|views?)\b/i.test(x))seat.push(x);else if(/\b(?:open|closes|wifi|toilets?|card|cash)\b/i.test(x))other.push(x);else food.push(x)});
+  var li=el('li','fixable cafecard');li.dataset.fixk='features';li.dataset.fixt=t;
+  var hd=el('div','cchead'),bd=el('span','ccbadge');bd.innerHTML=cfSvg('cup',22);hd.appendChild(bd);var tt=el('div','cctitle');tt.appendChild(el('div','ccname',name));if(loc.length)tt.appendChild(el('div','ccloc',cap1(loc.join(', '))));hd.appendChild(tt);li.appendChild(hd);
+  function row(ic,txt){var r=el('div','ccrow'),i=el('span','ccic');i.innerHTML=cfSvg(ic,15);r.appendChild(i);r.appendChild(el('span',null,cap1(txt)));li.appendChild(r)}
+  if(food.length)row('fork',food.join(', '));seat.forEach(function(x){row(/\b(?:outdoor|terrace|deck|courtyard|patio|alfresco|garden)\b/i.test(x)?'sun':'chair',x)});other.forEach(function(x){row('dot',x)});
+  if(!food.length&&!seat.length&&!other.length)li.classList.add('ccbare');return li}
+// ---- Events: one per line, e.g. "Zoo Lights 20 Nov – 5 Jan, Thu–Sun, 6pm–10pm, $25pp" ----
+var EV_MON=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+var EV_MONRE='(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)';
+var EV_DAYRE='(?:mon(?:day)?|tue(?:s(?:day)?)?|wed(?:nesday)?|thu(?:r(?:s(?:day)?)?)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)';
+function evIso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function evDate(iso){var p=String(iso||'').split('-');return p.length===3?new Date(+p[0],+p[1]-1,+p[2]):null}
+function evMon(s){return EV_MON.indexOf(String(s).slice(0,3).toLowerCase())}
+function evDayIdx(s){return ['mon','tue','wed','thu','fri','sat','sun'].indexOf(String(s).slice(0,3).toLowerCase())}
+function evToday(){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate())}
+function cleanEvents(a){if(!Array.isArray(a))return [];return a.slice(0,20).filter(function(e){return e&&typeof e.n==='string'&&e.n.trim()}).map(function(e){return {n:String(e.n).slice(0,60),s:/^\d{4}-\d\d-\d\d$/.test(e.s)?e.s:'',e:/^\d{4}-\d\d-\d\d$/.test(e.e)?e.e:'',days:Array.isArray(e.days)?e.days.filter(function(x){return x>=0&&x<=6}).slice(0,7):[],t:String(e.t||'').slice(0,40),p:String(e.p||'').slice(0,40)}})}
+function parseEvents(text,now){now=now||evToday();var out=[];
+  String(text||'').split(/\n+/).forEach(function(line){var l=line.replace(/^\s*[-*•]\s*/,'').trim();if(!l)return;var rest=' '+l+' ',ev={n:'',s:'',e:'',days:[],t:'',p:''};
+    function take(re,fn){var m=rest.match(re);if(m){fn(m);rest=rest.replace(m[0],' ')}return m}
+    // price
+    take(/\$\s?\d[\d,]*(?:\.\d\d)?(?:\s*(?:pp|p\.p\.?|per (?:person|head|child|kid|adult)|each|a head))?/i,function(m){var a=m[0].match(/\$\s?(\d[\d,]*(?:\.\d\d)?)/)[1].replace(/,/g,''),w=m[0].match(/per (child|kid|adult)/i);ev.p=centsPr('$'+a)+(w?' per '+w[1].toLowerCase().replace('kid','child'):/pp|per|each|head/i.test(m[0])?' per person':'')})||
+    take(/\bfree\s+(?:entry|admission)\b/i,function(m){ev.p='Free entry'})||take(/\bfree(?:\s+(?:with|for)\s+(?:entry|admission|members|a ticket))?\b|\bincluded with entry\b/i,function(m){ev.p=cap1(m[0].toLowerCase().replace('included with entry','free with entry'))});
+    // time
+    take(/\b\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)?\s*(?:-|–|—|to|till|til|until)\s*(?:\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)|late|close|midnight)\b/i,function(m){ev.t=normHours(m[0])})||
+    take(/\b(?:at\s+|from\s+)?\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)\b/i,function(m){ev.t=normHours(m[0].replace(/^(?:at|from)\s+/i,''))});
+    // dates
+    var MR=EV_MONRE,D1='(\\d{1,2})(?:st|nd|rd|th)?\\s+('+MR+')',D1b='('+MR+')\\s+(\\d{1,2})(?:st|nd|rd|th)?';
+    function mk(day,mon,ref){var y=now.getFullYear(),dt=new Date(y,mon,day);if(ref){if(dt<ref)dt=new Date(y+1,mon,day)}else if(dt<new Date(now.getFullYear(),now.getMonth()-2,now.getDate()))dt=new Date(y+1,mon,day);return dt}
+    var s=null,e=null;
+    take(new RegExp('\\b(?:from\\s+)?'+D1+'\\s*(?:-|–|—|to|until|till)\\s*'+D1+'\\b','i'),function(m){s=mk(+m[1],evMon(m[2]));e=mk(+m[3],evMon(m[4]),s)})||
+    take(new RegExp('\\b(?:from\\s+)?(\\d{1,2})\\s*(?:-|–|—|to)\\s*'+D1+'\\b','i'),function(m){var mo=evMon(m[3]);s=mk(+m[1],mo);e=mk(+m[2],mo,s)})||
+    take(new RegExp('\\b(?:from\\s+)?'+D1b+'\\s*(?:-|–|—|to|until|till)\\s*'+D1b+'\\b','i'),function(m){s=mk(+m[2],evMon(m[1]));e=mk(+m[4],evMon(m[3]),s)})||
+    take(new RegExp('\\b(?:until|till|til|to|ends?)\\s+'+D1+'\\b','i'),function(m){e=mk(+m[1],evMon(m[2]),now)})||
+    take(new RegExp('\\b(?:from|starts?|starting)\\s+'+D1+'\\b','i'),function(m){s=mk(+m[1],evMon(m[2]))})||
+    take(new RegExp('\\b(?:'+EV_DAYRE+'\\s+)?'+D1+'\\b','i'),function(m){s=e=mk(+m[1],evMon(m[2]))})||
+    take(new RegExp('\\b(?:'+EV_DAYRE+'\\s+)?'+D1b+'\\b','i'),function(m){s=e=mk(+m[2],evMon(m[1]))})||
+    take(new RegExp('\\b(?:in|during|throughout|all of|for)?\\s*('+MR+')\\b','i'),function(m){var mo=evMon(m[1]);s=mk(1,mo);if(s.getMonth()!==mo)s=new Date(s.getFullYear(),mo,1);e=new Date(s.getFullYear(),mo+1,0);if(e<now&&s<now){s=new Date(s.getFullYear()+1,mo,1);e=new Date(s.getFullYear(),mo+1,0)}});
+    // days of the week
+    var DR=EV_DAYRE;
+    take(new RegExp('\\b(?:every\\s+|on\\s+)?('+DR+')s?\\s*(?:-|–|to)\\s*('+DR+')s?(?:\\s+(?:nights?|evenings?|mornings?))?\\b','i'),function(m){var a=evDayIdx(m[1]),b=evDayIdx(m[2]);for(var i=a;;i=(i+1)%7){ev.days.push(i);if(i===b||ev.days.length>7)break}})||
+    take(new RegExp('\\b(?:every\\s+|on\\s+)?((?:'+DR+')s?(?:\\s*(?:,|&|and)\\s*(?:'+DR+')s?)*)(?:\\s+(?:nights?|evenings?|mornings?))?\\b','i'),function(m){(m[1].match(new RegExp(DR,'ig'))||[]).forEach(function(x){var i=evDayIdx(x);if(i>=0&&ev.days.indexOf(i)<0)ev.days.push(i)})})||
+    take(/\b(?:every\s+|on\s+)?weekends?\b/i,function(){ev.days=[5,6]})||take(/\b(?:every\s+|on\s+)?weekdays?\b/i,function(){ev.days=[0,1,2,3,4]});
+    ev.days.sort();
+    if(s)ev.s=evIso(s);if(e)ev.e=evIso(e);
+    // what's left is the name
+    rest=rest.replace(new RegExp('\\b(?:every|on)\\s+'+EV_DAYRE+'s?\\b','ig'),' ');
+    ev.n=cap1(rest.replace(/\b(?:every|on|in|from|at|until|daily)\b\s*$/ig,'').replace(/[\s,;:·|()–—-]+/g,' ').replace(/\b(?:every|on|in|from|at)\s*$/i,'').trim().replace(/\s+(?:on|in|at|every|from)$/i,''));
+    if(!ev.n)ev.n='Event';out.push(ev)});
+  return cleanEvents(out)}
+// what to show for one event today: null if it's finished
+function evState(ev,now){now=now||evToday();var s=evDate(ev.s),e=evDate(ev.e),dw=(now.getDay()+6)%7;
+  if(e&&e<now)return null;
+  var started=!s||s<=now,dayOk=!ev.days.length||ev.days.indexOf(dw)>=0,next=null;
+  // next day it's on
+  var from=started?now:s;for(var i=0;i<14;i++){var dt=new Date(from.getFullYear(),from.getMonth(),from.getDate()+i);if(e&&dt>e)break;if(!ev.days.length||ev.days.indexOf((dt.getDay()+6)%7)>=0){next=dt;break}}
+  if(ev.days.length&&!next)return null;
+  return {started:started,on:started&&dayOk&&(!!s||!!e||!!ev.days.length),next:next,s:s,e:e,single:!!(s&&e&&ev.s===ev.e)}}
+function evShort(d){return d.getDate()+' '+cap1(EV_MON[d.getMonth()])}
+function evWd(d){return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}
+function eventsView(d){var now=evToday();return (d.events||[]).map(function(ev){return {ev:ev,st:evState(ev,now)}}).filter(function(x){return x.st}).sort(function(a,b){if(a.st.on!==b.st.on)return a.st.on?-1:1;var an=a.st.next||a.st.s||now,bn=b.st.next||b.st.s||now;return an-bn})}
+var EV_IC={clock:'<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/>',ticket:'<path d="M15 5l0 2"/><path d="M15 11l0 2"/><path d="M15 17l0 2"/><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2"/>'};
+function evSvg(k){return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+EV_IC[k]+'</svg>'}
+function evRange(a,b){return a.getMonth()===b.getMonth()&&a.getFullYear()===b.getFullYear()?a.getDate()+'–'+evShort(b):evShort(a)+' – '+evShort(b)}
+function paintEvents(d){var v=$('v-events');if(!v)return;v.textContent='';var list=eventsView(d),now=evToday();
+  var ta=$('eventsTxt');if(ta&&document.activeElement!==ta){var rw=rawOf('events');ta.value=rw!=null?rw:''}
+  if(!list.length){v.appendChild(muted('None added'));return}
+  var wrap=el('div','dllist');
+  list.forEach(function(x){var ev=x.ev,st=x.st,tag,det=[];
+    if(st.single)tag=evWd(st.s).toUpperCase()+' '+evShort(st.s).toUpperCase();
+    else if(st.started&&st.e)tag='UNTIL '+evShort(st.e).toUpperCase();
+    else if(!st.started&&st.s&&st.e&&!ev.days.length&&(st.e-st.s)<=14*864e5)tag=evRange(st.s,st.e).toUpperCase();
+    else if(!st.started&&st.s)tag='FROM '+evShort(st.s).toUpperCase();
+    else if(ev.days.length)tag=dayTag(ev.days);else tag='ON NOW';
+    var tm=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+    if(st.single)det.push(['cal',evWd(st.s)+' '+evShort(st.s)]);else if(st.s&&st.e)det.push(['cal',evRange(st.s,st.e)]);else if(st.e)det.push(['cal','Until '+evShort(st.e)]);else if(st.s)det.push(['cal','From '+evShort(st.s)]);
+    if(ev.days.length&&!st.single)det.push(['repeat',dayWords(ev.days)]);
+    if(ev.t)det.push(['clock',ev.t]);if(ev.p)det.push(['ticket',ev.p]);
+    if(!st.on&&st.next&&(st.started||ev.days.length))det.push(['next','Next: '+(+st.next===+tm?'tomorrow':evWd(st.next)+' '+evShort(st.next))]);
+    wrap.appendChild(dlRow('e:'+ev.n,tag,st.on,ev.n,ev.t,det))});
+  v.appendChild(wrap)}
+// ---- Deals and Events lists: one row each (day tag, name, price or time, arrow); tap to see details with icons ----
+var DL_OPEN={};
+var DL_IC={clock:'<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/>',cal:'<path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/>',repeat:'<path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"/><path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"/>',ticket:'<path d="M15 5l0 2"/><path d="M15 11l0 2"/><path d="M15 17l0 2"/><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2"/>',next:'<path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/>',note:'<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 9h.01"/><path d="M11 12h1v4h1"/>',down:'<path d="M6 9l6 6l6 -6"/>',up:'<path d="M6 15l6 -6l6 6"/>'};
+function dlSvg(k,s){return '<svg width="'+(s||13)+'" height="'+(s||13)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+DL_IC[k]+'</svg>'}
+// days (0=Mon) -> "DAILY", "MON–FRI", "THU–SUN", "FRI & SAT", "WED"
+function dayTag(days){var N=['MON','TUE','WED','THU','FRI','SAT','SUN'];days=days.slice().sort();if(days.length===7)return 'DAILY';if(days.length===1)return N[days[0]];
+  var run=days.every(function(x,i){return !i||x===days[i-1]+1});if(run&&days.length>=3)return N[days[0]]+'–'+N[days[days.length-1]];if(days.length===2)return N[days[0]]+' & '+N[days[1]];return days.map(function(x){return N[x]}).join(' ')}
+function dayWords(days){var N=['Mondays','Tuesdays','Wednesdays','Thursdays','Fridays','Saturdays','Sundays'],S=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];days=days.slice().sort();if(days.length===7)return 'Every day';if(days.length===1)return N[days[0]];var run=days.every(function(x,i){return !i||x===days[i-1]+1});if(run&&days.length>=3)return S[days[0]]+'–'+S[days[days.length-1]];return days.map(function(x){return S[x]}).join(', ').replace(/, ([^,]*)$/,' and $1')}
+function dlRow(key,tag,on,name,right,details){var row=el('div','dlrow'+(on?' on':'')),has=details.length>0,open=has&&DL_OPEN[key];
+  var hd=el(has?'button':'div','dlhead');if(has){hd.type='button';hd.setAttribute('aria-expanded',open?'true':'false')}
+  hd.appendChild(el('span','dltag'+(on?'':' off'),tag));hd.appendChild(el('span','dlname',name));if(right)hd.appendChild(el('span','dlright',right));
+  var ch=el('span','dlchev');if(has)ch.innerHTML=dlSvg(open?'up':'down',14);hd.appendChild(ch);row.appendChild(hd);
+  if(open){var bd=el('div','dlbody');details.forEach(function(x){if(x[0]==='list'){var g=el('div','dlplist');x[1].forEach(function(r){g.appendChild(el('span',null,r[0]));g.appendChild(el('span','dlpp',r[1]))});bd.appendChild(g);return}var r=el('div','dlic'),i=el('span','dli');i.innerHTML=dlSvg(x[0]);r.appendChild(i);r.appendChild(el('span',null,x[1]));bd.appendChild(r)});row.appendChild(bd)}
+  if(has)hd.addEventListener('click',function(){DL_OPEN[key]=!DL_OPEN[key];paintView()});
+  return row}
+// deals from the per-day lists: the same deal on several days becomes one row
+function dealItems(d,pd){var tk=DAYS.indexOf(todayKey()),by={},order=[];
+  DAYS.forEach(function(x,di){(pd[x]||[]).forEach(function(f){var k=(f.sub||'')+'|'+f.main;if(!by[k]){by[k]={sub:f.sub||'',main:f.main,days:[]};order.push(k)}by[k].days.push(di)})});
+  return order.map(function(k){var it=by[k],mn=String(it.main).trim(),tm=mn.match(/^(?:from\s+)?(\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))\s*:\s*(.+)$/i);
+    // "5pm: $28 parma night" -> From 5pm · Parma night · $28.00
+    if(tm&&!it.sub){it.sub='From '+tm[1].replace(/\s+/g,'').toLowerCase();mn=tm[2]}
+    var m=mn.match(/^(.*?)[:\s]*((?:from\s+)?\$\s?\d[\d,]*(?:\.\d\d)?(?:\s*(?:pp|per person|each))?)$/i),lp=mn.match(/^((?:from\s+)?\$\s?\d[\d,]*(?:\.\d\d)?(?:\s*(?:pp|per person|each))?)\s+(.+)$/i);
+    if(m&&m[1]){it.name=cap1(m[1].replace(/[:\s]+$/,''));it.price=centsPr(m[2])}else if(lp){it.name=cap1(lp[2]);it.price=centsPr(lp[1])}else{it.name=cap1(mn);it.price=''}
+    it.price=it.price.replace(/\s*pp$/,' per person');it.on=it.days.indexOf(tk)>=0;it.next=Math.min.apply(null,it.days.map(function(x){return (x-tk+7)%7}));return it}).sort(function(a,b){return a.next-b.next})}
+// deals straight from the Deals box, one line at a time, so "Every day 5pm–8pm: golden hour, $12 Aperol Spritz, $15 cocktails" stays one deal
+function dealPartPrice(p){p=String(p).trim();var mid=p.match(/^([a-z][^$]*?)\s+((?:from\s+)?\$\s?\d[\d,]*(?:\.\d\d)?(?:\s*(?:pp|per person|each))?)\s+([a-z].*)$/i);if(mid)return {n:mid[1]+': '+mid[3].toLowerCase(),p:centsPr(mid[2]).replace(/\s*pp$/,' per person')};var tr=p.match(/^(.*?)[:\s]*((?:from\s+)?\$\s?\d[\d,]*(?:\.\d\d)?(?:\s*(?:pp|per person|each))?)$/i),ld=p.match(/^((?:from\s+)?\$\s?\d[\d,]*(?:\.\d\d)?(?:\s*(?:pp|per person|each))?)\s+(.+)$/i);
+  if(tr&&tr[1])return {n:tr[1].replace(/[:\s]+$/,''),p:centsPr(tr[2]).replace(/\s*pp$/,' per person')};if(ld)return {n:ld[2],p:centsPr(ld[1]).replace(/\s*pp$/,' per person')};return {n:p,p:''}}
+function dealItemsRaw(d,raw){var tk=DAYS.indexOf(todayKey()),items=[],byName={};
+  String(raw||'').split(/\n+/).forEach(function(line){if(!line.trim())return;var pdx=parseDaysText(line,false),days=[],val='';DAYS.forEach(function(x,i){var v=(pdx[x]||'').trim();if(v){days.push(i);if(!val)val=v}});if(!days.length)return;
+    var parts=val.split(/,\s*(?![^()]*\))/).map(function(x){return x.trim()}).filter(Boolean),sub='',tm=parts[0]&&parts[0].match(/^((?:from\s+)?\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)?(?:\s*[–-]\s*\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))?)\s*:\s*(.*)$/i);
+    if(tm){sub=tm[1];parts[0]=tm[2]}
+    parts=parts.map(function(x){var t2=x.match(/\s+((?:from\s+)?\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)?\s*[–-]\s*\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))(?=\s|$)/i);if(t2&&!sub){sub=t2[1];x=(x.slice(0,t2.index)+' '+x.slice(t2.index+t2[0].length)).replace(/\s+/g,' ').trim()}return x.replace(/\s+nights$/i,'').trim()}).filter(Boolean);
+    if(sub)sub=(/^\d/.test(sub)&&!/[–-]/.test(sub)?'From ':'')+sub.replace(/^from\s+/i,'From ');
+    var ps=parts.map(dealPartPrice),groups=[];
+    if(ps.length>1&&!ps[0].p&&ps.slice(1).some(function(x){return x.p}))groups.push({n:cap1(ps[0].n),list:ps.slice(1).map(function(x){return [cap1(x.n),x.p]})});
+    else ps.forEach(function(x){groups.push({n:cap1(x.n),p:x.p,list:[]})});
+    groups.forEach(function(g){var k=norm(g.n),it=byName[k];if(!it){it=byName[k]={name:g.n,days:[],times:[],list:[],price:g.p||''};items.push(it)}
+      days.forEach(function(x){if(it.days.indexOf(x)<0)it.days.push(x)});it.times.push([days.slice(),sub]);g.list.forEach(function(r){if(!it.list.some(function(q){return norm(q[0])===norm(r[0])}))it.list.push(r)});if(!it.price&&g.p)it.price=g.p})});
+  items.forEach(function(it){it.days.sort();if(it.list.length){var nums=it.list.map(function(r){var m=String(r[1]).match(/\$([\d,]+(?:\.\d\d)?)/);return m?+m[1].replace(/,/g,''):null}).filter(function(x){return x!=null});if(!it.price&&nums.length)it.price=(it.list.length>1?'from ':'')+centsPr('$'+Math.min.apply(null,nums))}
+    it.on=it.days.indexOf(tk)>=0;it.next=Math.min.apply(null,it.days.map(function(x){return (x-tk+7)%7}));it.main=it.name;it.sub=it.times.map(function(t){return t[1]}).join('|')});
+  return items.sort(function(a,b){return a.next-b.next})}
+function paintDealRows(v,items){var wrap=el('div','dllist');items.forEach(function(it){var det=[],times=it.times||[[it.days,it.sub]];
+    times.forEach(function(t){det.push([t[1]?'clock':'repeat',dayWords(t[0])+(t[1]?' '+t[1].replace(/^From /,'from '):'')])});
+    if(it.list&&it.list.length)det.push(['list',it.list]);
+    var worth=(it.list&&it.list.length)||times.some(function(t){return t[1]})||times.length>1;
+    wrap.appendChild(dlRow('d:'+it.main+it.sub,dayTag(it.days),it.on,it.name,it.price,worth?det:[]))});v.appendChild(wrap)}
+function paintMenus(force){var box=$('mFiles');if(!box||!E||(!force&&document.activeElement&&document.activeElement.tagName==='INPUT'&&box.contains(document.activeElement)))return;box.textContent='';
+  (E.data.menus||[]).forEach(function(m){var r=el('div','mrow'),ic=el('span');ic.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MENU_IC[m.k]+'</svg>';ic.style.display='flex';
+    var inp=document.createElement('input');inp.type='text';inp.value=m.n;inp.maxLength=40;inp.setAttribute('aria-label','Menu name');inp.addEventListener('input',function(){m.n=inp.value;touched()});inp.addEventListener('blur',function(){m.n=cap1(inp.value.replace(/\s+/g,' ').trim())||'Menu';inp.value=m.n;paintView()});
+    var x=el('button');x.type='button';x.setAttribute('aria-label','Remove '+m.n);x.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg>';
+    x.addEventListener('click',function(){E.data.menus=E.data.menus.filter(function(y){return y.i!==m.i});if(E.kind==='saved')deleteFileData(m.i,m.c);else if(E.newMenus)delete E.newMenus[m.i];paintMenus(true);paintView();touched();$('mAdd').focus()});
+    r.appendChild(ic);r.appendChild(inp);r.appendChild(x);box.appendChild(r)})}
+function addMenuFiles(fs){if(!E)return;var target=E;fs.reduce(function(pr,f){return pr.then(function(){
+    if((target.data.menus||[]).length>=8){toast('Up to 8 menus per place');return}
+    var pdf=/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name);if(!pdf){toast('Menus can be uploaded as PDFs (or paste the menu link)');return}
+    if(pdf&&f.size>6*1024*1024){toast('That PDF is too big (6 MB max)');return}
+    var read=pdf?new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=rej;r.readAsDataURL(f)}):shrinkMenuImage(f);
+    return read.then(function(data){if(E!==target)return;var id='mn_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+      target.data.menus=(target.data.menus||[]).concat([{i:id,n:menuName(f.name,target.data.menus),k:pdf?'pdf':'img',c:Math.max(1,Math.ceil(data.length/MENU_CHUNK))}]);photoCache[id]=data;
+      if(target.kind==='saved')saveFileData(target.id,id,data);else{target.newMenus=target.newMenus||{};target.newMenus[id]=data}
+      paintMenus();paintView();touched()},function(){toast("That file couldn't be read")})})},Promise.resolve())}
 // shrink a picked photo: full (max 1280px) and thumbnail (max 200px)
 function shrinkImage(file){
   return new Promise(function(res,rej){
@@ -2380,7 +2583,7 @@ function marketEntry(d){if(!isMarket(d))return '';var r='';(d.prices||[]).forEac
 // Good to know set headings
 var GTK_HEADS=[
   ['Age',/\b\d+\s*\+|\b\d+\s+(?:and|&)\s+(?:over|up)\b|adults only|over \d+s?\b|under \d+|\bchild(?:ren)?\b|\bkids?\b|infants?|seniors?/i,null],
-  ['Getting there',/\bfrom\b.*\b(?:minutes?|mins?|km|hours?)\b|\b(?:minutes?|mins?|km|hours?)\b.*\bfrom\b|walk from|station|\btram\b|\btrain\b/i,null],
+  ['Getting there',/\bfrom\b.*\b(?:minutes?|mins?|km|hours?)\b|\b(?:minutes?|mins?|km|hours?)\b.*\bfrom\b|walk from|station|\btram\b|\btrain\b|public transport|\bbus(?:es)?\b|\btaxis?\b|\buber\b|rideshare|\bferry\b/i,null],
   ['Dietary',/\ballerg\w*[- ]friendly|\bvegan|vegetarian|veggie|pesc[ae]tarian|egg[- ]free|keto|low[- ]carb|sugar[- ]free|fodmap|paleo|diabetic|gluten|\bgf\b|coeliac|celiac|dairy[- ]free|nut[- ]free|halal|kosher|allerg/i,function(t){return t.replace(/^dietary\s*:?\s*/i,'')}],
   ['Parking',/\bparking\b|(?<!(?:near|by|next to|at|in|beside|opposite|from|behind|outside)\s+(?:the\s+)?)\bcar ?park\b/i,function(t){return t.replace(/^parking\s*:?\s*/i,'').replace(/\s+parking$/i,'')}],
   ['For hire',/\bhire\b/i,function(t){return t.replace(/\s+(?:for hire|available to hire|can be hired)$/i,'')}],
@@ -2545,13 +2748,13 @@ $('undoAll').addEventListener('click',function(){
 });
 function paintPick(){if(!E)return;Array.prototype.forEach.call($('pricePick').querySelectorAll('button'),function(b){var on=Number(b.dataset.lv)===E.data.price;b.classList.toggle('on',on);b.setAttribute('aria-checked',on?'true':'false')})}
 $('pricePick').addEventListener('click',function(e){var b=e.target.closest('button');if(!b||!E)return;var lv=Number(b.dataset.lv);E.data.price=E.data.price===lv?0:lv;E.pricePicked=true;$('pricePick').classList.remove('need');paintPick();paintView();touched()});
-function paintView(){
+function paintView(){try{paintMenus()}catch(e){}
   if(!E)return;var d=E.data,tk=todayKey(),v;CUR_STATE=placeState(d);
   paintPick();paintPhotos();paintDup();
   $('undoAll').hidden=!(E.kind==='saved'&&E.snap&&$('form').classList.contains('editall')&&snapPlace(E.data)!==E.snap);
   setTimeout(function(){hideEmptyGroups();if(document.querySelector('.app').classList.contains('adding'))paintJump()},0);
   var ad=autoDesc(d),dsc=tidyDesc(d.desc)||ad;$('vDesc').hidden=!dsc;$('vDesc').textContent=dsc;
-  var tvl=tidyDesc(d.desc)?[(d.cuisine.length?d.cuisine.join(' / ')+' ':'')+d.types.map(function(t,i){return d.cuisine.length||i?t.toLowerCase():t}).join(' / '),(d.vibe||[]).join(', ')].map(function(x){return x.trim()}).filter(Boolean).map(function(x){return cap1(x)}).join(' · '):'';$('vTv').hidden=!tvl;$('vTv').textContent=tvl;if(document.activeElement!==$('fDesc'))$('fDesc').value=d.desc||'';$('fDesc').placeholder=ad||'One short sentence about this place';
+  var tvl=tidyDesc(d.desc)?[(d.cuisine.length?d.cuisine.join(' / ')+' ':'')+d.types.map(function(t,i){return d.cuisine.length||i?t.toLowerCase():t}).join(' / '),(d.vibe||[]).join(', ')].map(function(x){return x.trim()}).filter(Boolean).map(function(x){return cap1(x)}).join(' · '):'';$('vTv').hidden=!tvl;$('vTv').textContent=tvl;if(document.activeElement!==$('fDesc'))$('fDesc').value=d.desc||'';$('fDesc').placeholder=ad||'One short sentence about this place';requestAnimationFrame(fitDesc);
   $('vName').textContent=(d.name||'').trim()||'Untitled place';if(d.price)$('vName').appendChild(priceEl(d.price));if(d.time){var tsp=el('span','ptime');tsp.setAttribute('aria-label','Time needed '+d.time);tsp.appendChild(document.createTextNode(shortTime(d.time)));$('vName').appendChild(tsp)}
   v=$('v-pricing');v.textContent='';paintPricing(v,d);
   v=$('v-need');v.textContent='';var nr=needRows(d);$('sec-need').hidden=!nr.length;
@@ -2573,8 +2776,10 @@ function paintView(){
   if(d.loc||ME){var ap=el('p','hdaddr');ap.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0119 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';ap.appendChild(document.createTextNode(d.loc||travelTimes(distM(ME,d)).join(' · ')));hd.appendChild(ap);if(d.loc&&ME)hd.appendChild(el('p','hdtime',travelTimes(distM(ME,d)).join(' · ')))}
   var HB_ICON={book:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',menu:'<path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M16 3c-2 1-3 3.5-3 6.5V13h3v8"/>',url:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/>',map:'<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/>'};
   var hb=el('div','hbtns');
-  [['book',bk,'Book'],['menu',mn,'Menu'],['url',u,'Website'],['map',mapsHref(d),'Map']].forEach(function(L){
+  var hasMf=(d.menus||[]).length>0;
+  [['book',bk,'Book'],['menu',mn||(hasMf?'#':''),'Menu'],['url',u,'Website'],['map',mapsHref(d),'Map']].forEach(function(L){
     if(!L[1])return;var a=el('a','hb'+(L[0]==='book'?' pri':''));a.href=L[1];a.target='_blank';a.rel='noopener noreferrer';
+    if(L[0]==='menu'&&hasMf){a.removeAttribute('target');a.addEventListener('click',function(ev){ev.preventDefault();pickMenu(d,mn)})}
     var ci=el('span','ci');ci.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+HB_ICON[L[0]]+'</svg>';
     a.appendChild(ci);a.appendChild(document.createTextNode(L[2]));
     if(L[0]==='book'&&bookAhead(d)){a.classList.add('hasdot');a.setAttribute('aria-label','Book ('+bookTag(d).toLowerCase()+')')}
@@ -2585,6 +2790,7 @@ function paintView(){
     v=$('v-'+L[0]);v.textContent='';
     var bn=L[0]==='book'?bookNotes(d):[];
     var lr=el('div','vlinks bookrow');
+    if(L[0]==='menu')(d.menus||[]).forEach(function(m){var mb=el('button','vlink soft mfile');mb.type='button';mb.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+MENU_IC[m.k]+'</svg>';mb.appendChild(document.createTextNode(m.n));mb.addEventListener('click',function(){openMenuFile(m)});lr.appendChild(mb)});
     if(L[1]){var lb=linkBtn(L[1],L[2],L[3]);if(L[0]==='book'&&bookAhead(d)){lb.classList.add('hasdot');lb.setAttribute('aria-label','Book ('+bookTag(d).toLowerCase()+')')}lr.appendChild(lb)}
     if(bn.length&&!L[1]){var bt=bookTagEl(d);if(bt)lr.appendChild(bt)}
     if(lr.children.length)v.appendChild(lr);else v.appendChild(muted(L[4]));
@@ -2609,22 +2815,23 @@ function paintView(){
   DAYS.forEach(function(x){pd[x]=dealLines(dealParts(d,x).filter(function(y){return !/\((?:starts|ends) \d/.test(y)}).map(dealShort).filter(Boolean));if(pd[x].length)anyD=true});
   function dItem(f){var it=el('div','dline');if(f.sub)it.appendChild(el('span','tpill',f.sub));it.appendChild(document.createTextNode(f.main));return it}
   if(!anyD)v.appendChild(muted('No deals yet'));
-  else{var dcur=tk,dbar=el('div','dtabs'),dlist=el('div','dtlist');
-    var drawD=function(){dbar.textContent='';DAYS.forEach(function(x){var b=el('button',(x===dcur?'on ':'')+(pd[x].length?'has':'none'),x===tk?'Today':DAY_SHORT[x]);b.type='button';b.setAttribute('aria-pressed',x===dcur?'true':'false');b.onclick=function(){dcur=x;drawD()};dbar.appendChild(b)});
-      dlist.textContent='';if(pd[dcur].length)pd[dcur].forEach(function(f){dlist.appendChild(dItem(f))});else dlist.appendChild(muted('No deals this day'))};
-    drawD();v.appendChild(dbar);v.appendChild(dlist)}
+  else{var rdl=rawOf('deals');paintDealRows(v,rdl&&rdl.trim()?dealItemsRaw(d,rdl):dealItems(d,pd))}
   // tags
   TAG_KEYS.forEach(function(key){
     var vv=$('v-'+key);vv.textContent='';
     $('sec-'+key).hidden=TAGS[key].eatOnly&&!hasFood(d.types);
     $('g-food').hidden=!hasFood(d.types)&&E.kind!=='draft';
-    if(!d[key].length&&!(key==='tips'&&(offerNotes(d).length||(!hasFood(d.types)&&d.food.length)))){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
-    if(key==='tips'){var rest=d.tips.filter(function(t){return (/^booking:/i.test(t)||!isBookNote(t))&&!isSellNote(t)&&!MIN_RE.test(t)&&!(/^must try:/i.test(t)&&hasFood(d.types))&&!isClosure(t)}).concat(offerNotes(d));if(!hasFood(d.types)&&d.food.length)rest=rest.concat(['Food & drinks: '+d.food.join(', ')]);if(!rest.length){vv.appendChild(muted('None added'));return}rest=rest.filter(function(t){return !needOf(t)});if(!rest.length){vv.appendChild(muted('None added'));return}
+    var lvr=key==='tips'?levelRows(d):[];
+    var klen=key==='features'?d.features.filter(function(t){return !featLevel(t)}).length:key==='tips'?d.tips.length+lvr.length:d[key].length;
+    if(!klen&&!(key==='tips'&&(offerNotes(d).length||(!hasFood(d.types)&&d.food.length)))){vv.appendChild(muted(key==='types'?'No type yet':'None added'));return}
+    if(key==='tips'){var rest=d.tips.filter(function(t){return !isLevelNote(t)&&(/^booking:/i.test(t)||!isBookNote(t))&&!isSellNote(t)&&!MIN_RE.test(t)&&!(/^must try:/i.test(t)&&hasFood(d.types))&&!isClosure(t)}).concat(offerNotes(d));if(!hasFood(d.types)&&d.food.length)rest=rest.concat(['Food & drinks: '+d.food.join(', ')]);if(!rest.length&&!lvr.length){vv.appendChild(muted('None added'));return}rest=rest.filter(function(t){return !needOf(t)});if(!rest.length&&!lvr.length){vv.appendChild(muted('None added'));return}
       var rows=rest.map(function(t){var g=gtkHead(t);g[2]=d.tips.indexOf(t)>=0?t:'';return g}),hd=rows.filter(function(r){return r[0]}),pl=rows.filter(function(r){return !r[0]});
       [hd,pl].forEach(function(list){var on=list.filter(function(r){return textNow(r[1])});if(on.length){var off=list.filter(function(r){return !textNow(r[1])});list.length=0;on.concat(off).forEach(function(r){list.push(r)})}});
       [hd,pl].forEach(function(list){var AGR=/^(?:\d+\+ only(?: · .+)?|under \d+s with an? (?:adult|parent|guardian|parent or guardian))$/i,ai=-1;for(var q=0;q<list.length;q++){if(list[q][0]==='Age'&&AGR.test(String(list[q][1]))){if(ai<0)ai=q;else{list[ai]=[list[ai][0],list[ai][1]+' · '+list[q][1],list[ai][2]];list.splice(q,1);q--}}}if(ai>=0){var ap=String(list[ai][1]).split(' · ');ap.sort(function(a,b){return /^\d/.test(b)-/^\d/.test(a)});list[ai]=[list[ai][0],ap.join(' · '),list[ai][2]]}});
-      [hd,pl].forEach(function(list,li){if(!list.length)return;var ul=el('ul','vtips vico'+(li&&hd.length?' gap':''));list.forEach(function(r){var e=el('li');var ic=el('span','gico');ic.innerHTML=gtkIcon(r[0],r[1]);e.appendChild(ic);var tx=el('span');if(r[2]){e.dataset.fixk='tips';e.dataset.fixt=r[2];e.className='fixable'}if(r[0])tx.appendChild(el('span','sr-only',r[0]+': '));tx.appendChild(dayText(cap1(String(r[1]))));e.appendChild(tx);ul.appendChild(e)});vv.appendChild(ul)});return}
-    if(key==='features'){var fu=el('ul','vfeat');d.features.forEach(function(t){var fi=el('li','fixable'),fm=String(t).match(/^(.*?)\s*\(([^)]+)\)$/);var fe=el('span','femo');fe.innerHTML=featIcon(t);fi.appendChild(fe);var ft=el('span','ftx',fm?fm[1]:t);if(fm)ft.appendChild(el('span','fsub',fm[2]));fi.appendChild(ft);fi.dataset.fixk='features';fi.dataset.fixt=t;fu.appendChild(fi)});vv.appendChild(fu);return}
+      [hd,pl].forEach(function(list,li){if(!list.length)return;var ul=el('ul','vtips vico'+(li&&hd.length?' gap':''));list.forEach(function(r){var e=el('li');var ic=el('span','gico');ic.innerHTML=gtkIcon(r[0],r[1]);e.appendChild(ic);var tx=el('span');if(r[2]){e.dataset.fixk='tips';e.dataset.fixt=r[2];e.className='fixable'}if(r[0])tx.appendChild(el('span','sr-only',r[0]+': '));tx.appendChild(dayText(cap1(String(r[1])),true));e.appendChild(tx);ul.appendChild(e)});vv.appendChild(ul)});
+      if(lvr.length){var lu=el('ul','vtips vico'+(rest.length?' gap':''));lvr.forEach(function(r){var e=el('li','fixable');e.dataset.fixk='tips';e.dataset.fixt=r[0]+': '+r[1];var ic=el('span','gico');ic.innerHTML=iconSvg('tb-stairs');e.appendChild(ic);var tx=el('span');tx.appendChild(el('strong','dayb',r[0]+':'));tx.appendChild(document.createTextNode(' '+r[1]));e.appendChild(tx);lu.appendChild(e)});vv.appendChild(lu)}
+      return}
+    if(key==='features'){var fu=el('ul','vfeat');var fl0=d.features.filter(function(t){return !featLevel(t)});fl0.filter(function(t){return /^(?:cafe|kiosk)\b/i.test(t)}).concat(fl0.filter(function(t){return !/^(?:cafe|kiosk)\b/i.test(t)})).forEach(function(t){if(/^(?:cafe|kiosk)(?:\s*\(.*\))?$/i.test(t)){fu.appendChild(cafeCard(t));return}var fi=el('li','fixable'),fm=String(t).match(/^(.*?)\s*\(([^)]+)\)$/);var fe=el('span','femo');fe.innerHTML=featIcon(t);fi.appendChild(fe);var ft=el('span','ftx',fm?fm[1]:t);if(fm)ft.appendChild(el('span','fsub',fm[2]));fi.appendChild(ft);fi.dataset.fixk='features';fi.dataset.fixt=t;fu.appendChild(fi)});vv.appendChild(fu);return}
     if(key==='types'){var tp=el('p','vtext vtype'),first=true;
       d.cuisine.forEach(function(c,i){if(i)tp.appendChild(document.createTextNode(' / '));var sp=el('span','fixable',c);sp.dataset.fixk='cuisine';sp.dataset.fixt=c;tp.appendChild(sp);first=false});
       d.types.forEach(function(t,i){tp.appendChild(document.createTextNode(i?' / ':(first?'':' ')));var sp=el('span','fixable',first&&!i?t:t.toLowerCase());sp.dataset.fixk='types';sp.dataset.fixt=t;tp.appendChild(sp)});
@@ -2632,10 +2839,19 @@ function paintView(){
     if(key!=='food'){var vp=el('p','vtext vtype');d[key].forEach(function(t,i){if(i)vp.appendChild(document.createTextNode(' / '));var sp=el('span','fixable',t);sp.dataset.fixk=key;sp.dataset.fixt=t;vp.appendChild(sp)});vv.appendChild(vp);return}
     if(key==='food'){
       // one per line; grouped items show their kinds on the line below
-      var rf=rawOf('food'),src=rf&&rf.trim()&&!looksLikeMenu(rf)?parseTagText('food',rf,true):d.food,gs=rollupGroups(src,quotedKeys(rf)).filter(function(g){var k=fixKey('food',g.t);if(fixFind('d',k,d))return false;var nw=fixFind('r',k,d);if(typeof nw==='string'){if(!nw)return false;g.t=nw}var mv=fixFind('m',k,d);return !(mv&&mv!=='food')});
-      if(!src.length)gs=d.food.map(function(t){return {t:t,v:[]}});
-      var mtl=mustTry(d),mk=mtl.map(norm);if(mtl.length){gs=gs.filter(function(g){var n=norm(g.t);return !mk.some(function(k){return k===n||n.indexOf(k)>=0||k.indexOf(n)>=0})})}
-      var fl=el('ul','foodul');mtl.forEach(function(t){var li=el('li','fixable mtry');li.dataset.fixk='tips';li.dataset.fixt='Must try: '+mtl.join(', ');li.appendChild(document.createTextNode(t));li.appendChild(el('span','mtag','Must try'));fl.appendChild(li)});gs.forEach(function(g){var li=el('li','fixable');li.dataset.fixk='food';li.dataset.fixt=g.t;if(g.v.length){li.appendChild(el('b',null,g.t));li.appendChild(el('span','fvar',g.v.join(', ')))}else li.appendChild(document.createTextNode(g.t));fl.appendChild(li)});
+      var rf=rawOf('food'),mtl=mustTry(d),mk=mtl.map(norm);
+      function foodGs(txt,useD){var src=!useD&&txt&&txt.trim()&&!looksLikeMenu(txt)?parseTagText('food',txt,true):d.food,gs=rollupGroups(src,quotedKeys(txt)).filter(function(g){var k=fixKey('food',g.t);if(fixFind('d',k,d))return false;var nw=fixFind('r',k,d);if(typeof nw==='string'){if(!nw)return false;g.t=nw}var mv=fixFind('m',k,d);return !(mv&&mv!=='food')});
+        if(!src.length)gs=useD?d.food.map(function(t){return {t:t,v:[]}}):[];
+        if(mtl.length)gs=gs.filter(function(g){var n=norm(g.t);return !mk.some(function(k){return k===n||n.indexOf(k)>=0||k.indexOf(n)>=0})});return gs}
+      function foodUl(gs){var ul=el('ul','foodul');gs.forEach(function(g){var li=el('li','fixable');li.dataset.fixk='food';li.dataset.fixt=g.t;if(g.v.length){li.appendChild(el('b',null,g.t));li.appendChild(el('span','fvar',g.v.join(', ')))}else li.appendChild(document.createTextNode(g.t));ul.appendChild(li)});return ul}
+      // several menus ("Breakfast menu", "Lunch:", "Dinner") each get their own heading
+      var secs=null;if(rf&&rf.trim()&&!looksLikeMenu(rf)){var cur={h:'',l:[]};secs=[cur];rf.split(/\n/).forEach(function(l){var h=menuHead(l);if(h){cur={h:h,l:[]};secs.push(cur)}else cur.l.push(l)});secs=secs.filter(function(x){return x.l.join('').trim()});if(!secs.some(function(x){return x.h}))secs=null}
+      var fl=el('ul','foodul');mtl.forEach(function(t){var li=el('li','fixable mtry');li.dataset.fixk='tips';li.dataset.fixt='Must try: '+mtl.join(', ');li.appendChild(document.createTextNode(t));li.appendChild(el('span','mtag','Must try'));fl.appendChild(li)});
+      if(secs){if(mtl.length)vv.appendChild(fl);secs.forEach(function(x){var gs=foodGs(x.l.join('\n'));if(!gs.length)return;if(x.h)vv.appendChild(el('div','ohead menuh',x.h+':'));vv.appendChild(foodUl(gs))});return}
+      var gs=foodGs(rf,!(rf&&rf.trim()));if(!gs.length&&(d.food||[]).length&&!(rf&&rf.trim()&&parseTagText('food',rf,true).length))gs=d.food.map(function(t){return {t:t,v:[]}});
+      // a mix of food, desserts and drinks: show each under its own heading
+      var cats={Food:[],Desserts:[],Drinks:[]};gs.forEach(function(g){cats[foodCat(g.t+' '+g.v.join(' '))].push(g)});var ncat=Object.keys(cats).filter(function(k){return cats[k].length}).length;
+      if(ncat>=2&&gs.length>=4){if(mtl.length)vv.appendChild(fl);var firstC=true;['Food','Desserts','Drinks'].forEach(function(k){if(!cats[k].length)return;var u=foodUl(cats[k]);if(!firstC||mtl.length)u.classList.add('fgap');firstC=false;vv.appendChild(u)});return}Array.prototype.slice.call(foodUl(gs).children).forEach(function(li){fl.appendChild(li)});
       vv.appendChild(fl);return}
     var box=el('div','tags');
     d[key].forEach(function(t){
@@ -2644,12 +2860,13 @@ function paintView(){
     vv.appendChild(box);
   });
   // edit button wording: Add when empty
-  var empty={name:false,addr:!d.loc,book:!bk&&!bookTag(d),time:!d.time,pricing:!(d.prices||[]).length,menu:!mn,url:!u,phone:false,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),ohours:!(d.ohours||[]).filter(function(g){return !OH_NEED.test(g.n)}).length,deals:!anyD};
-  TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});
+  var empty={name:false,addr:!d.loc,book:!bk&&!bookTag(d),time:!d.time,pricing:!(d.prices||[]).length,menu:!mn&&!(d.menus||[]).length,url:!u,phone:false,hours:!$('v-hours').querySelector('dl'),kitchen:!$('v-kitchen').querySelector('dl'),ohours:!(d.ohours||[]).filter(function(g){return !OH_NEED.test(g.n)}).length,deals:!anyD};
+  try{paintEvents(d)}catch(e){}empty.events=!eventsView(d).length;
+  TAG_KEYS.forEach(function(k){empty[k]=!d[k].length});empty.features=!d.features.filter(function(t){return !featLevel(t)}).length;if(levelRows(d).length)empty.tips=false;
   empty.types=!d.types.length&&!d.cuisine.length;
   if(!hasFood(d.types)&&d.food.length)empty.tips=false;
   if(offerNotes(d).length)empty.tips=false;
-  if(!offerNotes(d).length&&!(!hasFood(d.types)&&d.food.length)&&d.tips.every(function(t){return isBookNote(t)||isSellNote(t)||MIN_RE.test(t)||needOf(t)}))empty.tips=true;
+  if(!offerNotes(d).length&&!levelRows(d).length&&!(!hasFood(d.types)&&d.food.length)&&d.tips.every(function(t){return isBookNote(t)||isSellNote(t)||MIN_RE.test(t)||needOf(t)}))empty.tips=true;
   // a section that only says "None added" counts as empty, so it hides on the place page
   TAG_KEYS.concat(['types','pricing']).forEach(function(k){var v=$('v-'+k);if(v&&/^(?:None added|No type yet|No pricing yet)$/.test(v.textContent.trim()))empty[k]=true});
   Array.prototype.forEach.call(document.querySelectorAll('#form .sec'),function(sec){var k=sec.dataset.sec;if(k)sec.classList.toggle('isempty',!!empty[k]&&(!sec.classList.contains('open')||k==='kitchen'||k==='ohours'))});
@@ -2705,6 +2922,8 @@ function shortTip(t){
   t=String(t).replace(/\s+/g,' ').trim();
   var words=t.split(' ');
   if(/^(?:everything|all(?:\s+(?:the\s+)?(?:food|dishes|meat|items|menu))?|(?:the\s+)?(?:whole|entire|full)\s+menu)\s+(?:here\s+|on the menu\s+)?(?:is|are)\b/i.test(t))return t;
+  var okm=t.replace(/^(?:a|an|the)\s+/i,'').match(/^((?:\S+\s+){0,3}\S+)\s+(?:are|is)\s+(?:totally\s+|perfectly\s+|completely\s+)?(fine|ok|okay|allowed|permitted|welcome)(?:\s+here)?$/i);
+  if(okm)return cap1(okm[1])+' '+(/welcome/i.test(okm[2])?'welcome':'allowed');
   var fl0=t.replace(/^(?:a|an|the)\s+/i,'').match(/^((?:\S+\s+){0,2}\S+)\s+(?:is|are)\s+(?:super|very|really|so|extremely|always|incredibly|genuinely|quite)?\s*([a-z-]+)\b\s*(.*)$/i);
   if(fl0&&!/^(?:a|an|the|not|open|closed|located|on|in|at|available|great|good|excellent|amazing|indicative|subject|inclusive|included|non-refundable|refundable|limited|required|essential|recommended|approximate|payable|due|valid|quietest|busiest|best|quieter|busier)$/i.test(fl0[2])){
     var tail0=/^and\b/i.test(fl0[3])?'':fl0[3].replace(/\s*,.*$/,'');
@@ -2723,7 +2942,7 @@ function shortTip(t){
   for(var i=1;i<bw.length;i++){
     var w=bw[i].replace(/[^a-z']/ig,'');
     if(TIP_FLUFF.test(w)&&!/^(?:up|out|quickly|fast)$/i.test(bw[i+1]||'')&&!/^(?:any|a|the|each|per|every|one|this|that|your)$/i.test(bw[i-1]||'')&&!HALF_END.test(bw[i-1]||''))return bw.slice(0,i).join(' ');
-    if(TIP_HAS.test(w)){var rest=bw.slice(i+1).join(' ').split(/\s*,\s*/)[0];return bw.slice(0,i).join(' ')+(rest?' with '+rest:'')}
+    if(TIP_HAS.test(w)){if(/^includ/i.test(w))return t;var rest=bw.slice(i+1).join(' ').split(/\s*,\s*/)[0];return bw.slice(0,i).join(' ')+(rest?' with '+rest:'')}
     if(/^(?:is|are|was|were)$/i.test(w))return t;
   }
   var cl=body.split(/\s*,\s*/);if(cl.length>1&&cl[0].split(' ').length>=3)return cl[0];
@@ -2753,6 +2972,8 @@ function moveAddonsToPricing(text){
 }
 // every-day "deals" aren't deals: a plain price goes to Pricing, anything else to Good to know
 function moveEverydayDeals(){
+  // daily deals now stay in Deals (shown with a DAILY tag)
+  return;
   if(!E)return;var d=E.data,ev=everydayDeals(d);if(!ev.length)return;
   DAYS.forEach(function(x){d.deals[x]=dealParts(d,x).filter(function(y){return ev.indexOf(y)<0}).join(', ')});
   var pr=[],tp=[];dealLines(ev.map(dealShort)).forEach(function(f){var t=f.main+(f.sub?' ('+f.sub+')':'');if(!f.sub&&/^[^$%]+ \$\d+\.\d\d$/.test(f.main)&&!/\bfree\b|half|for 1|happy hour|bottomless|\boff\b|discount/i.test(f.main))pr.push(f.main);else tp.push(t)});
@@ -2862,9 +3083,11 @@ var FI={
  dot:'<path d="M5 12l4.5 4.5L19 7"/>'
 };
 var FEAT_ICON=[[/^no (?:dogs|pets)\b/i,'tb-dog-off'],[/^best (?:at|in|during|on|around|for)\s+(?:sunrise|sunset|dawn|dusk|golden hour|night|morning|evening|daybreak|low tide|high tide|spring|summer|autumn|winter|weekdays?)\b/i,'tb-award'],[/chef['’]?s counter|open kitchen/i,'tb-chef-hat'],[/wood[- ]fired|charcoal/i,'fire'],[/nut[- ]free|no nuts|peanut[- ]free/i,'nut-off'],[/halal|kosher/i,'tb-moon-stars'],[/preservative/i,'ban'],[/^no /i,'ban'],[/^byo cake/i,'cake'],[/^byo beer|^beer/i,'beer'],[/byo|wine/i,'wine'],[/dog|pet/i,'paw'],[/kids? menu|kid friendly|family|kids/i,'kid'],[/high ?chair|recliner|seat/i,'chair'],[/licensed bar/i,'cocktail'],[/wi-?fi/i,'wifi'],[/^toilets?\b|\btoilets?\b|restrooms?|bathrooms?/i,'tb-toilet-paper'],[/\bparking\b|(?<!(?:near|by|next to|at|in|beside|opposite|from|behind|outside)\s+(?:the\s+)?)\bcar ?park\b/i,'park'],[/takeaway|take ?out|pick-?up/i,'bag'],[/deliver/i,'tb-moped'],[/outdoor|al ?fresco|courtyard|garden/i,'leaf'],[/rooftop/i,'roof'],[/pool table|billiard/i,'ball'],[/live music|\bdj\b|music/i,'music'],[/karaoke/i,'mic'],[/screen|sport|\btv\b|projector/i,'screen'],[/games?|arcade/i,'dice'],[/fire ?place|fire ?pit|heater/i,'fire'],[/sauna|steam/i,'steam'],[/cold plunge|ice bath|air ?con/i,'snow'],[/hot spring|mineral pool|thermal|bath|pool|spa/i,'waves'],[/massage|treatment|handmade|hand[- ]made|house-made|homemade/i,'hand'],[/wheelchair|accessible|step[- ]free/i,'access'],[/made fresh|fresh daily|baked|bread/i,'bread'],[/gift|shop/i,'gift'],[/locker/i,'lock'],[/towel|robe/i,'towel'],[/view/i,'view'],[/private room/i,'door'],[/\bbar\b|cocktail/i,'cocktail'],[/coffee/i,'coffee'],[/vegan|vegetarian|plant/i,'plant'],[/gluten/i,'wheat'],[/late|night/i,'moon'],[/breakfast|brunch/i,'pan'],[/charging|power/i,'plug'],[/bike/i,'bike']];
-var GTK_ICON={'Age':'tb-users','Getting there':'tb-route','Parking':'park','For hire':'bag','Booking':'tb-calendar','Crowds':'tb-users-group','Accessibility':'access','Fees':'receipt','Dietary':'plant','Delivery':'tb-moped','Best for':'tb-award','Most popular':'tb-flame','Must try':'tb-star','Ordering':'bag','Food & drinks':'fork','Offer':'tag'};
+var GTK_ICON={'Times':'tb-clock','Age':'tb-users','Getting there':'tb-route','Parking':'park','For hire':'bag','Booking':'tb-calendar','Crowds':'tb-users-group','Accessibility':'access','Fees':'receipt','Dietary':'plant','Delivery':'tb-moped','Best for':'tb-award','Most popular':'tb-flame','Must try':'tb-star','Ordering':'bag','Food & drinks':'fork','Offer':'tag'};
 FI["tb-users-group"]="<path d=\"M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\"/> <path d=\"M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1\"/> <path d=\"M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\"/> <path d=\"M17 10h2a2 2 0 0 1 2 2v1\"/> <path d=\"M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\"/> <path d=\"M3 13v-1a2 2 0 0 1 2 -2h2\"/>";
 FI["tb-toilet-paper"]="<path d=\"M3 10a3 7 0 1 0 6 0a3 7 0 1 0 -6 0\"/><path d=\"M21 10c0 -3.866 -1.343 -7 -3 -7\"/><path d=\"M6 3h12\"/><path d=\"M21 10v10l-3 -1l-3 2l-3 -3l-3 2v-10\"/><path d=\"M6 10h.01\"/>";
+FI["tb-clock"]='<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/>';
+FI["tb-stairs"]='<path d="M22 5h-5v5h-5v5h-5v5h-5"/>';
 FI["tb-route"]="<path d=\"M3 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0\"/> <path d=\"M19 7a2 2 0 1 0 0 -4a2 2 0 0 0 0 4\"/> <path d=\"M11 19h5.5a3.5 3.5 0 0 0 0 -7h-8a3.5 3.5 0 0 1 0 -7h4.5\"/>";
 FI["tb-dog-off"]="<path d=\"M11 5h2\"/><path d=\"M19 12c-.667 5.333 -2.333 8 -5 8h-4c-2.667 0 -4.333 -2.667 -5 -8\"/><path d=\"M11 16c0 .667 .333 1 1 1s1 -.333 1 -1h-2\"/><path d=\"M12 18v2\"/><path d=\"M10 11v.01\"/><path d=\"M14 11v.01\"/><path d=\"M5 4l6 .97l-6.238 6.688a1.021 1.021 0 0 1 -1.41 .111a.953 .953 0 0 1 -.327 -.954l1.975 -6.815\"/><path d=\"M19 4l-6 .97l6.238 6.688c.358 .408 .989 .458 1.41 .111a.953 .953 0 0 0 .327 -.954l-1.975 -6.815\"/><path d=\"M3 3l18 18\"/>";
 FI["tb-award"]="<path d=\"M6 9a6 6 0 1 0 12 0a6 6 0 1 0 -12 0\"/> <path d=\"M12 15l3.4 5.89l1.598 -3.233l3.598 .232l-3.4 -5.889\"/> <path d=\"M6.802 12l-3.4 5.89l3.598 -.233l1.598 3.232l3.4 -5.889\"/>";
@@ -2936,7 +3159,25 @@ var CLOSURE_RE=new RegExp('^\\s*(?:we(?:\'re| are)\\s+|will be\\s+)?closed\\b.*\
 var HOLS='(?:public holidays?|good friday|christmas(?: day| eve)?|boxing day|new year.?s(?: day| eve)?|anzac day|australia day|easter(?: sunday| monday| weekend)?|melbourne cup day|king.?s birthday)';
 var CLOSED_ON_RE=/^\s*closed\s+(?:on\s+)?(?:public holidays?|good friday|christmas(?: day| eve)?|boxing day|new year.?s(?: day| eve)?|anzac day|australia day|easter(?: sunday| monday| weekend)?|melbourne cup day|king.?s birthday)(?:\s*(?:,|and|&)\s*(?:public holidays?|good friday|christmas(?: day| eve)?|boxing day|new year.?s(?: day| eve)?|anzac day|australia day|easter(?: sunday| monday| weekend)?|melbourne cup day|king.?s birthday))*\s*$|^\s*closed\s+(?:on|during|in)\s+(?:total fire ban|fire danger|extreme (?:heat|fire danger|weather)|severe weather|code red|bad weather|wet weather|high winds?|public holidays?)(?:\s+days?)?\s*$/i;
 var SEASON_RE=/^Open (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*–(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*$/;
-function isClosure(t){if(SEASON_RE.test(String(t)))return true;return /^closed\s/i.test(t)&&(CLOSURE_RE.test(t)||CLOSED_ON_RE.test(String(t).replace(/[.!]+$/,'')))}
+// Floors: "Level 1: dinosaurs, gift shop", "Ground floor - cafe and toilets", "3rd floor: food court" -> a Levels list under Features
+var LEVEL_RE=/^(basement(?:\s*\d+)?|b\d|lower ground(?:\s+floor)?|LG|ground(?:\s+floor)?|G|level\s*\d{1,2}|L\d{1,2}|\d{1,2}(?:st|nd|rd|th)\s+floor|floor\s*\d{1,2}|mezzanine|rooftop|roof(?:\s*top)?|top floor|upstairs|downstairs)\s*(?::|-|–|—)\s*(.+)$/i;
+function levelLabel(x){x=String(x).trim();var m;
+  if(/^(?:b\d|basement)/i.test(x)){m=x.match(/\d+/);return 'Basement'+(m?' '+m[0]:'')}
+  if(/^(?:lower ground|lg$)/i.test(x))return 'Lower ground';if(/^(?:ground|g$)/i.test(x))return 'Ground floor';
+  if((m=x.match(/^(?:level\s*|l|floor\s*)(\d+)$/i))||(m=x.match(/^(\d+)(?:st|nd|rd|th)\s+floor$/i)))return +m[1]===0?'Ground floor':'Level '+(+m[1]);
+  if(/^roof/i.test(x))return 'Rooftop';return cap1(x.toLowerCase())}
+function levelRank(l){var m;if(/^basement/i.test(l))return -10+((m=l.match(/\d+/))?-+m[0]:0);if(/^lower ground/i.test(l))return -1;if(/^(?:ground|downstairs)/i.test(l))return 0;if(/^mezzanine/i.test(l))return 0.5;if((m=l.match(/^level (\d+)/i)))return +m[1];if(/^upstairs/i.test(l))return 1.5;if(/^top floor/i.test(l))return 90;if(/^rooftop/i.test(l))return 99;return 50}
+function isLevelNote(t){var m=String(t||'').match(/^([^:]{2,24}):\s+(.+)$/);return !!(m&&LEVEL_RE.test(m[1]+': x')&&levelLabel(m[1])===m[1])}
+var FEAT_LVL=/^(.+?)\s*\(((?:on\s+)?(?:the\s+)?(?:level\s*\d{1,2}|ground(?:\s+floor)?|basement(?:\s*\d)?|rooftop|lower ground(?:\s+floor)?|mezzanine|upstairs|downstairs|top floor|\d{1,2}(?:st|nd|rd|th)\s+floor))\)$/i;
+function featLevel(t){var m=String(t||'').match(FEAT_LVL);return m?[levelLabel(m[2].replace(/^(?:on\s+)?(?:the\s+)?/i,'')),m[1]]:null}
+function levelRows(d){var by={},order=[];(d.tips||[]).filter(isLevelNote).concat((d.features||[]).map(featLevel).filter(Boolean).map(function(r){return r[0]+': '+r[1]})).forEach(function(t){var i=t.indexOf(':'),l=t.slice(0,i),v=t.slice(i+1).trim();if(!by[l]){by[l]=[];order.push(l)}v.split(/\s*,\s*/).forEach(function(x){if(x&&by[l].map(norm).indexOf(norm(x))<0)by[l].push(by[l].length?x.charAt(0).toLowerCase()+x.slice(1):cap1(x))})});return order.map(function(l){return [l,by[l].join(', '),by[l]]}).sort(function(a,b){return levelRank(a[0])-levelRank(b[0])})}
+// Notes you reworded with "Change wording" show in Good to know exactly as you typed them (not turned into a booking tag, Need to know row, etc.)
+function isUW(t){var k=norm(String(t||''));if(!k)return false;for(var x in LEARN.r)if(norm(LEARN.r[x])===k)return true;var hit=false;if(E&&E.data&&E.data.fix&&E.data.fix.r)for(var y in E.data.fix.r)if(norm(E.data.fix.r[y])===k)hit=true;if(!hit&&S&&S.places)S.places.forEach(function(p){if(!hit&&p&&p.fix&&p.fix.r)for(var z in p.fix.r)if(norm(p.fix.r[z])===k)hit=true});return hit}
+isBookNote=(function(f){return function(t){return !isUW(t)&&!isLevelNote(t)&&f(t)}})(isBookNote);
+isSellNote=(function(f){return function(t){return !isUW(t)&&f(t)}})(isSellNote);
+needOf=(function(f){return function(t){return isUW(t)||isLevelNote(t)?null:f(t)}})(needOf);
+function isClosure(t){return !isUW(t)&&isClosure0(t)}
+function isClosure0(t){if(SEASON_RE.test(String(t)))return true;return /^closed\s/i.test(t)&&(CLOSURE_RE.test(t)||CLOSED_ON_RE.test(String(t).replace(/[.!]+$/,'')))}
 function tidyClosure(t){
   t=String(t).trim().replace(/[.!]+$/,'').replace(/^(?:we(?:'re| are)\s+|will be\s+)/i,'');
   var mr=new RegExp('\\b(\\d{1,2})(?:st|nd|rd|th)?\\s*('+MON_RE+')?\\s*(?:-|–|to|until|till)\\s*(\\d{1,2})(?:st|nd|rd|th)?\\s+('+MON_RE+')|\\b(\\d{1,2})(?:st|nd|rd|th)?\\s+('+MON_RE+')','i'),m=t.match(mr);if(!m)return cap1(t);
@@ -2982,6 +3223,11 @@ var LAST_ORD=null,OPEN_LATE=null,CHECK_IO=null,KITCHEN_BEFORE=null,KITCHEN_AT=nu
 // add a tag to another section while tidying Good to know
 var SIDE_N=0,ADDON_N=0,MOVED=[];
 function movSig(){return JSON.stringify([SIDE_N,ADDON_N,PRICE_ADD.length,EXTRA_ADD.length,PP_PRICE,TIME_FOUND,(CHECK_IO||[]).length,KITCHEN_AT,KITCHEN_BEFORE,OPEN_LATE&&OPEN_LATE.t,LAST_ORD])}
+// one Features row per thing: "Cafe (outdoor seating)" + "Cafe (hot and cold food)" -> "Cafe (outdoor seating, hot and cold food)"
+function featMerge(name,det){if(!E||!E.data)return;var d=E.data,f=d.features||[],re=new RegExp('^'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'(?:\\s*\\((.*)\\))?$','i'),i=-1;for(var j=0;j<f.length;j++)if(re.test(f[j])){i=j;break}
+  if(det)det=det.split(/\s*,\s*/).filter(Boolean).join(', ');if(i<0){sideAdd('features',name+(det?' ('+det+')':''));return}
+  var old=f[i],om=old.match(re),dets=(om[1]?om[1].split(/\s*,\s*/):[]).filter(Boolean);(det?det.split(/\s*,\s*/):[]).forEach(function(x){x=x.trim();if(x&&dets.map(norm).indexOf(norm(x))<0)dets.push(x)});
+  var nw=name+(dets.length?' ('+dets.join(', ')+')':'');if(nw===old)return;d.features=f.slice();d.features[i]=nw;var rw=rawOf('features');if(rw!=null)setRaw('features',rw.indexOf(old)>=0?rw.replace(old,nw):(rw.trim()?rw.replace(/\s+$/,'')+', ':'')+nw);try{paintTags('features')}catch(e){}}
 function sideAdd(key,label){SIDE_N++;if(!E||!E.data)return;var d=E.data;if((d[key]||[]).map(norm).indexOf(norm(label))>=0)return;d[key]=(d[key]||[]).concat([label]);
   var rw=rawOf(key);if(rw!=null&&norm(rw).indexOf(norm(label))<0)setRaw(key,(rw.trim()?rw.replace(/\s+$/,'')+', ':'')+label);try{paintTags(key)}catch(e){}}
 // common spelling slips fixed while tidying ("avaliable" -> "available")
@@ -3026,6 +3272,8 @@ function organiseTips(text){
     var u16=sn0.match(/^(?:kids |children )?under\s*(\d+)s?(?:\s*(?:years?|yrs?))?\s+(?:must|need to|have to|should)\s+be\s+(?:with|accompanied by|supervised by)\s+(?:an?\s+)?(adult|parent|guardian|parent or guardian)s?$/i);if(u16){var gw=u16[2].toLowerCase();add('Under '+u16[1]+'s with '+(/^a/.test(gw)?'an ':'a ')+gw,true);return}
     // "Closed Mondays and Good Friday" -> the day is already in the hours; keep the holiday
     var cmh=sn0.match(new RegExp('^closed\\s+(?:on\\s+)?(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*(?:\\s*(?:,|and|&)\\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*)*\\s*(?:,|and|&)\\s*('+HOLS+'(?:\\s*(?:,|and|&)\\s*'+HOLS+')*)$','i'));if(cmh){add('Closed '+cmh[1].replace(/\b([a-z])/g,function(c){return c.toUpperCase()}).replace(/ And /g,' and ').replace(/'S\b/g,"'s"),true);return}
+    // "$35pp" / "$120 per person" -> Pricing: Per person $35.00
+    var bpp=sn0.match(/^(?:(?:it'?s|about|around|roughly|approx\.?)\s+)?\$\s?(\d+(?:\.\d\d)?)\s*(?:pp|p\.p\.?|per person|per head|a head|a person)$/i);if(bpp){PP_PRICE='Per person $'+bpp[1];return}
     // "Tickets $22 adults, $16 kids" -> Pricing: Adults $22, Kids $16
     var tkm=sn0.match(/^(?:(?:tickets?|entry|admission|prices?)\s*:?\s*)?(.*\$\s?\d.*)$/i);
     if(tkm){var tparts=tkm[1].split(/\s*(?:,|;|\band\b)\s*/),tok=[],tex=[],last=null,bad=false;tparts.forEach(function(x){if(bad||!x)return;var a=x.match(/^\$\s?(\d+(?:\.\d\d)?)\s+((?:for\s+|per\s+|a\s+)?[a-z][a-z0-9 ]*?)$/i),b=x.match(/^([a-z][a-z0-9 ]*?)\s*:?\s*\$\s?(\d+(?:\.\d\d)?)(?:\s+((?:per|a|each)\b.*))?$/i),f=x.match(/^([a-z][a-z0-9 ]*?)\s+(?:are\s+|go\s+|get in\s+|enter\s+)?free$/i),nt=x.match(/^(?:refunded|redeemable|waived|includes?|including|redeemed)\b.*$/i);
@@ -3065,7 +3313,7 @@ function organiseTips(text){
     var hlm=sn0.match(/^(\d+)\s+holes?\s*(?:,\s*(.+))?$/i);if(hlm){sideAdd('features',hlm[1]+' holes');if(!hlm[2])return;sn0=hlm[2];sentence=hlm[2]}
     if(/^takes\s+/i.test(sn0)&&!durSentence(sn0)){var tdx=durSentence('It '+sn0);if(tdx){if(!TIME_FOUND)TIME_FOUND=tdx;return}}
     // "2 hour sessions" -> Time needed 2 hours; "Minimum 2 hours on Fridays" -> At least 2 hours
-    var sss=sn0.match(/^(\d+(?:\.\d)?)[- ]?(hours?|hrs?|minutes?|mins?)\s+(?:sessions?|slots?|bookings?|sittings?)$/i);if(sss){if(!TIME_FOUND)TIME_FOUND=durText(false,sss[1],sss[2]);return}
+    var sss=sn0.match(/^(?:(?:the\s+)?(?:[a-z][a-z'’&-]*\s+){1,3}(?:has\s+|is\s+|uses\s+|runs\s+)?)?(\d+(?:\.\d)?)[- ]?(hours?|hrs?|minutes?|mins?)\s+(?:sessions?|slots?|bookings?|sittings?)$/i);if(sss){if(!TIME_FOUND)TIME_FOUND=durText(false,sss[1],sss[2]);return}
     var smn=sn0.match(/^(?:minimum|min\.?)\s+(?:booking\s+(?:of\s+)?)?(\d+(?:\.\d)?)\s*(hours?|hrs?)\b/i)||sn0.match(/^(\d+(?:\.\d)?)[- ]?(hours?|hrs?)\s+minimum\b/i);if(smn){if(!TIME_FOUND)TIME_FOUND='At least '+durText(false,smn[1],smn[2]);return}
     // "Height restrictions on big rides, 120cm minimum" -> Height limits on big rides (120cm min)
     var hgt=sn0.match(/^height\s+(?:restrictions?|limits?|requirements?)\s+(?:on|for|apply to)\s+(.+?)\s*[,;(-]\s*(\d+)\s*cm\s*(?:minimum|min\.?)?\)?$/i);if(hgt){add('Height limits on '+hgt[1].toLowerCase()+' ('+hgt[2]+'cm min)',true);return}
@@ -3090,13 +3338,18 @@ function organiseTips(text){
     var ftw=sn0.match(/^(food trucks?|live music|djs?|markets?|pop-?ups?|live sport)\s+(?:on\s+|every\s+)?(weekends|weekdays|weeknights|(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*(?:\s*(?:,|and|&)\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*)*)$/i);
     if(ftw){var fd2=/^week/i.test(ftw[2])?ftw[2].toLowerCase():(ftw[2].match(/\b(mon|tue|wed|thu|fri|sat|sun)/gi)||[]).map(function(x){return DLW[x.toLowerCase()]}).join(', ');sideAdd('features',cap1(ftw[1].toLowerCase().replace(/^djs?$/,'DJs').replace(/^dj/,'DJ'))+' ('+fd2+')');return}
     // "Kid friendly until 6pm" -> Features: Kid friendly (until 6pm)
-    var kfu=sn0.match(/^(kids?|family|child(?:ren)?)[- ]friendly\s+(until|till|before|after|from)\s+(\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))$/i);if(kfu){sideAdd('features',(/^family/i.test(kfu[1])?'Family':'Kid')+' friendly ('+kfu[2].toLowerCase().replace('till','until')+' '+kfu[3].replace(/\s+/g,'').toLowerCase()+')');return}
+    var kfu=sn0.match(/^(kids?|family|families|child(?:ren)?)(?:[- ]friendly|\s+(?:are\s+)?(?:welcome|allowed))\s+(until|till|before|after|from)\s+(\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))$/i);if(kfu){sideAdd('features',(/^famil/i.test(kfu[1])?'Family':'Kid')+' friendly ('+kfu[2].toLowerCase().replace('till','until')+' '+kfu[3].replace(/\s+/g,'').toLowerCase()+')');return}
     // "Fires allowed in fire pits except on fire ban days" -> Need to know: No fires on fire ban days; Features: Fire pits
     var fbd=sn0.match(/^(?:camp)?fires? (?:are\s+|is\s+)?(?:allowed|permitted|ok|okay)\s+(?:in\s+(?:the\s+)?(fire pits?|fire rings?|bbqs?|fireplaces?)\s+)?(?:except|but not|not)\s+(?:on\s+|during\s+)?(?:total\s+)?fire ban(?: days)?$/i);if(fbd){if(fbd[1])sideAdd('features',cap1(fbd[1].toLowerCase().replace(/s$/,''))+'s');add('No fires on fire ban days',true);return}
     // "Bags must go in the cloakroom" -> Need to know: Large bags must be checked style
     if(/^(?:all\s+)?bags?\s+(?:must|have to|need to)\s+(?:go|be left|be stored|be checked)\s+(?:in(?:to)?|at)\s+(?:the\s+)?(?:cloakroom|lockers?|bag check)$/i.test(sn0)){add('Bags must be checked',true);return}
     // "Busy during exam season" -> Crowds: Exam season: busy
     var bds=sn0.match(/^(?:it\s+)?(?:gets\s+|can get\s+|is\s+)?(busy|packed|crowded)\s+(?:during|in|over)\s+(?:the\s+)?(exam season|exams|school holidays|public holidays|summer|winter|the holidays|holidays)$/i);if(bds){add('Crowds: '+cap1(bds[2].toLowerCase().replace(/^the /,''))+': busy',true);return}
+    // "There's a cafe near the entrance" -> Features: Cafe (near the entrance), when the place isn't a cafe itself
+    var cfn=sn0.match(/^(?:there'?s\s+|there is\s+|has\s+|with\s+)?(?:an?\s+|the\s+)?(?:on-?site\s+)?(caf[eé]|kiosk)(?:\s+on-?site)?(?:\s+((?:near|by|at|next to|on|upstairs|downstairs|inside|in|opposite)\b.*))?$/i);if(cfn&&!(E&&E.data&&(E.data.types||[]).some(function(t){return typeColor(t)==='cafe'}))){featMerge(cap1(cfn[1].toLowerCase().replace('café','cafe')),cfn[2]?cfn[2].replace(/^on level/i,'level').toLowerCase():'');return}
+    // "Cafe with outdoor seating", "cafe serves a variety of hot and cold foods including healthy choices" -> Features: Cafe (outdoor seating, hot and cold food, healthy choices)
+    var cfw=sn0.match(/^(?:there'?s\s+|there is\s+|has\s+|with\s+)?(?:an?\s+|the\s+|our\s+)?(?:on-?site\s+)?(caf[eé]|kiosk)\s+(?:with|serves|serving|has|offers|offering|sells|selling)\s+(.+)$/i);
+    if(cfw&&!/\$\s?\d|\d\s*(?:am|pm)/i.test(cfw[2])&&!(E&&E.data&&(E.data.types||[]).some(function(t){return typeColor(t)==='cafe'}))){var cdt=cfw[2].replace(/[,;\s]+$/,'').replace(/^(?:an?\s+)?(?:wide\s+|great\s+|good\s+|big\s+)?(?:variety|range|selection|mix)\s+of\s+/i,'').replace(/\s+(?:including|incl\.?|such as|like)\s+/ig,', ').replace(/\bfoods\b/ig,'food').replace(/[.!]+$/,'').toLowerCase();featMerge(cap1(cfw[1].toLowerCase().replace('café','cafe')),cdt);return}
     // "Pram friendly" / "Lessons for all levels" / "Women-only area upstairs" -> Features
     var pfr=sn0.match(/^(pram|stroller|wheelchair|baby|family|kid|dog|pet)[- ](?:friendly|accessible)$/i);if(pfr){sideAdd('features',cap1(sn0.toLowerCase()));return}
     var lsn=sn0.match(/^(lessons|classes|courses)\s+for\s+(all\s+(?:levels|ages|abilities))$/i);if(lsn){sideAdd('features',cap1(lsn[1].toLowerCase())+' ('+lsn[2].toLowerCase()+')');return}
@@ -3131,7 +3384,27 @@ function organiseTips(text){
     var evm=sn0.match(/^(trivia(?: night)?|quiz(?: night)?|bingo|karaoke|comedy(?: night)?|open mic(?: night)?|jazz(?: night)?|drag bingo|music bingo|run club)\s+(?:on\s+|every\s+)?((?:mon|tue|wed|thu|fri|sat|sun)[a-z]*(?:\s*(?:,|and|&)\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*)*)\s+(?:at\s+|from\s+)?(\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))$/i);
     if(evm){var evd=(evm[2].match(/\b(mon|tue|wed|thu|fri|sat|sun)/gi)||[]).map(function(x){return DLW[x.toLowerCase()]}).join('/');sideAdd('features',cap1(evm[1].toLowerCase())+' ('+evd+' '+(/from/i.test(sn0)?'from ':'')+evm[3].replace(/\s+/g,'').toLowerCase()+')');return}
     // "Keeper talks at 10am, 12pm and 3pm" -> Features: Keeper talks (10am, 12pm, 3pm)
-    var shm=sn0.match(/^((?:free\s+)?[a-z ]*?(?:talks?|shows?|feedings?|feeds|demos?|demonstrations?|tastings?|screenings?))\s+(?:daily\s+)?(?:at|run at|daily at|every day at)\s+(.+)$/i);if(shm&&/^\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)(?:\s*(?:,|and|&)\s*\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))*$/i.test(shm[2])){sideAdd('features',cap1(shm[1].toLowerCase())+' ('+shm[2].split(/\s*(?:,|and|&)\s*/).join(', ')+')');return}
+    var enm=sn0.match(/^([a-z][a-z ]*?(?:encounters?|tours?|experiences?))\s+(?:(?:are|is|run|runs|happen|happens)\s+)?(?:daily\s+|every day\s+)?(?:(?:at|run at|daily at|every day at)\s+)?(.+)$/i);if(enm&&/^(?:\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)(?:\s*(?:,|&|and)\s*)?)+$/i.test(enm[2].trim())){PRICE_ADD.push(cap1(enm[1].toLowerCase())+': '+(enm[2].match(/\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)/ig)||[]).map(function(x){return x.replace(/\s+/g,'').toLowerCase()}).join(', '));return}
+    var shm=sn0.match(/^((?:free\s+)?[a-z ]*?(?:talks?|shows?|feedings?|feeds|demos?|demonstrations?|tastings?|screenings?))\s+(?:(?:are|is|run|runs|happen|happens)\s+)?(?:daily\s+|every day\s+)?(?:(?:at|run at|daily at|every day at)\s+)?(.+)$/i);if(shm&&/^\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)(?:\s*(?:,|and|&)\s*\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))*$/i.test(shm[2])){sideAdd('features',cap1(shm[1].toLowerCase())+' ('+shm[2].split(/\s*(?:,|and|&)\s*/).join(', ')+')');return}
+    // "Toilets are on level 2", "Gift shop on the ground floor" -> Level 2: Toilets (joins that level's row)
+    var lvo=sn0.match(/^(?:the\s+|our\s+)?(.{2,40}?)\s+(?:is\s+|are\s+)?(?:located\s+)?(?:on|at|in)\s+(?:the\s+)?(level\s*\d{1,2}|ground(?:\s+floor)?|basement(?:\s*\d)?|rooftop|roof|lower ground(?:\s+floor)?|mezzanine|top floor|\d{1,2}(?:st|nd|rd|th)\s+floor)$/i);
+    if(lvo&&!/\$\s?\d|\d\s*(?:am|pm)/i.test(lvo[1])){add(levelLabel(lvo[2])+': '+cap1(lvo[1].replace(/^(?:there(?:'s| is| are)\s+(?:an?\s+)?)/i,'')),true);return}
+    // "Difficult to find an available taxi or Uber after your visit" -> Limited Ubers and taxis
+    if(/\b(?:taxis?|cabs?|ubers?|rideshares?|ride[- ]shares?|didi|ola)\b/i.test(sn0)&&/\b(?:difficult|hard|limited|few|scarce|not many|struggle|tricky|may not|can'?t|cannot|unlikely|rare|rarely|not easy|no)\b/i.test(sn0)&&sn0.split(/\s+/).length<=22){var hu=/\b(?:ubers?|rideshares?|ride[- ]shares?|didi|ola)\b/i.test(sn0),ht=/\b(?:taxis?|cabs?)\b/i.test(sn0);add('Limited '+(hu&&ht?'Ubers and taxis':hu?'Ubers':'taxis'),true);return}
+    var lvm=sn0.match(LEVEL_RE);if(lvm&&!/\$\s?\d/.test(lvm[2])){var lvi=lvm[2].replace(/[.!]+$/,'').split(/\s*(?:,|;|\band\b|&|\+|·)\s*/).map(function(x){return x.trim()}).filter(Boolean);add(levelLabel(lvm[1])+': '+cap1(lvi.map(function(x,i){return i?x.toLowerCase():x}).join(', ')),true);return}
+    // "We are currently not easily accessible by public transport" -> Not easily accessible by public transport
+    var ptm=sn0.match(/^(?:(?:we(?:'re| are)|it(?:'s| is)|(?:the\s+)?(?:park|zoo|venue|museum|place|site|centre|center)\s+is|this\s+(?:place\s+)?is)\s+)?(?:currently\s+|still\s+)?(?:(not\s+(?:easily\s+|very\s+|really\s+)?(?:accessible|reachable|easy to (?:get to|reach)))|(hard|difficult|tricky)\s+to\s+(?:get to|reach|access))\s+(?:by|via|with|on)\s+public\s+transport(?:\s+(?:at the moment|right now|currently))?$/i);if(ptm){add('Limited public transport',true);return}
+    if(/^(?:there(?:'s| is)\s+)?(?:no|limited)\s+public\s+transport(?:\s+(?:nearby|here|to the (?:park|zoo|venue|site)))?$/i.test(sn0)){add(cap1(sn0.match(/(no|limited)\s+public transport/i)[0].toLowerCase()),true);return}
+    // "Bath House is 16+ only" -> Bath House: 16+ only (bold label, like "After 6pm: 18+ only")
+    var aal=sn0.match(/^(?:the\s+)?([a-z][a-z'’ &-]{2,30}?)\s+(?:is|are)\s+(?:for\s+|strictly\s+)?(\d{1,2}\+|\d{1,2}\s+(?:and|&)\s+(?:over|under|up)|ages?\s+\d{1,2}\+?)(?:\s+only)?$/i);if(aal&&!/^(?:it|this|entry|the place|venue|everything|all)$/i.test(aal[1])){add('Age: '+cap1(aal[1])+': '+aal[2].replace(/^ages?\s+/i,'').replace(/\s*&\s*/,' and ')+' only',true);return}
+    // "Wombat Encounter $45pp", "Quokka Encounter $120 for 1-2 people, $40 for an extra person" -> Pricing
+    if(/^[a-z][a-z'’ &()-]{2,50}?\s*[-–:]?\s*\$\s?\d/i.test(sn0)&&!/[.!?]\s/.test(sn0)){var pf1=pricingFromText(sn0);if(pf1.length===1&&pf1[0].it.length===1&&pf1[0].it[0][0]&&!pf1[0].n&&/\$|free/i.test(pf1[0].it[0][1]+pf1[0].it[0][2])){PRICE_ADD.push(sn0);if(/\bdeliver/i.test(sn0))sideAdd('features','Delivery');return}}
+    // "Kids under 5 free" -> Pricing: Under 5s Free
+    var ufr=sn0.match(/^(?:kids|children|babies|infants)?\s*(?:under|below|aged under)\s+(\d{1,2})s?(?:\s*(?:years?|yrs?)(?:\s+old)?)?\s+(?:are\s+|go\s+|get in\s+|enter\s+|stay\s+|eat\s+)?(?:free|for free)$/i);if(ufr){PRICE_ADD.push('Under '+ufr[1]+'s: Free');return}
+    // "Adults $65 (weekdays) $75 (weekends)" -> Pricing: Adults (weekdays) $65.00, Adults (weekends) $75.00
+    var dpr=sn0.match(/^([a-z][a-z ]{1,20}?)\s*:?\s*\$\s?(\d+(?:\.\d\d)?)\s*\(([a-z][a-z ]{2,20})\)\s*[,\/]?\s*\$\s?(\d+(?:\.\d\d)?)\s*\(([a-z][a-z ]{2,20})\)$/i);if(dpr){var dpl=cap1(dpr[1].trim().toLowerCase());PRICE_ADD.push(dpl+' ('+dpr[3].toLowerCase()+') $'+dpr[2]);PRICE_ADD.push(dpl+' ('+dpr[5].toLowerCase()+') $'+dpr[4]);return}
+    // "Lockers $5 (coin or card)" -> Pricing extras: Lockers (coin or card) $5.00
+    var lkp=sn0.match(/^((?:coin\s+)?lockers?)\s*:?\s*\$\s?(\d+(?:\.\d\d)?)\s*(?:\(([^)]+)\))?\s*((?:per|a|each)\b.*)?$/i);if(lkp){var lkn=[lkp[3],lkp[4]].filter(Boolean).join(', ');EXTRA_ADD.push('Lockers'+(lkn?' ('+lkn.toLowerCase()+')':'')+' $'+lkp[2]);return}
     // "Pram hire $10" -> Pricing extras
     var hrm=sn0.match(/^([a-z ]+?\s(?:hire|rental))\s*:?\s*\$\s?(\d+(?:\.\d\d)?)(?:\s+((?:per|a|each)\b.*))?$/i);if(hrm){EXTRA_ADD.push(cap1(hrm[1].toLowerCase())+(hrm[3]?' ('+hrm[3]+')':'')+' $'+hrm[2]);return}
     // "Patrolled by lifeguards in summer, swim between the flags"
@@ -3255,7 +3528,7 @@ function organiseTips(text){
     var parts=sentence.split(/\b(?:is|are)\b/i.test(sentence)||/discount|surcharge|concession|offer|\bfees?\b/i.test(sentence)?/\s*,\s*|\s*\/\s*/:/\s*,\s*|\s+(?:and|&)\s+|\s*\/\s*/).map(function(x){return x.trim()}).filter(Boolean);
     var named=parts.filter(function(x){return /^[A-Z\u00C0-\u024F]/.test(x)&&!TIP_RULES.some(function(r){return r[1].test(x)})}).length>=3;
     if(/^[A-Z][^:]{1,40}:\s+\S/.test(sentence)){add(sentence);return}
-    var keepWhole=TIP_ADVICE.test(sentence.split(/\s+/)[0])||/for hire|\d|^bring\b/i.test(sentence);
+    var keepWhole=TIP_ADVICE.test(sentence.split(/\s+/)[0])||/for hire|\d|^bring\b|\bincludes?\b|\bincluded$/i.test(sentence)||parts.slice(1).some(function(x){return /^(?:on\s+|during\s+|in\s+)?(?:the\s+)?(?:(?:public|school|bank)\s+holidays?|weekends?|weekdays?|weeknights?|(?:mon|tues|wednes|thurs|fri|satur|sun)days?|nights?|evenings?|mornings?|afternoons?|holidays|all\s+\S+.*)$/i.test(x)});
     var pieces=!named&&!keepWhole&&parts.length>1&&parts.every(function(x){return wc(x)<=4})?parts:[sentence];
     pieces.forEach(function(pc){
       var hits=TIP_RULES.filter(function(r){return r[1].test(pc)}),hw=hits.reduce(function(n,r){return n+wc(r[0])},0);
@@ -3273,6 +3546,7 @@ function organiseTips(text){
     if(pr){sideAdd('vibe','Private room'+(pr[1]?' for '+pr[1]:''));return false}
     for(var i=0;i<TIP_MOVE.length;i++)if(TIP_MOVE[i][1].test(lbl)){sideAdd(TIP_MOVE[i][0],lbl);return false}
     if(/^(?:breakfast (?:is )?included|includes? breakfast|complimentary breakfast|free breakfast)$/i.test(t)){sideAdd('features','Breakfast included');return false}
+    var inc=t.match(/^((?:\S+\s+){0,2}\S+)\s+(?:and|&)\s+((?:\S+\s+){0,2}\S+)\s+(?:are\s+)?included$/i);if(inc&&!/[$\d]/.test(t)&&!/^(?:all|everything|entry|tax|gst)$/i.test(inc[1])){sideAdd('features',cap1(inc[1].toLowerCase())+' and '+inc[2].toLowerCase()+' included');return false}
     var pv=t.match(/^(.{2,50}?)\s+(?:are\s+|is\s+)?(provided|supplied)$/i);if(pv&&!/\$/.test(t)){sideAdd('features',cap1(pv[1].toLowerCase())+' provided');return false}
     if(/^couples?['’]?\s+(?:packages?|treatments?|massages?|rooms?|suites?)(?:\s+(?:are\s+)?available)?$/i.test(t)){sideAdd('features','Couples packages');return false}
     if(/\bgift (?:vouchers?|cards?|certificates?)\b/i.test(t)&&!/\$\s?\d/.test(t))return false;
@@ -3311,6 +3585,17 @@ function splitKnown(key,piece){
   return out.length>1?out:null;
 }
 function stripAcc(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+// Food & drinks sorted into Food / Desserts / Drinks when there's a mix
+var DRINK_RE=/\b(?:coffee|espresso|latte|lattes|flat white|cappuccino|mocha|long black|cold brew|tea|teas|chai|hojicha|matcha|juice|juices|smoothies?|soda|sodas|lemonade|kombucha|milkshakes?|shakes?|hot chocolate|bubble tea|boba|beers?|ales?|lager|ipa|ciders?|wines?|ros[eé]|prosecco|champagne|cocktails?|mocktails?|spritz|negroni|martini|margaritas?|sake|soju|whisk(?:e)?y|gin|rum|vodka|tequila|mezcal|spirits|asahi|drinks?|frappe|affogato)\b/i;
+var DESSERT_RE=/\b(?:desserts?|cakes?|cheesecake|ice cream|gelato|sorbet|soft serve|mochi|brownies?|tarts?|pudding|cookies?|donuts?|doughnuts?|churros?|waffles?|cr[eè]me br[uû]l[eé]e|fondant|pavlova|tiramisu|sundae|macarons?|eclairs?|cannoli|baklava|panna cotta|mousse|crumble|bingsu|taiyaki|crepes?|crêpes?|sweets?|chocolate)\b/i;
+function foodCat(t){t=String(t||'');if(/\baffogato\b/i.test(t))return 'Desserts';if(DRINK_RE.test(t)&&!/\b(?:cake|ice cream|tiramisu|pudding|mousse|cookie|brownie|mochi)\b/i.test(t))return 'Drinks';if(DESSERT_RE.test(t)&&!/\b(?:chicken|beef|pork|lamb|fish|salad|burger|sandwich|toast|savoury|cheese board)\b/i.test(t))return 'Desserts';return 'Food'}
+// "Breakfast menu", "Lunch:", "Dinner", "Kids menu", "Desserts:" -> the menu's heading, or '' if the line is a dish
+var MEAL_RE=/^(?:breakfast|brunch|lunch|dinner|supper|all[- ]day|late[- ]night)$/i;
+function menuHead(l){l=String(l||'').trim().replace(/^#+\s*/,'');var colon=/:$/.test(l);l=l.replace(/\s*:$/,'').trim();if(!l||l.length>30||/\d|\$/.test(l))return '';
+  var m=l.match(/^(?:the\s+)?(.+?)\s+(menu|list)$/i);if(m&&m[1].split(/\s+/).length<=3)return cap1(m[1].toLowerCase()+' '+m[2].toLowerCase());
+  if(MEAL_RE.test(l))return cap1(l.toLowerCase())+' menu';
+  if(colon&&l.split(/\s+/).length<=3)return cap1(l.toLowerCase());
+  return ''}
 function looksLikeMenu(text){
   var lines=String(text||'').split(/\n/).filter(function(l){return l.trim()});
   return /^\s*#/m.test(text)||lines.filter(function(l){return /^\s*[-*\u2022].+\s[\u2013\u2014-]\s/.test(l)}).length>=3||(lines.length>=8&&lines.filter(function(l){return /\$\s?\d|\s[\u2013\u2014-]\s|\d/.test(l)}).length>=3);
@@ -3448,13 +3733,20 @@ function quotedKeys(text){var o={};quoted(text).forEach(function(x){o[tagKey(x)]
 function parseTagText(key,text,noRoll){
   if(key==='tips')return organiseTips(text);
   var QK=[];text=String(text||'').replace(/["“”]([^"“”\n]{1,60})["“”]/g,function(_,x){QK.push(x.trim().replace(/[\/,;|+&]/g,' '));return ' \u0003'+(QK.length-1)+'\u0003 '});
+  // menu headings ("Breakfast menu", "Dinner:") aren't dishes; they split the list into menus when shown
+  if(key==='food')text=String(text||'').split(/\n/).filter(function(l){return !menuHead(l)}).join('\n');
   if(key==='food'&&looksLikeMenu(text))return parseTagText('food',menuTags(text).join(', '));
+  // one dish per line: "Fish and chips", "Mac & cheese" stay whole
+  if(key==='food'&&/\S\s*\n\s*\S/.test(String(text||'')))text=String(text).split(/\n/).map(function(l){return /[,\/;|(]/.test(l)||l.trim().split(/\s+/).length>5?l:l.replace(/\s+and\s+/gi,'\u0005').replace(/\s*&\s*/g,'\u0006')}).join('\n');
   var pieces=[];
   if(key==='features'||key==='food'||key==='vibe'){text=String(text||'').split(/(?<=[.!?])\s+|\n+/).filter(function(sn){if(FRESH_RE.test(sn)){if(key==='features')pieces.push('Made fresh daily');else if(key==='food'){var lf=freshLeft(sn);if(lf)pieces.push(cap1(lf))}return false}return true}).join('\n')}
+  // features already in "Name (detail)" form, like "Keeper talks (10am, 12pm, 3pm)", stay as they are
+  var BK=[];
+  if(key==='features')text=String(text||'').replace(/(^|[\n,;|]\s*)([^()\n,;|]{2,60}?)\s*\(([^()\n]{1,120})\)(?=\s*(?:[\n,;|]|$))/g,function(_,pre,a,b){BK.push(cap1(a.trim())+' ('+b.trim()+')');return pre+'\u0004'+(BK.length-1)+'\u0004'});
   // keep "Mochi (strawberry, grape)" together while splitting
   if(key==='food')text=String(text||'').replace(/\(([^)]*)\)/g,function(m,inner){return '('+inner.replace(/\s*&\s*/g,'\u0002').replace(/\s*\+\s*/g,'\u0002').replace(/\s*(?:[,\/;|\n]|\band\b|\bor\b)\s*/g,'\u0001')+')'});
   String(text||'').replace(/\s+(?:also|plus|as well as|along with)\s+/gi,', ').replace(/,?\s+with\s+(?=[a-z])/gi,key==='features'?', ':' with ').split(/\s*(?:[\/,;|\n+&]|\band\b|\bor\b(?!\s+so)|(?<=[.!?])\s)\s*/i).forEach(function(part){
-    part=part.trim().replace(/[.!?]+$/,'');if(!part)return;
+    part=part.replace(/\u0005/g,' and ').replace(/\u0006/g,' & ').trim().replace(/[.!?]+$/,'');if(!part)return;
     var qm=part.match(/^\u0003(\d+)\u0003$/);if(qm){var qv=QK[+qm[1]];pieces.push(key==='food'?foodPlural(qv):cap1(qv));return}
     if(/\u0003\d+\u0003/.test(part)&&!(key==='food'&&/\(/.test(part))){pieces.push(cap1(part.replace(/\u0003(\d+)\u0003/g,function(_,n){return QK[+n]}).replace(/\s+/g,' ').trim()));return}
     if(key==='features'&&byoLabel(part)){pieces.push(byoLabel(part));return}
@@ -3483,6 +3775,7 @@ function parseTagText(key,text,noRoll){
   var m=canonMap(key),seen={},out=[];
   String(text||'').split(sepRe(key)).forEach(function(part){
     part=part.trim();if(!part)return;
+    var bkm=part.match(/^\u0004(\d+)\u0004$/);if(bkm){var bv=BK[+bkm[1]],bkk=tagKey(bv);if(!seen[bkk]&&out.length<TAGS[key].max){seen[bkk]=1;out.push(bv)}return}
     var c=canonTag(key,part,m),k=tagKey(c);
     if(c&&!seen[k]&&out.length<TAGS[key].max){seen[k]=1;out.push(c)}
   });
@@ -3553,8 +3846,9 @@ function setTagText(key,text){
   if(key==='tips'){LAST_ORD=null;OPEN_LATE=null;CHECK_IO=null;KITCHEN_BEFORE=null;KITCHEN_AT=null;PP_PRICE=null;TIME_FOUND=null;PRICE_ADD=[];EXTRA_ADD=[]}
   E.data[key]=parseTagText(key,text);
   if(key==='tips'&&TIME_FOUND&&!E.data.time){E.data.time=TIME_FOUND;var lt=$('l-time');if(lt&&document.activeElement!==lt)lt.value=TIME_FOUND}
-  if(key==='tips'&&PRICE_ADD.length){var curA=rawOf('pricing');curA=curA!=null?curA:'';var lowA=norm(curA),addA=PRICE_ADD.filter(function(l){return lowA.indexOf(norm(l.replace(/\s*\$.*/,'')))<0});if(addA.length){var npA=addA.join('\n')+(curA.trim()?'\n'+curA:'');setRaw('pricing',npA);E.data.prices=pricingFromText(npA);var peA=$('t-pricing');if(peA&&document.activeElement!==peA)peA.value=npA}}
+  if(key==='tips'&&PRICE_ADD.length){var curA=rawOf('pricing');curA=curA!=null?curA:'';var lowA=norm(curA),addA=PRICE_ADD.filter(function(l){return lowA.indexOf(norm(l.replace(/\s*\$.*/,'')))<0});if(addA.length){addA=addA.filter(function(l){return !/: Free$/i.test(l)}).concat(addA.filter(function(l){return /: Free$/i.test(l)}));var npA=addA.join('\n')+(curA.trim()?'\n'+curA:'');setRaw('pricing',npA);E.data.prices=pricingFromText(npA);var peA=$('t-pricing');if(peA&&document.activeElement!==peA)peA.value=npA}}
   if(key==='tips'&&EXTRA_ADD.length){var curX=rawOf('pricing');curX=curX!=null?curX:'';var lowX=norm(curX),addX=EXTRA_ADD.filter(function(l){return lowX.indexOf(norm(l.replace(/\s*\$.*/,'')))<0});if(addX.length){var hasX=/^extras\s*:?\s*$/im.test(curX);var npX=(curX.trim()?curX.replace(/\s+$/,'')+'\n':'')+(hasX?'':(curX.trim()?'\n':'')+'Extras:\n')+addX.join('\n');setRaw('pricing',npX);E.data.prices=pricingFromText(npX);var peX=$('t-pricing');if(peX&&document.activeElement!==peX)peX.value=npX}}
+  if(key==='tips'&&E.data&&!(E.data.types||[]).some(function(t){return typeColor(t)==='cafe'})&&(E.data.ohours||[]).some(function(g){return /^caf[eé]\b/i.test(g.n)})&&!(E.data.features||[]).some(function(f){return /^caf[eé]\b/i.test(f)}))sideAdd('features','Cafe');
   if(key==='tips'&&PP_PRICE){var curP=rawOf('pricing');curP=curP!=null?curP:'';if(norm(curP).indexOf('per person')<0){var npP=PP_PRICE+(curP.trim()?'\n'+curP:'');setRaw('pricing',npP);E.data.prices=pricingFromText(npP);var peP=$('t-pricing');if(peP&&document.activeElement!==peP)peP.value=npP}}
   if(key==='tips'){
     var dmv=tipsToDeals(/\b(?:specials?|deals?|happy hour)\b/i);if(dmv.length){var dt0=$('dealsTxt');if(dt0&&document.activeElement!==dt0){var rd=rawOf('deals');if(rd!=null)dt0.value=rd}var rt0=rawOf('tips');if(rt0!=null){var kept=rt0;dmv.forEach(function(m){var i=kept.toLowerCase().indexOf(String(m).toLowerCase());if(i>=0)kept=(kept.slice(0,i)+kept.slice(i+m.length).replace(/^[.!]?\s*/,'')).replace(/\n{3,}/g,'\n\n')});setRaw('tips',kept.trim())}}
@@ -3630,7 +3924,7 @@ function openPlace(id){
 function blankDays(){var o={};DAYS.forEach(function(d){o[d]=''});return o}
 function startDraft(init){
   S.selId=null;
-  E={kind:'draft',data:{name:init.name||'',types:(init.types||[]).slice(),cat:'other',rating:0,price:0,photos:[],fix:{d:{},r:{},m:{}},desc:'',prices:[],food:[],cuisine:[],vibe:[],features:[],time:'',tips:[],notes:'',url:'',book:'',phone:'',
+  E={kind:'draft',data:{name:init.name||'',types:(init.types||[]).slice(),cat:'other',rating:0,price:0,photos:[],menus:[],events:[],fix:{d:{},r:{},m:{}},desc:'',prices:[],food:[],cuisine:[],vibe:[],features:[],time:'',tips:[],notes:'',url:'',book:'',phone:'',
     hours:blankDays(),kitchen:blankDays(),ohours:[],deals:blankDays(),lat:init.lat,lng:init.lng,loc:init.loc||'',ts:Date.now()}};
   E.initLoc=E.data.loc;E.data.cat=placeColor(E.data);E.raw=null;E.data.raw={};
   $('pasteBox').open=false;$('pasteTxt').value='';
@@ -3669,7 +3963,13 @@ $('addBtn').addEventListener('click',function(){
 });
 $('fName').addEventListener('input',function(e){E.data.name=e.target.value;paintView();touched()});
 $('learnBtn').addEventListener('click',openLearned);
-$('fDesc').addEventListener('input',function(e){if(!E)return;E.data.desc=e.target.value;paintView();touched()});
+function fitDesc(){var t=$('fDesc');t.style.height='auto';if(!t.offsetParent||!t.scrollHeight){t.style.height='';return}t.style.height=(t.scrollHeight+2)+'px'}
+$('fDesc').addEventListener('focus',fitDesc);
+$('eventsTxt').addEventListener('input',function(e){if(!E)return;setRaw('events',e.target.value);E.data.events=parseEvents(e.target.value);paintView();touched()});
+$('mAdd').addEventListener('click',function(){$('mFile').click()});
+$('mFile').addEventListener('change',function(e){var fs=Array.prototype.slice.call(e.target.files||[]);e.target.value='';addMenuFiles(fs)});
+$('fDesc').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();e.target.blur()}});
+$('fDesc').addEventListener('input',function(e){if(!E)return;if(/\n/.test(e.target.value))e.target.value=e.target.value.replace(/\s*\n+\s*/g,' ');fitDesc();E.data.desc=e.target.value;paintView();touched()});
 $('fDesc').addEventListener('blur',function(e){if(!E)return;E.data.desc=tidyDesc(e.target.value);e.target.value=E.data.desc;paintView()});
 $('moreInfo').addEventListener('click',function(){$('form').classList.toggle('showempty');paintView()});
 $('ohoursTxt').addEventListener('input',function(e){if(!E)return;setRaw('ohours',e.target.value);E.data.ohours=parseOHours(e.target.value);paintView();touched()});
@@ -3721,6 +4021,12 @@ $('form').addEventListener('input',function(e){
 $('form').addEventListener('focusout',function(e){
   var f=e.target.dataset&&e.target.dataset.days;if(!f||!E||E.raw)return;
   if(f==='deals'){moveAddonsToPricing(e.target.value);moveEverydayDeals()}
+  // hours boxes: rewrite to one format ("Mon–Fri 9am–5pm"), keeping any line the app couldn't read
+  if((f==='hours'||f==='kitchen')&&/\d/.test(e.target.value)){var hv=e.target.value,tidy='';
+    if(f==='hours'){var hn=splitHours(hv),keep=[];String(hv).split(/\n+/).forEach(function(l){l=l.trim();if(!l)return;var t1={hours:{},kitchen:{},ohours:[]};applyAllHours(t1,l);if(!fmtAllHours(t1)&&!(t1.tips||[]).length)keep.push(l)});
+      tidy=fmtAllHours(E.data);if(keep.length)tidy=(tidy?tidy+'\n':'')+keep.join('\n')}
+    else{var kd=parseDaysText(hv,true);if(DAYS.some(function(x){return (kd[x]||'').trim()}))tidy=fmtDays(kd)}
+    if(tidy&&tidy!==hv){e.target.value=tidy;setRaw(f,tidy);if(f==='hours')applyAllHours(E.data,tidy);paintView()}}
   var target=E,raw=e.target.value;
   setTimeout(function(){
     if(E!==target||document.activeElement===e.target)return;
@@ -3742,8 +4048,9 @@ $('saveBtn').addEventListener('click',function(){
   rw.tips=plus(rw.tips,ex.tips);rw.deals=plus(rw.deals,ex.deals);if(ex.food&&ex.food.length)rw.food=plus(rw.food||'',[ex.food.join(', ')]);if(ex.prices&&ex.prices.length)rw.pricing=plus(rw.pricing||'',[fmtPrices({prices:ex.prices},true)]);
   p.raw=cleanRaw(rw);
   S.places.set(id,p);
-  var np=E.newPhotos;
+  var np=E.newPhotos,nmu=E.newMenus;
   E={kind:'saved',id:id,data:p};S.selId=id;
+  if(nmu){Object.keys(nmu).forEach(function(k){if((p.menus||[]).some(function(x){return x.i===k}))saveFileData(id,k,nmu[k])})}
   if(np){Object.keys(np).forEach(function(k){if(p.photos.some(function(x){return x.i===k}))savePhotoData(id,k,np[k])})}
   persist(id);
   $('saveBtn').hidden=true;$('delBtn').textContent='Delete place';$('edNote').hidden=true;
@@ -3762,7 +4069,7 @@ $('delBtn').addEventListener('click',function(){
     setTimeout(function(){delArm=0;b.classList.remove('arm');if(E&&E.kind==='saved')b.textContent='Delete place'},3500);
     return;
   }
-  var id=E.id;(E.data.photos||[]).forEach(function(x){deletePhotoData(x.i)});S.places.delete(id);removePersisted(id);closeEditor();toast('Place deleted');
+  var id=E.id;(E.data.photos||[]).forEach(function(x){deletePhotoData(x.i)});(E.data.menus||[]).forEach(function(x){deleteFileData(x.i,x.c)});S.places.delete(id);removePersisted(id);closeEditor();toast('Place deleted');
 });
 $('copyCoords').addEventListener('click',function(){
   if(!E)return;
@@ -4098,7 +4405,22 @@ var TYPE_RULES=[
   ['Airbnb',/airbnb|holiday rental|holiday house|villa/],
   ['Museum',/museum/],
   ['Gallery',/galler(?:y|ies)/],
-  ['Zoo',/\bzoo\b|wildlife (?:park|sanctuary)/],
+  ['Petting zoo',/petting zoo|kids'? farm|children'?s farm/],
+  ['Wildlife sanctuary',/(?:wildlife|koala|animal|bird|kangaroo|fauna) (?:sanctuary|rescue)/],
+  ['Wildlife park',/wildlife (?:park|centre|center|reserve|experience)|fauna park|koala park|nature park/],
+  ['Safari park',/safari|open range zoo/],
+  ['Reptile park',/reptile/],
+  ['Aviary',/aviary|bird park|bird world/],
+  ['Marine park',/marine park|sea ?world/],
+  ['Butterfly house',/butterfl(?:y|ies) (?:house|garden|sanctuary|enclosure)/],
+  ['Animal farm',/animal farm|farm animals/],
+  ['Cat cafe',/cat caf[eé]/],
+  ['Dog park',/dog park|off[- ]leash (?:park|area)/],
+  ['Animal shelter',/animal shelter|rspca|pet shelter|dogs'? home|cats'? home/],
+  ['Animal rescue',/animal rescue|wildlife rescue|rescue centre/],
+  ['Equestrian centre',/equestrian|riding school|pony club/],
+  ['Trout farm',/trout farm|fish farm/],
+  ['Zoo',/\bzoo\b/],
   ['Aquarium',/aquarium/],
   ['Library',/library/],
   ['Park',/(?<!theme |amusement |fun |water |trampoline |car |wildlife |caravan |holiday )\bpark\b|national park/],
@@ -4278,6 +4600,51 @@ function durationPrices(t){
 }
 function pricingFromText(t){
   t=durationPrices(t);
+  // Zoo-style lines the list parser can't read on its own:
+  // "Quokka Encounter $120 for 1-2 people $40 for an extra person" -> $120.00 for 1–2 people, note "Extra person $40.00"
+  // "Threatened Species Tour $200 pp $250 for 2" -> $200.00 per person · $250.00 for 2 people
+  // "Kookaburra Encounter $70 up to 2" -> $70.00 for up to 2 people
+  // "Adults $37 weekdays, $42 weekends" -> Adults (weekdays) $37 + Adults (weekends) $42
+  // "Koala Encounter $35pp (11am & 2pm)" -> note "11am, 2pm"; "$40 for an extra person" on its own line goes under the item above
+  var POV={};(function(){
+    var out=[],TNOTE=[],prev=-1,prevName='',prevPriced=false,DAYW='(?:weekdays?|weekends?|weeknights?|public holidays?|school holidays|(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\\.?(?:\\s*(?:-|–|to|&|and)\\s*(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\\.?)?)';
+    var TMS=/\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)/ig;
+    String(t||'').split(/\n/).forEach(function(l){
+      var s=plStrip(l);if(!s){out.push(l);return}
+      var times=[],tb=s.match(/\s*\(([^)]*\d\s*(?:am|pm)[^)]*)\)\s*$/i)||s.match(/^[^$]*?(?<!\b(?:after|before|from|until|till|til))\s((?:(?:daily\s+)?(?:at\s+)?)\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)(?:\s*(?:,|&|and)\s*\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))*)(?=\s*[-–:]?\s*\$)/i);
+      if(tb){times=(tb[1].match(TMS)||[]).map(function(x){return x.replace(/\s+/g,'').toLowerCase()});s=s.replace(tb[1],'').replace(/\(\s*\)/,'').replace(/\s{2,}/g,' ').trim()}
+      var tl=s.match(/^([a-z][a-z'’ &-]{2,40}?)\s*[:\-–]?\s*(?:daily\s+|every day\s+)?(?:at\s+)?((?:\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm)(?:\s*(?:,|&|and)\s*)?)+)$/i);
+      if(tl&&s.search(/\$\s?\d/)<0){TNOTE.push([tl[1].trim(),(tl[2].match(TMS)||[]).map(function(x){return x.replace(/\s+/g,'').toLowerCase()}).join(', ')]);return}
+      var fi=s.search(/\$\s?\d/);
+      if(fi<0){out.push(l);prev=out.length-1;prevName=s.replace(/:$/,'');prevPriced=false;return}
+      var name=s.slice(0,fi).replace(/[\s:\-–—]+$/,''),segs=s.slice(fi).match(/\$\s?\d[\d,]*(?:\.\d\d)?[^$]*/g)||[],ok=true,mains=[],extras=[],days=[];
+      segs.forEach(function(sg){var am=sg.match(/^\$\s?(\d[\d,]*(?:\.\d\d)?)/)[1],q=sg.slice(sg.match(/^\$\s?\d[\d,]*(?:\.\d\d)?/)[0].length).replace(/^[\s,;\/·–-]+|[\s,;\/·.]+$/g,'').trim(),m;
+        if(!q)mains.push({a:am,t:''});
+        else if(/^(?:pp|p\.p\.?|per person|per head|a head|each|a person)$/i.test(q))mains.push({a:am,t:'per person'});
+        else if((m=q.match(new RegExp('^\\(?(?:on\\s+)?('+DAYW+')\\)?$','i'))))days.push({a:am,d:m[1].toLowerCase()});
+        else if((m=q.match(/^(?:for|per)?\s*(?:an?\s+|each\s+)?(?:extra|additional)\s+([a-z]+)$/i)))extras.push({a:am,n:m[1].toLowerCase()});
+        else if((m=q.match(/^(?:for\s+)?(up to\s+)?(\d+)(?:\s*(?:-|–|to)\s*(\d+))?\s*(?:people|persons?|guests|adults|pax)?$/i))){var one=!m[1]&&!m[3]&&m[2]==='1';mains.push({a:am,t:'for '+(m[1]?'up to ':'')+m[2]+(m[3]?'–'+m[3]:'')+(one?' person':' people')})}
+        else ok=false});
+      if(!ok){out.push(l);prev=out.length-1;prevName=name;prevPriced=true;return}
+      var note=extras.map(function(x){return '+1 '+x.n+' '+centsPr('$'+x.a)}).concat(times.length?[times.join(', ')]:[]).join(' · ');
+      // "$40 for an extra person" under the item above
+      if(!name&&!mains.length&&!days.length&&extras.length&&prev>=0&&prevName){var po=POV[prevName]||{};po.note=[po.note,note].filter(Boolean).join(' · ');if(!prevPriced){out[prev]=prevName+' – $0';po.pr=''}POV[prevName]=po;return}
+      if(days.length>=2&&!mains.length&&name){days.forEach(function(x){out.push(name+' ('+x.d+') – $'+x.a);if(note)POV[name+' ('+x.d+')']={note:note}});prev=out.length-1;prevName=name;prevPriced=true;return}
+      if(!name||!mains.length||(mains.length===1&&!extras.length&&!times.length&&!mains[0].t)||days.length){out.push(l);prev=out.length-1;prevName=name;prevPriced=true;return}
+      out.push(name+' – $'+mains[0].a);prev=out.length-1;prevName=name;prevPriced=true;
+      // the price column stays short; group sizes and second prices go in the grey note under it
+      var m0=mains[0],nts=[];mains.slice(1).forEach(function(x){nts.push(centsPr('$'+x.a)+(x.t?' '+x.t:''))});
+      POV[name]={pr:'$'+m0.a+(m0.t==='per person'?' pp':m0.t?' '+m0.t.replace(/^for up to /,'up to '):''),note:nts.concat(note?[note]:[]).join(' · ')};
+    });
+    // times without a price ("Koala encounters: 11am, 2pm") go under the matching item, or get their own row
+    function sk(x){return norm(x).replace(/\bs\b/g,'').replace(/s\b/g,'')}
+    TNOTE.forEach(function(tn){var k=sk(tn[0]),hit=null;out.forEach(function(l){var nm=plStrip(l).replace(/\s*[-–:]?\s*\$.*$/,'').trim();if(nm&&sk(nm)===k)hit=nm});
+      if(hit){var po=POV[hit]||{};if(po.pr==null){var ln=out.filter(function(l){return plStrip(l).indexOf(hit)===0})[0]||'';var pm=ln.match(/\$\s?\d[\d,]*(?:\.\d\d)?(?:\s*(?:pp|per person|each))?/i);if(pm)po.pr=pm[0].replace(/per person/i,'pp')}po.note=[po.note,tn[1]].filter(Boolean).join(' · ');POV[hit]=po}
+      else{out.push(cap1(tn[0])+' – $0');POV[cap1(tn[0])]={pr:'',note:tn[1]}}});
+    t=out.join('\n');
+  })();
+  // "Free delivery on orders over $150" -> "Delivery free over $150" (shown as Delivery with a grey note)
+  t=String(t||'').split(/\n/).map(function(l){var fd=l.trim().match(/^free\s+(delivery|shipping|postage)\s+(?:on\s+|for\s+)?(?:all\s+)?(?:orders?\s+)?(?:over|above|of)\s+(\$\s?\d[\d,]*(?:\.\d\d)?)\+?$/i);return fd?cap1(fd[1].toLowerCase())+' free over '+fd[2]:l}).join('\n');
   // "delivery (more than $150) free" -> "delivery (more than $150): Free"
   t=String(t||'').split(/\n/).map(function(l){var fm=l.trim().match(/^([a-z][^:]*?)\s*[-–:]?\s*free$/i);return fm&&!/\$\s?\d[^)]*$/.test(fm[1].replace(/\([^)]*\)/g,''))?fm[1]+': Free':l}).join('\n');
   // "Around $30-50 per person" -> "Per person: ~$30–50" ; "$20 to $35 a head" -> "Per person: $20–35" ; "Price range $15-40" -> "Price range: $15–40"
@@ -4302,6 +4669,12 @@ function pricingFromText(t){
   var tidyPr=centsPr;
   gs.forEach(function(g){g.it.forEach(function(r){if(/\s*\+$/.test(r[0]||'')){r[0]=r[0].replace(/\s*\+$/,'');if(!/^\+/.test(r[1]))r[1]='+'+r[1]}r[1]=tidyPr(r[1]);r[0]=String(r[0]||'').replace(/\s+(?:are|is|cost|costs|go for|for|at|priced at)$/i,'').trim();});});
   gs.forEach(function(g){g.it.forEach(function(r){var k=String(r[0]||'').trim().toLowerCase();if(PL_WORD[k])r[0]=PL_WORD[k];else if(r[0])r[0]=cap1(String(r[0]).trim())});if(g.n){var gk=g.n.trim().toLowerCase();g.n=PL_WORD[gk]||cap1(g.n.trim())}});
+  // overrides from the zoo-style lines above, and "Additional child … $13" goes under the item above it
+  gs.forEach(function(g){var keep=[];g.it.forEach(function(r){var po=POV[r[0]];if(po){if(po.pr!=null)r[1]=po.pr;if(po.note)r[2]=po.note}
+    var ad=String(r[0]).match(/^(?:each\s+)?(?:additional|extra)\s+([a-z]+)\b/i);if(ad&&keep.length&&/\$\s?\d/.test(r[1])){var pv=keep[keep.length-1],an='+1 '+ad[1].toLowerCase()+' '+centsPr(r[1]);pv[2]=pv[2]&&!/^\d+\s*(?:min|hrs?|hours?)$/i.test(pv[2])?pv[2]+' · '+an:an;return}
+    keep.push(r)});g.it=keep});
+  // "Twilight entry after 5pm" -> "Twilight entry (after 5pm)", like "Rooms (per hour)"
+  gs.forEach(function(g){g.it.forEach(function(r){r[0]=String(r[0]).replace(/\s+((?:after|before|from|until)\s+\d{1,2}(?:[:.]\d\d)?\s*(?:am|pm))$/i,' ($1)')})});
   return cleanPrices(gs.filter(function(g){return g.it.length}));
 }
 function plNums(pr){return (String(pr).match(/\d[\d,]*(?:\.\d\d)?/g)||[]).map(function(x){return Number(x.replace(/,/g,''))})}
@@ -4386,7 +4759,7 @@ function fmtPrices(d,noLevel){var out=d.price&&!noLevel?['$'.repeat(d.price)]:[]
 // Pricing rows: [{h:subheading or '', rows:[[name, price]]}]
 function priceLines(gs){
   var out=[],done={},simple={h:'',rows:[]};
-  function isPure(pr){return /^~?\+?(?:from\s+)?\$\d[\d,.]*(?:\s*[–-]\s*\$?\d[\d,.]*)?(?: pp| each)?$|^ask$|^free$/i.test(String(pr).trim())}
+  function isPure(pr){pr=String(pr).trim();return pr===''||pr.split(/\s+·\s+/).every(function(x){return /^~?\+?(?:from\s+)?\$\d[\d,.]*(?:\s*[–-]\s*\$?\d[\d,.]*)?(?: pp| each| for (?:up to )?\d+(?:–\d+)? (?:people|person)| up to \d+ (?:people|person))?$|^ask$|^free$/i.test(x)})}
   function rng(prs){var ns=[],pp=prs.length>0;prs.forEach(function(pr){var a=plNums(pr);ns=ns.concat(a);if(!/\bpp\b/.test(pr))pp=false});if(!ns.length)return 'Ask';var lo=Math.min.apply(null,ns),hi=Math.max.apply(null,ns),dec=ns.some(function(v){return v%1});function f(v){return v.toFixed(2)}return '$'+f(lo)+(hi>lo?' - $'+f(hi):'')+(pp?' pp':'')}
   function nice(n){n=String(n||'').replace(/\s+(?:packages?|options?)$/i,'').replace(/^(?:deals?|specials?)\s*(?:&|and)\s*/i,'');return n.charAt(0).toUpperCase()+n.slice(1).toLowerCase()}
   var tiersRe=/^(?:adults?|concessions?|child(?:ren)?|kids?|seniors?|students?|infants?|family|couples?)$/i;
@@ -4399,7 +4772,7 @@ function priceLines(gs){
       var w=mates.map(function(x){return x[0].w}).filter(Boolean)[0];
       out.push({h:nice(matrixKey(g.n)||'Prices')+(w?' ('+w.toLowerCase()+')':''),rows:g.it.map(function(r,ri){return [r[0],rng(mates.map(function(x){return (x[0].it[ri]||['',''])[1]}))]})});
     }else if(g.it.every(function(r){return tiersRe.test(r[0])})||!g.n||/^(?:extras?|add[- ]?ons?)$/i.test(g.n)){
-      out.push({h:g.n?nice(g.n)+(g.w?' ('+g.w.toLowerCase()+')':''):'',rows:g.it.map(function(r){return [r[0]+(r[2]?' ('+r[2]+')':''),r[1]]})});
+      out.push({h:g.n?nice(g.n)+(g.w?' ('+g.w.toLowerCase()+')':''):'',rows:g.it.map(function(r){var dur=/^\d+\s*(?:min|mins|hr|hrs|hours?)$/i.test(r[2]||'');return dur?[r[0]+' ('+r[2]+')',r[1]]:[r[0],r[1],r[2]||'']})});
     }else simple.rows.push([nice(g.n)+(g.w?' ('+g.w.toLowerCase()+')':''),rng(g.it.map(function(r){return r[1]}))]);
   });
   if(simple.rows.length)out.unshift(simple);
@@ -4432,8 +4805,14 @@ function paintPricing(v,d){
   if(!blocks.length){v.appendChild(muted('No pricing yet'));return}
   blocks.forEach(function(b){if(b.gap&&v.childNodes.length)v.appendChild(el('div','dotsgap'));
     if(b.h)v.appendChild(el('div','dotsh',b.h));
-    var g=el('div','dots');
-    b.rows.forEach(function(r){g.appendChild(el('span','dn',r[0]));g.appendChild(el('i'));g.appendChild(el('span','dp'+(/^ask$/i.test(r[1])?' ask':''),/^free over/i.test(r[1])?r[1]:centsPr(r[1])));if(r[2])g.appendChild(el('div','dnote',r[2]))});
+    var g=el('div','dots'),pk='';
+    b.rows.forEach(function(r){
+      // a gap between kinds of price: tickets, group deals (family passes), experiences (encounters, tours)
+      var nm=String(r[0]),k=/\b(?:encounters?|tours?|experiences?|keeper|feedings?|sessions?|classes?|workshops?|lessons?|safaris?)\b/i.test(nm)?'exp':/\b(?:family|group|pass(?:es)?|bundle|annual|membership|combo)\b/i.test(nm)?'grp':/\b(?:adults?|child(?:ren)?|kids?|concessions?|pensioners?|seniors?|students?|infants?|toddlers?|youth|teens?|under \d+s?|general admission|admission|entry)\b/i.test(nm)?'tix':'';
+      if(k&&pk&&k!==pk&&g.childNodes.length){v.appendChild(g);v.appendChild(el('div','dotsgap'));g=el('div','dots')}if(k)pk=k;
+      g.appendChild(el('span','dn',r[0]));g.appendChild(el('i'));g.appendChild(el('span','dp'+(/^ask$/i.test(r[1])?' ask':''),/^free over/i.test(r[1])?r[1]:centsPr(r[1])));
+      // "+1 person $40.00" and "$250.00 for 2 people" sit under the item with their price on the right
+      if(r[2]){var txt=[];String(r[2]).split(/\s+·\s+/).forEach(function(pt){var m=pt.match(/^(.*?)\s*(\$\s?\d[\d,]*(?:\.\d\d)?)\s*(.*)$/);if(m&&!/^free on orders/i.test(pt)){var lab=(m[1]+' '+m[3]).replace(/^\s*for\s+/i,'').trim();g.appendChild(el('span','dn dsub',cap1(lab)||'Extra'));g.appendChild(el('i','dsub'));g.appendChild(el('span','dp dsub',centsPr(m[2])))}else txt.push(pt)});if(txt.length)g.appendChild(el('div','dnote',txt.join(' · ')))}});
     v.appendChild(g);
   });
 }
