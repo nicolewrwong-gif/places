@@ -3036,15 +3036,17 @@ function restorePlace(d,snap){var o=JSON.parse(snap);Object.keys(d).forEach(func
 // Paste from Claude: one box for the sorted info; each part goes under what's already in its box
 var PASTE_HEADS=[['name',/^name$/],['addr',/^(?:address|location)$/],['cuisine',/^cuisines?$/],['type',/^(?:type|types|kind of place)$/],['vibe',/^vibes?$/],['desc',/^(?:description|about)$/],['phone',/^(?:phone|phone number)$/],['url',/^(?:website|web|site)$/],['book',/^(?:booking|bookings|booking link|book)$/],['hours',/^(?:opening hours|hours|open)$/],['menu',/^(?:menu|menus|menu link)$/],['tips',/^(?:good to know|need to know|notes)$/],['features',/^features?$/],['price',/^(?:price|price level)$/],['pricing',/^(?:pricing|prices|price list)$/],['deals',/^(?:deals|specials|happy hour)$/],['events',/^events?$/],['time',/^(?:time needed|time|how long)$/],['food',/^(?:food (?:and|&) drinks?|dishes)$/]];
 var PASTE_LINK=/^(?:url|book|menu)$/;
-function pasteHead(line,next){var L=String(line).replace(/[*_`]+/g,'').replace(/^[^A-Za-z]+/,'').trim(),m=L.match(/^([A-Za-z][A-Za-z &\/]{1,30}?)(?:\s+(?:box|section|field))?(?:\s*\([^)]{0,30}\))?\s*(?::|\s[-–—]\s|$)\s*(.*)$/);if(!m)return null;var lab=m[1].trim().toLowerCase().replace(/\s*\/\s*/g,' and ').replace(/\s+/g,' '),val=(m[2]||'').trim(),k=null;
+function pasteHead(line,next,cur){var L=String(line).replace(/[*_`]+/g,'').replace(/^[^A-Za-z]+/,'').trim(),m=L.match(/^([A-Za-z][A-Za-z &\/]{1,30}?)(?:\s+(?:box|section|field))?(?:\s*\([^)]{0,30}\))?\s*(?::|\s[-–—]\s|$)\s*(.*)$/);if(!m)return null;var lab=m[1].trim().toLowerCase().replace(/\s*\/\s*/g,' and ').replace(/\s+/g,' '),val=(m[2]||'').trim(),k=null;
   PASTE_HEADS.forEach(function(h){if(!k&&h[1].test(lab))k=h[0]});if(!k)return null;
   var isUrl=function(v){return /^(?:https?:\/\/|www\.)\S+$/i.test(String(v||'').trim())};
+  // "Menu" with dishes under it (not a link) is the food list, unless it's a heading inside Pricing
+  if(k==='menu'&&!val&&!isUrl(next)&&cur!=='pricing'&&cur!=='tips')return {k:'food',v:''};
   if(PASTE_LINK.test(k)&&!(isUrl(val)||(!val&&isUrl(next))||/^(?:none|n\/a|no (?:booking|menu) link|-)$/i.test(val)))return null;
   if(k==='price'&&val&&!/^(?:\$+(?![\w$])|[1-4]\b|(?:cheap|budget|inexpensive|mid[- ]?range|moderate|pricey|expensive|upscale|splurge|fine dining)\b)/i.test(val))return null;
   if(k==='phone'&&val&&!/\d/.test(val))return null;
   return {k:k,v:val}}
 function pasteSort(text){var out={},cur='tips',ls=String(text||'').replace(/\r/g,'').split('\n');
-  ls=ls.filter(function(l){return !/^\s*```/.test(l)});ls.forEach(function(l,i){var nx='';for(var j=i+1;j<ls.length;j++)if(ls[j].trim()){nx=ls[j];break}var h=pasteHead(l,nx);if(h){cur=h.k;if(h.v)(out[cur]=out[cur]||[]).push(h.v);return}var t=l.replace(/^\s*(?:[-*•·]|\d+[.)])\s+/,'').replace(/\*\*/g,'').replace(/\s+$/,'');if(!t.trim()){if(out[cur]&&out[cur].length&&out[cur][out[cur].length-1]!=='')out[cur].push('');return}(out[cur]=out[cur]||[]).push(t)});
+  ls=ls.filter(function(l){return !/^\s*```/.test(l)});ls.forEach(function(l,i){var nx='';for(var j=i+1;j<ls.length;j++)if(ls[j].trim()){nx=ls[j];break}var h=pasteHead(l,nx,cur);if(h){cur=h.k;if(h.v)(out[cur]=out[cur]||[]).push(h.v);return}var t=l.replace(/^\s*(?:[-*•·]|\d+[.)])\s+/,'').replace(/\*\*/g,'').replace(/\s+$/,'');if(!t.trim()){if(out[cur]&&out[cur].length&&out[cur][out[cur].length-1]!=='')out[cur].push('');return}(out[cur]=out[cur]||[]).push(t)});
   Object.keys(out).forEach(function(k){while(out[k].length&&out[k][out[k].length-1]==='')out[k].pop();if(!out[k].length)delete out[k]});return out}
 function pasteFill(text){if(!E)return;var o=pasteSort(text),done=[];E.mvSnap=snapPlace(E.data);if(!Object.keys(o).length){toast('Nothing to fill');return}
   function one(k){return (o[k]||[]).filter(Boolean).join(' ').trim()}
