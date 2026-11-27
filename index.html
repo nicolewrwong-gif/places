@@ -562,6 +562,10 @@ details.days[open] summary::after{transform:rotate(90deg)}
 .lpt .pcap{font-size:10.5px;padding:1px 6px}.lpt .pgrip{width:22px;height:22px}.lpt.plift{transform:scale(1.05);box-shadow:0 8px 20px rgba(0,0,0,.25);z-index:3}
 .ltabs{display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--line);margin:2px 0 8px}.ltabs::-webkit-scrollbar{display:none}.ltab{flex:none;background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;padding:6px 0 7px;font:inherit;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer}.ltab.on{color:var(--accent);border-bottom-color:var(--accent)}.ltab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .ltaddr{margin:0}.ltmeta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin:3px 0 0}
+.pt img,.lpt img{-webkit-user-drag:none;user-select:none;-webkit-touch-callout:none;pointer-events:none}.pt,.lpt{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.lpt{cursor:grab}
+.pgrid[hidden]{display:none}
+#form>#loBanner{order:-100!important}.lobanner{background:var(--accent-soft);color:var(--accent);border-radius:12px;padding:9px 12px;margin:0 0 12px}.lobanner[hidden]{display:none}.lobrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.lobt{font-size:13.5px;font-weight:600}.lobanner .linkbtn{font-size:13px;text-decoration:underline;align-self:auto}.lobsub{font-size:12px;margin:4px 0 0;color:var(--fg);opacity:.75}
+.loask{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 </style>
 
 </head>
@@ -1129,7 +1133,13 @@ function cleanSeason(a){return (Array.isArray(a)?a:[]).filter(function(z){return
 function inSeason(z,now){now=now||new Date();var md=('0'+(now.getMonth()+1)).slice(-2)+'-'+('0'+now.getDate()).slice(-2);return z.f<=z.t?(md>=z.f&&md<=z.t):(md>=z.f||md<=z.t)}
 // the hours that apply right now: seasonal hours replace the usual ones during their dates
 function hoursNow(p,now){var z=(p.season||[]).filter(function(x){return inSeason(x,now)})[0];return z?z.h:(p.hours||{})}
-function cleanLocs(a){return (Array.isArray(a)?a:[]).map(function(l){l=l||{};var la=Number(l.lat),ln=Number(l.lng);return {n:String(l.n||'').slice(0,40),loc:String(l.loc||'').slice(0,200),lat:isFinite(la)?la:null,lng:isFinite(ln)?wrapLng(ln):null,h:String(l.h||'').slice(0,300),ph:cleanPhotos(l.ph)}}).filter(function(l){return l.loc||l.n||l.lat!=null}).slice(0,20)}
+// boxes a location can have its own version of ("Only Chadstone" while editing)
+var OV_KEYS=['desc','phone','url','book','menu','mlinks','menuAt','prices','food','foodAt','fsrc','vibe','features','tips','time','deals','events','price'];
+var OV_NAMES={desc:'Description',phone:'Phone',url:'Website',book:'Booking',menu:'Menus and maps',mlinks:'Menus and maps',prices:'Pricing',food:'Menu dishes',vibe:'Vibe',features:'Features',tips:'Good to know',time:'Time needed',deals:'Deals',events:'Events',price:'Price'};
+function cleanOv(o){var r={};if(!o||typeof o!=='object')return r;OV_KEYS.forEach(function(k){if(k in o&&o[k]!==undefined)r[k]=JSON.parse(JSON.stringify(o[k]))});if(o.raw&&typeof o.raw==='object'){var rw=cleanRaw(o.raw);if(Object.keys(rw).length)r.raw=rw}if(JSON.stringify(r).length>60000)return {};return r}
+function hasOv(l){return !!(l&&l.ov&&Object.keys(l.ov).length)}
+function ovNames(l){var o=[];if(hasOv(l))Object.keys(l.ov).forEach(function(k){var n=OV_NAMES[k];if(n&&o.indexOf(n)<0)o.push(n)});if(l&&l.h&&String(l.h).trim())o.unshift('Opening hours');return o}
+function cleanLocs(a){return (Array.isArray(a)?a:[]).map(function(l){l=l||{};var la=Number(l.lat),ln=Number(l.lng);return {n:String(l.n||'').slice(0,40),loc:String(l.loc||'').slice(0,200),lat:isFinite(la)?la:null,lng:isFinite(ln)?wrapLng(ln):null,h:String(l.h||'').slice(0,300),ph:cleanPhotos(l.ph),ov:cleanOv(l.ov)}}).filter(function(l){return l.loc||l.n||l.lat!=null}).slice(0,20)}
 function suburbOf(a){var ps=String(a||'').split(/\s*,\s*/).filter(Boolean);var x=ps.length>1?ps[1]:ps[0]||'';return x.replace(/\s+(?:NSW|VIC|QLD|WA|SA|TAS|NT|ACT)\b.*$/i,'').replace(/\s+\d{4}$/,'').trim()}
 // every location with a pin (main first), each with its own hours
 function allLocs(d){var main={i:-1,n:d.locName||suburbOf(d.loc)||'Main',loc:d.loc||'',lat:d.lat,lng:d.lng,hours:d.hours||{},own:true};
@@ -2970,7 +2980,7 @@ function paintPhotos(){
   var shade=vph.length>1||vph.some(function(x){return x.c});$('pWrap').classList.toggle('hasshade',shade);if(shade)$('pCount').hidden=true;
   if(shade)vph.forEach(function(x,i){var sh=el('span','pshade');sh.setAttribute('aria-hidden','true');sh.appendChild(el('span','psd',x.c||''));if(vph.length>1)sh.appendChild(el('span','psn',(i+1)+' / '+vph.length));st.appendChild(sh)});
   placeShades();
-  gr.textContent='';gr._list=ph;
+  gr.textContent='';gr._list=ph;gr.hidden=!!(d.locs||[]).length;
   ph.forEach(function(x,i){var b=el('button','pt');b.type='button';b.dataset.i=x.i;b.setAttribute('aria-label',(x.c?x.c+'. ':'')+(i?'Make this the cover photo':'Cover photo'));var im=document.createElement('img');im.src=x.t;im.alt='';b.appendChild(im);
     var gp=el('span','pgrip');gp.setAttribute('aria-hidden','true');gp.title='Drag to move';gp.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d=\"M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/><path d=\"M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\"/></svg>';b.appendChild(gp);
     var xx=el('span','px','×');xx.dataset.del=x.i;xx.setAttribute('role','button');xx.setAttribute('aria-label','Remove photo');b.appendChild(xx);
@@ -2997,27 +3007,42 @@ function describePhoto(px){if(!E)return;var target=E,ov=el('div','fixwrap'),sh=e
   function save(){if(E!==target){close();return}var v=inp.value.replace(/\s+/g,' ').trim().slice(0,40);if(v)px.c=v;else delete px.c;close();paintPhotos();repaintLocsEd();touched()}
   var row=el('div','prow'),fb=el('button','btn primary','Save'),cb=el('button','btn','Cancel');fb.type=cb.type='button';fb.addEventListener('click',save);cb.addEventListener('click',close);inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();save()}});
   row.appendChild(fb);row.appendChild(cb);sh.appendChild(row);ov.appendChild(sh);ov.addEventListener('click',function(e){if(e.target===ov)close()});document.addEventListener('keydown',kd,true);document.body.appendChild(ov);inp.focus()}
-// drag a photo by its handle to change the order (the first one is the cover), or onto another location's photos
-document.addEventListener('pointerdown',function(e){var gp=e.target.closest&&e.target.closest('.pgrip');if(!gp||!E)return;var tile=gp.closest('.pt,.lpt'),from=tile&&tile.parentElement;if(!tile||!from||!from._list)return;e.preventDefault();e.stopPropagation();
-  var conts=Array.prototype.filter.call(document.querySelectorAll('#pGrid,#locsEd .lprow'),function(c){return !!c._list}),ids=function(c){return Array.prototype.map.call(c.querySelectorAll('.pt,.lpt'),function(x){return x.dataset.i})},before=conts.map(function(c){return ids(c).join(',')}),moved=false;tile.classList.add('plift');
+// drag a photo to change the order (the first one is the cover), or onto another location's photos.
+// Mouse: grab anywhere on the photo and move. Touch: use the handle, or touch and hold the photo.
+var PH_TOUCHDRAG=false;
+document.addEventListener('touchmove',function(e){if(PH_TOUCHDRAG)e.preventDefault()},{passive:false});
+document.addEventListener('pointerdown',function(e){if(!E||e.button>0)return;var tile=e.target.closest&&e.target.closest('#pGrid .pt,#locsEd .lpt');if(!tile||!tile.parentElement||!tile.parentElement._list)return;if(e.target.closest('.px,[data-cap]'))return;
+  var onGrip=!!e.target.closest('.pgrip'),touch=e.pointerType==='touch',sx=e.clientX,sy=e.clientY,started=false,timer=null,done=false;
+  function far(ev,n){return Math.abs(ev.clientX-sx)>n||Math.abs(ev.clientY-sy)>n}
+  function pre(ev){if(started||done)return;if(touch){if(far(ev,8))stop()}else if(far(ev,6)){start();mv(ev)}}
+  function preUp(){if(!started)stop()}
+  function stop(){done=true;clearTimeout(timer);document.removeEventListener('pointermove',pre,true);document.removeEventListener('pointerup',preUp,true);document.removeEventListener('pointercancel',preUp,true)}
+  document.addEventListener('pointermove',pre,true);document.addEventListener('pointerup',preUp,true);document.addEventListener('pointercancel',preUp,true);
+  if(onGrip){e.preventDefault();e.stopPropagation();start()}else if(touch)timer=setTimeout(start,350);
+  var conts,ids,before,moved=false;
+  function start(){if(started||done)return;started=true;clearTimeout(timer);document.removeEventListener('pointermove',pre,true);document.removeEventListener('pointerup',preUp,true);document.removeEventListener('pointercancel',preUp,true);
+    conts=Array.prototype.filter.call(document.querySelectorAll('#pGrid,#locsEd .lprow'),function(c){return !!c._list&&c.offsetParent!==null});ids=function(c){return Array.prototype.map.call(c.querySelectorAll('.pt,.lpt'),function(x){return x.dataset.i})};before=conts.map(function(c){return ids(c).join(',')});
+    tile.classList.add('plift');if(touch){PH_TOUCHDRAG=true;try{navigator.vibrate&&navigator.vibrate(10)}catch(_){}}
+    document.addEventListener('pointermove',mv,true);document.addEventListener('pointerup',up,true);document.addEventListener('pointercancel',up,true)}
   function mv(ev){ev.preventDefault();var o=document.elementFromPoint(ev.clientX,ev.clientY);if(!o||!o.closest)return;var t=o.closest('#pGrid .pt,#locsEd .lpt'),c=o.closest('#pGrid,#locsEd .lprow');
     if(t&&t!==tile&&t.parentElement._list){if(t.parentElement===tile.parentElement){var ls=Array.prototype.slice.call(t.parentElement.children);if(ls.indexOf(t)>ls.indexOf(tile))t.after(tile);else t.before(tile)}else t.before(tile);moved=true}
     else if(c&&c._list&&c!==tile.parentElement&&!t){c.insertBefore(tile,c.querySelector('.padd'));moved=true}}
-  function up(){document.removeEventListener('pointermove',mv,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('pointercancel',up,true);tile.classList.remove('plift');if(!E)return;
-    // which list each photo is now in (a list shown twice, like the main photos, takes the copy that changed)
+  function up(){document.removeEventListener('pointermove',mv,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('pointercancel',up,true);PH_TOUCHDRAG=false;tile.classList.remove('plift');if(!E)return;
+    // which list each photo is now in (a list shown twice takes the copy that changed)
     var byId={},lists=[],pick=[];conts.forEach(function(c){c._list.forEach(function(x){byId[x.i]=x})});
     conts.forEach(function(c,k){var j=lists.indexOf(c._list),now=ids(c).join(','),ch=now!==before[k];if(j<0){lists.push(c._list);pick.push({ids:ids(c),ch:ch})}else if(ch&&!pick[j].ch)pick[j]={ids:ids(c),ch:ch}});
     var full=pick.some(function(p){return p.ids.length>6}),seen={},dup=false;pick.forEach(function(p){p.ids.forEach(function(i){if(seen[i])dup=true;seen[i]=1})});
     if(full)toast('A location can have up to 6 photos');
     else if(!dup&&pick.some(function(p){return p.ch})){pick.forEach(function(p,j){if(p.ch)lists[j].splice.apply(lists[j],[0,lists[j].length].concat(p.ids.map(function(i){return byId[i]}).filter(Boolean)))});touched()}
-    if(moved){PH_DRAGGED=true;setTimeout(function(){PH_DRAGGED=false},400)}paintPhotos();repaintLocsEd();paintView()}
-  document.addEventListener('pointermove',mv,true);document.addEventListener('pointerup',up,true);document.addEventListener('pointercancel',up,true)});
+    PH_DRAGGED=true;setTimeout(function(){PH_DRAGGED=false},400);paintPhotos();repaintLocsEd();paintView()}
+});
+document.addEventListener('contextmenu',function(e){if(e.target.closest&&e.target.closest('#pGrid .pt,#locsEd .lpt'))e.preventDefault()});
 $('pFile').addEventListener('change',function(e){var files=Array.prototype.slice.call(e.target.files||[]);e.target.value='';addPhotoFiles(files)});
 // drag photos from your computer onto the place while adding or editing
 function photoDropOk(e){return E&&(E.kind==='draft'||$('form').classList.contains('editall')||$('form').classList.contains('all-open'))&&e.dataTransfer&&Array.prototype.indexOf.call(e.dataTransfer.types||[],'Files')>=0}
 ['dragenter','dragover'].forEach(function(ev){$('form').addEventListener(ev,function(e){if(!photoDropOk(e))return;e.preventDefault();e.dataTransfer.dropEffect='copy';$('pGrid').classList.add('dropping')})});
 $('form').addEventListener('dragleave',function(e){if(!e.relatedTarget||!$('form').contains(e.relatedTarget))$('pGrid').classList.remove('dropping')});
-$('form').addEventListener('drop',function(e){$('pGrid').classList.remove('dropping');if(!photoDropOk(e))return;e.preventDefault();
+$('form').addEventListener('drop',function(e){$('pGrid').classList.remove('dropping');if(!photoDropOk(e))return;var lr=e.target.closest&&e.target.closest('#locsEd .lprow');if(lr&&lr._list){e.preventDefault();addLocPhotos(lr._list,Array.prototype.filter.call(e.dataTransfer.files||[],function(f){return /^image\//.test(f.type)}));return}e.preventDefault();
   var files=Array.prototype.filter.call(e.dataTransfer.files||[],function(f){return /^image\//.test(f.type)});
   if(!files.length){toast('Only photos can be added here');return}
   if((E.data.photos||[]).length>=6){toast('Up to 6 photos per place');return}
@@ -3210,7 +3235,7 @@ $('undoAll').addEventListener('click',function(){
 });
 function paintPick(){if(!E)return;Array.prototype.forEach.call($('pricePick').querySelectorAll('button'),function(b){var on=Number(b.dataset.lv)===E.data.price;b.classList.toggle('on',on);b.setAttribute('aria-checked',on?'true':'false')})}
 $('pricePick').addEventListener('click',function(e){var b=e.target.closest('button');if(!b||!E)return;var lv=Number(b.dataset.lv);E.data.price=E.data.price===lv?0:lv;E.pricePicked=true;$('pricePick').classList.remove('need');paintPick();paintView();touched()});
-function paintView(){if(E)$('form').classList.toggle('drafting',E.kind==='draft');setTimeout(fitBoxes,0);try{paintMenus()}catch(e){}try{paintLocsEd()}catch(e){}try{paintHoursEd()}catch(e){}try{paintCkEd()}catch(e){}try{paintTidy()}catch(e){}try{paintCkTidy()}catch(e){}try{paintDescTidy()}catch(e){}
+function paintView(){syncLocView();if(E)$('form').classList.toggle('drafting',E.kind==='draft');setTimeout(fitBoxes,0);try{paintMenus()}catch(e){}try{paintLocsEd()}catch(e){}try{paintHoursEd()}catch(e){}try{paintCkEd()}catch(e){}try{paintTidy()}catch(e){}try{paintCkTidy()}catch(e){}try{paintDescTidy()}catch(e){}
   if(!E)return;var d=E.data,tk=todayKey(),v;CUR_STATE=placeState(d);
   paintPick();paintPhotos();paintDup();
   $('undoAll').hidden=!(E.kind==='saved'&&E.snap&&$('form').classList.contains('editall')&&snapPlace(E.data)!==E.snap);
@@ -4421,7 +4446,7 @@ function showEditor(){
   invalidate();
 }
 function closeEditor(silent){
-  E=null;S.selId=null;
+  if(E&&E.lo)foldLo();E=null;S.selId=null;
   $('editView').hidden=true;$('listView').hidden=false;
   document.querySelector('.app').classList.remove('editing','adding','peekmap');
   if(!silent)renderAll();else{renderFilters();renderList();invalidate()}
@@ -4444,8 +4469,43 @@ function startDraft(init){
   if(init.paste)setTimeout(function(){$('fName').focus()},0);
   else if(!coarse)setTimeout(function(){$('fName').focus()},0);
 }
+// One location: the place shown/edited is the shared version with that location's own boxes on top.
+// Name, type, cuisine, photos and the location list stay shared; address and hours belong to the location.
+var LO_HOURS_RAW=/^(?:hours|hmain|kitchen|ohours)$/,LO_SHARE_RAW=/^(?:types|cuisine|keepmv)$/,LO_BUSY=false;
+function loHoursText(d){var r=d.raw||{};return r.hmain!=null?String(r.hmain):fmtAllHours(d)}
+function buildLo(p,i){var l=(p.locs||[])[i];if(!l)return null;var m=JSON.parse(JSON.stringify(p));m.locs=p.locs;m.photos=p.photos;m.menus=p.menus;m.raw=Object.assign({},p.raw||{});
+  var ov=l.ov||{};OV_KEYS.forEach(function(k){if(k in ov)m[k]=JSON.parse(JSON.stringify(ov[k]))});if(ov.raw)Object.keys(ov.raw).forEach(function(k){m.raw[k]=ov.raw[k]});
+  if(l.h&&String(l.h).trim()){applyAllHours(m,l.h);m.raw.hmain=l.h;delete m.raw.hours}
+  m.loc=l.loc||'';m.lat=l.lat;m.lng=l.lng;return {i:i,m:m,h0:loHoursText(m),a0:[m.loc,m.lat,m.lng].join('|')}}
+function foldLo(){if(!E||!E.lo)return;var p=S.places.get(E.id),m=E.data,lo=E.lo;if(!p)return;
+  ['locs','photos','menus'].forEach(function(k){p[k]=m[k]});var l=(p.locs||[])[lo.i];if(!l)return;
+  ['name','types','cuisine','cat','status','rating','notes','fix'].forEach(function(k){if(k in m)p[k]=m[k]});
+  var ov={};OV_KEYS.forEach(function(k){if(JSON.stringify(m[k])!==JSON.stringify(p[k]))ov[k]=JSON.parse(JSON.stringify(m[k]))});
+  var rw={},pr=p.raw||{};Object.keys(m.raw||{}).forEach(function(k){if(LO_HOURS_RAW.test(k))return;if(LO_SHARE_RAW.test(k)){pr[k]=m.raw[k];return}if(m.raw[k]!==pr[k])rw[k]=m.raw[k]});p.raw=pr;if(Object.keys(rw).length)ov.raw=rw;l.ov=ov;
+  var hn=loHoursText(m);if(hn!==lo.h0){var hb=loHoursText(p);l.h=norm(hn.trim())===norm(hb.trim())?'':hn.trim().slice(0,300);lo.h0=hn}
+  var an=[m.loc,m.lat,m.lng].join('|');if(an!==lo.a0){l.loc=m.loc||'';l.lat=m.lat;l.lng=m.lng;lo.a0=an}
+  p.editedAt=m.editedAt||Date.now()}
+function loSwap(data,lo){E.data=data;E.lo=lo;E.ck=null;E.hc=null;E.hcFor=null;E.tkept={};E.mv=null;E.mvSnap=null}
+function syncLocView(){if(LO_BUSY||!E||E.kind!=='saved')return;var p=S.places.get(E.id);if(!p)return;var editing=$('form').classList.contains('editall');
+  var want=null;if((p.locs||[]).length&&!E.allEdit){var pk=pickedLoc(p);if(pk&&pk.i>=0&&(E.loEdit===pk.i||(!editing&&hasOv(p.locs[pk.i]))))want=pk.i}
+  if(want===(E.lo?E.lo.i:null))return;LO_BUSY=true;try{if(E.lo)foldLo();if(want==null)loSwap(p,null);else{var b=buildLo(p,want);loSwap(b.m,b)}paintForm()}finally{LO_BUSY=false}}
+// banner while editing a place with several locations
+function paintLoBanner(){var b=$('loBanner');if(!b){b=el('div','lobanner');b.id='loBanner';var f=$('form');f.insertBefore(b,f.firstChild)}
+  var p=E&&S.places.get(E.id),on=!!(E&&E.kind==='saved'&&p&&(p.locs||[]).length&&$('form').classList.contains('editall')&&(E.loEdit!=null||E.allEdit));b.hidden=!on;if(!on)return;b.textContent='';
+  var pk=pickedLoc(p),nm=function(i){var a=allLocs(p).filter(function(x){return x.i===i})[0];return a?a.n:'this location'},row=el('div','lobrow');
+  if(E.loEdit!=null){row.appendChild(el('span','lobt','Editing '+nm(E.loEdit)+' only'));var sw=el('button','linkbtn','Edit all instead');sw.type='button';sw.addEventListener('click',function(){loMode('all')});row.appendChild(sw);b.appendChild(row);
+    b.appendChild(el('p','lobsub','Name, type, cuisine and photos are the same everywhere.'))}
+  else{row.appendChild(el('span','lobt','Editing all locations'));if(pk&&pk.i>=0){var s2=el('button','linkbtn','Edit '+pk.n+' only instead');s2.type='button';s2.addEventListener('click',function(){loMode('one',pk.i)});row.appendChild(s2)}b.appendChild(row);
+    var own=(p.locs||[]).map(function(l,i){var n=ovNames(l).filter(function(x){return x!=='Opening hours'});return n.length?nm(i)+' ('+n.join(', ')+')':''}).filter(Boolean);if(own.length)b.appendChild(el('p','lobsub','Not changed here, they have their own: '+own.join('; ')))}}
+function loMode(kind,i){if(!E)return;if(E.lo)foldLo();if(kind==='all'){E.loEdit=null;E.allEdit=true}else{E.allEdit=false;E.loEdit=i}E.snap=null;syncLocView();E.snap=snapPlace(E.data);paintForm();paintView();paintLoBanner();toast(kind==='all'?'Editing all locations':'Editing one location only')}
+// asked when Edit is tapped while looking at another location
+function askLoEdit(p,pk,go){var ov=el('div','fixwrap'),sh=el('div','fixsheet');sh.setAttribute('role','dialog');sh.setAttribute('aria-label','What do you want to edit?');sh.appendChild(el('p','fixq','What do you want to edit?'));sh.appendChild(el('p','gtkalso','You’re looking at '+pk.n+'.'));
+  var col=el('div','loask'),b1=el('button','btn primary','Only '+pk.n),b2=el('button','btn','All locations'),b3=el('button','btn','Cancel');[b1,b2,b3].forEach(function(b){b.type='button';col.appendChild(b)});
+  function close(){ov.remove();document.removeEventListener('keydown',kd,true)}function kd(e){if(e.key==='Escape'){e.stopImmediatePropagation();close()}}
+  b1.addEventListener('click',function(){close();E.allEdit=false;E.loEdit=pk.i;go()});b2.addEventListener('click',function(){close();E.loEdit=null;E.allEdit=true;go()});b3.addEventListener('click',close);
+  sh.appendChild(col);ov.appendChild(sh);ov.addEventListener('click',function(e){if(e.target===ov)close()});document.addEventListener('keydown',kd,true);document.body.appendChild(ov);b1.focus()}
 function touched(){
-  if(!E)return;
+  if(!E)return;if(E.lo)foldLo();
   E.data.editedAt=Date.now();
   if(E.kind==='saved'){schedulePersist(E.id);renderList();renderFilters()}
   invalidate();
@@ -4454,12 +4514,19 @@ $('form').addEventListener('click',function(e){
   var b=e.target.closest('.editbtn');if(!b)return;
   if(E&&E.kind==='saved'&&b.closest('#sec-name')){
     // one Edit button: open every section at once
-    var on=!$('form').classList.contains('editall');$('form').classList.toggle('editall',on);setAllOpen(on);
+    var on=!$('form').classList.contains('editall');
+    // looking at another location: ask whether to edit only it or all locations
+    var pE=S.places.get(E.id),pkE=pE&&(pE.locs||[]).length?pickedLoc(pE):null;
+    if(on&&!b.dataset.asked&&pkE&&pkE.i>=0){askLoEdit(pE,pkE,function(){b.dataset.asked='1';b.click();delete b.dataset.asked});return}
+    if(on&&!b.dataset.asked){E.loEdit=null;E.allEdit=!!pkE}
+    if(on){$('form').classList.add('editall');syncLocView()}
+    $('form').classList.toggle('editall',on);setAllOpen(on);
     var ap=document.querySelector('.app');ap.classList.toggle('adding',on);if(!on)ap.classList.remove('peekmap');
+    if(!on){if(E.lo)foldLo();E.loEdit=null;E.allEdit=false}
     if(on){E.snap=snapPlace(E.data);$('editView').querySelector('.scroll').scrollTop=0}else E.snap=null;
     if(on){if(!coarse)setTimeout(function(){$('fName').focus()},0)}
     else if(timers.has(E.id)){clearTimeout(timers.get(E.id));timers.delete(E.id);persist(E.id)}
-    paintView();return;
+    paintView();paintLoBanner();return;
   }
   var sec=b.closest('.sec'),open=!sec.classList.contains('open');
   sec.classList.toggle('open',open);
